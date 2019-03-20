@@ -67,16 +67,91 @@
 
     charset规定HTML文档的字符编码
 
-### 3、
+### 3、name="viewport"
 
-### 4、
+    此参数为配置移动端的界面，具体参数参照下个条目
 
-### 5、
+### 4、content="width=device-width, initial-scale=1.0"
 
-### 6、
+    width=device-width  //应用程序的高度和屏幕的宽度是一样的
+    width=device-height //应用程序的高度和屏幕的高是一样的
+    initial-scale=1.0   //应用程序启动时候的缩放尺度（1.0表示不缩放）
+    minimum-scale=1.0   //用户可以缩放到的最小尺度（1.0表示不缩放）
+    maximum-scale=1.0   //用户可以缩放到的最大尺度（1.0表示不缩放）
+    user-scalable=no    //用户是否可以通过他的手势来缩放整个应用程序
 
-### 7、
+### 5、http-equiv="X-UA-Compatible" content="ie=edge"
 
-### 8、
+    http-equiv:相当于http文件头的作用可以向浏览器传回一些有用的信息以帮助正确的显示网页的内容
 
-### 9、
+    可以有一下几个参数：
+
+        X-UA-Compatible：
+
+            针对IE8新加的一个设置，对于IE8之外的浏览器是不识别的
+
+            参数值可以为：IE=5、6、7、8、edge(锁定以最高级别的可用模式显示内容)
+
+        Expires(期限):
+
+            可以用于设定网页的到期时间。一旦网页过期，必须到服务器上重新传输。
+
+            <metahttp-equiv="expires"content="Fri,12Jan200118:18:18GMT"> 
+
+        Pragma(cache模式)：
+
+            禁止浏览器从本地计算机的缓存中访问页面内容
+
+            <metahttp-equiv="Pragma"content="no-cache"> 
+
+        Refresh(刷新):
+
+            自动刷新，并指向新页面
+
+            <metahttp-equiv="Refresh"content="2;URL=http://www.jb51.net">(注意后面的引号，分别在秒数的前面和网址的后面)
+
+        Set-Cookie(cookie设定) ：
+
+            如果网页过期，那么存盘的cookie将被删除
+
+            <metahttp-equiv="Set-Cookie"content="cookievalue=xxx;expires=Friday,12-Jan-200118:18:18GMT；path=/"> 
+
+        
+
+### 6、rel="stylesheet"
+
+    rel:规定当前文档与被链接文档之间的关系
+
+    最常用的为stylesheet:文档的外部样式表，其值得到了所有浏览器的支持
+
+    如果想了解其他的属性值，可以参考http://www.w3school.com.cn/tags/att_link_rel.asp
+
+    此代码表示为层叠样式表
+
+### 7、type="text/css“
+
+    type:规定样式表的MIME型
+
+    “text/css”:指内容是标准的CSS
+
+    此代码表示为类型是CSS
+
+### 8、media="screen"
+
+    media:为不同的媒介类型规定不同的样式
+
+    screen：计算机屏幕（默认值）
+
+    projection：放映机
+
+    print：打印预览模式，打印页
+
+### 9、href="main.css"
+
+    href:路径
+    
+    main.css为层叠样式表的名字
+
+### 10、src="main.js"
+
+    引用外部脚本的路径
