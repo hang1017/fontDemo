@@ -62,7 +62,7 @@
 
     name:把content属性关联到一个名称
 
-###属性（常用）
+### 属性（常用）
 
 #### 1、Description描述设计（下面第5点有继续说明）
 
@@ -151,7 +151,7 @@
         <meta name="renderer" content="ie-comp"> //默认IE兼容模式
         <meta name="renderer" content="ie-stand"> //默认IE标准模式
 
-###属性（不常用）
+### 属性（不常用）
 
 #### 12、<meta property="fb:app_id"
 
