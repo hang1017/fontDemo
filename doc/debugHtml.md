@@ -1,7 +1,7 @@
     
 # HTML语言基础功能
 
-![image](debugHtmlImg\html.jpg)
+![image](debugHtmlImg/html.jpg)
 
 ## 一、标签的含义
 
