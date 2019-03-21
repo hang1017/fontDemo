@@ -40,8 +40,17 @@
 ## 四、<meta
 
     用来描述一个HTML网页文档的属性。
-    位于<head>和<title>之间，它提供的信息虽然用户不可见，但却是文档最基本的元信息
+    全名：metadata  中文：元数据
+    用来描述数据的数据
+    位于<head>和<title>之间
+    不会显示在页面上，但是机器却可以识别
 
+    meta常用于定义页面的说明(Description)，关键字(Keywords)，最后修改日期和其他的元数据。
+
+    这些数据将服务于浏览器，搜索引擎，其他网络服务
+
+
+    
     <meta>除了提供文档字符集，使用语言，作者等基本信息，还涉及对关键词和网页等级的设定
     合理利用meta标签的Description和Keywords属性，加入网站的关键字或者网页的关键字，可使网站更加贴近用户体验
 
@@ -53,7 +62,7 @@
 
     name:把content属性关联到一个名称
 
-###属性
+###属性（常用）
 
 #### 1、Description描述设计（下面第5点有继续说明）
 
@@ -90,11 +99,65 @@
 
     content:这里是网页的描述，是给搜索引擎看的，搜索引擎根据这个描述进行收录排名，一般是网页内的关键字（简单点说：指定搜索引擎显示的网页快照）
 
-#### 6、<meta property="fb:app_id"
+#### 6、robots(定义搜索引擎爬虫的索引方式)
+
+    robots用来告诉爬虫哪些页面需要索引，哪些页面不需要索引
+
+    书写方式：
+        <meta name="robots" content="none">
+
+    具体参数如下：
+        1、none:搜索引擎将忽略此网页，等价于noindex,nofollow
+        2、noindex:搜索引擎不索引此网页
+        3、nofollow：搜索引擎将索引此网页的链接索引搜索其他的网页
+        4、all(默认):搜索引擎引此网页与继续通过此网页的链接索引，等价于index,follow
+        5、index:搜索引擎引此网页
+        6、follow:搜索引擎继续通过此网页的链接索引搜索其他的网页
+
+#### 7、aythor(作者)
+
+    用于标注网页作者
+
+    举例：
+        <meta name="author" content="Lxxxyx,437100000@qq.com" >
+
+#### 8、generator(网页制作软件)
+
+    用于标明网页是什么软件做的举例：
+
+    举例：
+        <meta name="generator" content="Sublime Text3" >
+
+#### 9、copyright(版权)
+
+    用于标注版权信息
+
+    举例：
+        <meta name="copyright"  content="Lxxyx" >
+
+#### 10、revisit-after(搜索引擎爬虫重访时间)
+
+    用于标注版权信息举例：
+
+    举例：
+        <meta name="revisit-after" content="7 days" >
+
+#### 11、renderer(双核浏览器渲染方式)
+
+    renderer是为双核浏览器准备的，用于指定双核浏览器默认以哪种方式渲染页面
+
+    例子：
+        <meta name="renderer" content="webkit"> //默认webkit内核
+        <meta name="renderer" content="ie-comp"> //默认IE兼容模式
+        <meta name="renderer" content="ie-stand"> //默认IE标准模式
+
+###属性（不常用）
+
+#### 12、<meta property="fb:app_id"
 
     fb:app_id:该标记将允许Facebook刮刀将该url的Open Graph实体与应用程序相关联，将允许任何管理员查看有关该url以及其相关的任何社交插件的数据洞察
 
-#### 7、<meta property="og"
+#### 13、<meta property="og"
 
     og:是一种新的HTTP头部标记，即Open Graph Protocol
         让网页成为一个“富媒体对象”
@@ -119,7 +182,7 @@
         //页面的简单描述
         <meta property="og:description" content="Contribute to hang1017/fontDemo development by creating an account on GitHub.">
 
-#### 8、<meta name="pjax-timeout" content="1000"
+#### 14、<meta name="pjax-timeout" content="1000"
 
     传统的ajax方式可以异步无刷新的改变页面内容，但是无法改变页面url
 
@@ -150,13 +213,13 @@
         10、url link.gref   跳转的连接
         11、fragment        对请求到的页面做截取
 
-#### 9、<meta name="request-id" content="C814:3857:77BCA:E2400:5C92E7FE" data-pjax-transient=""
+#### 15、<meta name="request-id" content="C814:3857:77BCA:E2400:5C92E7FE" data-pjax-transient=""
     
 
 
- #### 10、<meta name="selected-link" value="repo_source" data-pjax-transient=""   
+ #### 16、<meta name="selected-link" value="repo_source" data-pjax-transient=""   
 
-#### 11、<meta name="google-site-verification" content="KT5gs8h0wvaagLKAVWq8bbeNwnZZK1r1XQysX3xurLU"
+#### 17、<meta name="google-site-verification" content="KT5gs8h0wvaagLKAVWq8bbeNwnZZK1r1XQysX3xurLU"
 
     google-site-verification：这是google网站管理员的特定元标记
     google的网站认证代码，证明这个网站的所有者是你。
@@ -164,11 +227,11 @@
     和google排行收录有关系
     有利于Google的爬虫搜录页面
 
-#### 12、<meta name="octolytics-系列“
+#### 18、<meta name="octolytics-系列“
 
-#### 13、<meta class="js-ga-set"
+#### 19、<meta class="js-ga-set"
 
-#### 14、<meta name="hostname" content="github.com"
+#### 20、<meta name="hostname" content="github.com"
 
     hostname:当前的url的根地址
 
@@ -176,7 +239,7 @@
 
     user-login:当前登录名
 
-#### 16、<meta name="go-import"
+#### 21、<meta name="go-import"
 
     引入go语言包
 
@@ -185,7 +248,7 @@
     git: 版本控制系统
     repo: 源代码地址，例如https://github.com/go-yaml/yaml.git
 
-#### 17、<meta name="theme-color" content="#1e2327"
+#### 22、<meta name="theme-color" content="#1e2327"
 
     控制选项卡的颜色
 
@@ -195,7 +258,7 @@
     可以实现顶栏header bar 和地址栏 address bar的多彩的颜色
 
 
-#### 18、http-equiv="X-UA-Compatible" content="ie=edge"
+#### 23、http-equiv="X-UA-Compatible" content="ie=edge"
 
         X-UA-Compatible：
 
@@ -226,8 +289,6 @@
             如果网页过期，那么存盘的cookie将被删除
 
             <metahttp-equiv="Set-Cookie"content="cookievalue=xxx;expires=Friday,12-Jan-200118:18:18GMT；path=/"> 
-
-
 
 ## 五、<title
 
