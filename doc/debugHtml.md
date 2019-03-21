@@ -155,3 +155,15 @@
 ### 10、src="main.js"
 
     引用外部脚本的路径
+
+## 三、补充：
+
+    1、MIME类型是什么？
+        (Multipurpose Internet Mail Extensions)多用途互联网邮件扩展类型
+
+        是设定某种扩展名的文件，用一种应用程序来打开的方式类型，当该扩展名文件被访问的时候浏览器会自动使用指定应用程序来打开
+
+    2、MIME类型有哪些：
+        随意列举几个，如：.fiv、.html、.gif、.gz、.tar、.exe、.txt、.jar等
+
+        
