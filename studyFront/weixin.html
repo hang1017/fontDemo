@@ -5,100 +5,257 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>微信界面</title>
-    <link rel="stylesheet" type="text/css" media="screen" href="main.css">
-    <script src="main.js"></script>
 </head>
+<style >
+
+    .white-bgColor{
+        background-color: white;
+    }
+
+    .border-top-line{
+        border-top: 1px solid 	#EDEDED;
+    }
+
+    .item-image-div{
+        width: 30px;
+        height: 30px;
+        margin-top:3px;
+        margin-left: 10px;
+        float: left;
+    }
+
+    .item-image{
+        width: 25px;
+        height: 25px;
+        margin: auto 0;
+    }
+
+    .item-text-div{
+        float: left;
+        margin-top: 6px;
+    }
+    
+    .item-text{
+        margin-left: 10px;
+        font-size: 13px;
+    }
+
+    .bigest-div{
+        width: 400px;
+        height: 500px;
+        background-color: #E3E4E6;
+        margin: 0 auto;
+        border: 1px solid red;
+        position: relative;
+    }
+    .header-div{
+        width: 100%;
+        height: 30%;
+    }
+
+    .headPhoto-div{
+        width: 105px;
+        height: 85px;
+        text-align: center;
+    }
+
+    .headPhoto-img{
+        width: 65px;
+        height: 65px;
+        margin-top: 10px;
+        border-radius:5px;
+    }
+
+    .wx-num-text{
+        font-size: 13px;
+        margin-top: 5px;
+    }
+
+    .wx-name-text{
+        font-size: 15px;
+        font-weight:bold;
+    }
+
+    .headPhoto-parent-div{
+        width: 100%;
+        height: 60%;
+        display: flex;
+        flex-direction: row;
+    }
+
+    .camera-img{
+        width: 22px;
+        height: 22px;
+        float: right;
+        margin-top: 10px
+        ;margin-right: 10px;
+    }
+
+    .wx-text-div{
+        width:90%;
+        height: 55%;
+        margin-top: 18px;
+        padding-left: 5px;
+    }
+
+    .wx-text-parent-div{
+        width: 50%;
+        height: 100%;
+    }
+    .margin-top-5{
+        margin-top: 5px;
+    }
+
+    .erweima-img{
+        width: 20px;
+        height: 20px;
+        margin-left: 20px;
+    }
+    .erweima-line-img{
+        width: 15px;
+        height: 15px;
+        margin-left: 20px;
+    }
+
+    .erweima-div{
+        width: 90px;
+        height: 30%;
+        margin: 0 auto;
+        margin-top:40px;
+    }
+
+    .erweima-parent-div{
+        width: 95px;
+        height: 85px;
+    }
+
+    .package-div{
+        width: 100%;
+        height: 7%;
+        margin-top:8px;
+    }
+
+    .line-right{
+        width: 15px;
+        height: 15px;
+        float: right;
+        padding-top: 10px;
+        padding-right: 15px;
+    }
+
+    .four-div{
+        width: 100%;
+        height: 25%;
+        box-sizing: border-box;
+    }
+
+    .four-parent-div{
+        width: 100%;
+        height: 28%;
+        margin-top: 8px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .options-div{
+        width: 100%;
+        height: 7%;
+        margin-top: 8px;
+    }
+
+
+</style>
 <body>
 
-    <div style="width: 400px;height: 500px;background-color: #E3E4E6;margin: 0 auto;border: 1px solid red;position: relative;">
+    <div class="bigest-div">
         <!-- 头部   包括头像、文字、二维码 -->
-        <div style="width: 100%;height: 30%;background-color: white;">
-            <div style="width: 100%;height: 30%;background-color: white;">
-                <img src="studyImg\相机.png" style="width: 22px;height: 22px;float: right;margin-top: 10px;margin-right: 10px;" />
+        <div class="white-bgColor header-div">
+            <div class="white-bgColor header-div">
+                <img src="studyImg\xiangji.png" class="camera-img" />
             </div>
-            <div style="width: 100%;height: 60%;background-color: white;display: flex;flex-direction: row">
+            <div class="white-bgColor headPhoto-parent-div">
                 <!-- 头像 -->
-                <div style="width: 105px;height: 85px;text-align: center;">
-                    <img src="studyImg\头像.jpg" style="width: 65px;height: 65px;margin-top: 10px;border-radius:5px"/>
+                <div class="headPhoto-div">
+                    <img src="studyImg\touxiang.jpg" class="headPhoto-img"/>
                 </div>
                 <!-- 文字 -->
-                <div style="width: 50%;height: 100%;">
-                    <div style="width:90%;height: 55%;margin-top: 18px;padding-left: 5px;">
-                        <span style="font-size: 15px;font-weight:bold;">航航航航</span><br>
-                        <div style="margin-top: 5px;">
-                            <span style="font-size: 13px;margin-top: 5px;">微信号：q437132124</span>
+                <div class="wx-text-parent-div">
+                    <div class="wx-text-div">
+                        <span class="wx-name-text">航航航航</span><br>
+                        <div class="margin-top-5">
+                            <span class="wx-num-text">微信号：q437132124</span>
                         </div>
                         
                     </div>
                 </div> 
                 <!-- 二维码 -->
-                <div style="width: 95px;height: 85px;">
-                    <div style="width: 90px;height: 30%;margin: 0 auto;margin-top:40px;">
-                        <img src="studyImg\二维码.png" style="width: 20px;height: 20px;margin-left: 20px;"/>
-                        <img src="studyImg\线右.png" style="width: 15px;height: 15px;margin-left: 20px;"/>
+                <div class="erweima-parent-div">
+                    <div class="erweima-div">
+                        <img src="studyImg\erweima.png" class="erweima-img"/>
+                        <img src="studyImg\xianyou.png" class="erweima-line-img" />
                     </div>
                 </div> 
             </div>
         </div>
         <!-- 钱包 -->
-        <div style="width: 100%;height: 7%;background-color: white;margin-top:8px;">
-            <div style="width: 30px;height: 30px;margin-top:3px;margin-left: 10px;float: left;">
-                <img src="studyImg\钱包.png" style="width: 25px;height: 25px; margin: auto 0"/>
+        <div class="white-bgColor package-div">
+            <div class="item-image-div">
+                <img src="studyImg\qianbao.png" class="item-image"/>
             </div>
-            <div style="float: left;margin-top: 6px;">
-                    <span style="margin-left: 10px;font-size: 13px;">钱包</span>
+            <div class="item-text-div">
+                    <span class="item-text">钱包</span>
             </div>
-                <img src="studyImg\线右.png" style="width: 15px;height: 15px;float: right;padding-top: 10px;padding-right: 15px;"/>
+                <img src="studyImg\xianyou.png"  class="line-right"   />
         </div>
         <!-- 收藏、相册、卡包、表情4个一起 -->
-        <div style="width: 100%;height: 28%;background-color: white;margin-top: 8px;display: flex;flex-direction: column">
-            <div style="width: 100%;height: 25%;">
-                    <div style="width: 30px;height: 30px;margin-top:3px;margin-left: 10px;float: left;">
-                        <img src="studyImg\收藏.png" style="width: 25px;height: 25px; margin: auto 0"/>
+        <div  class="white-bgColor four-parent-div">
+            <div class="four-div;">
+                    <div class="item-image-div">
+                        <img src="studyImg\shoucang.png" class="item-image"/>
                     </div>
-                    <div style="float: left;margin-top: 6px;">
-                        <span style="margin-left: 10px;font-size: 13px;">收藏</span>
+                    <div class="item-text-div">
+                        <span class="item-text">收藏</span>
                     </div>
                 
-                <img src="studyImg\线右.png" style="width: 15px;height: 15px;float: right;padding-top: 10px;padding-right: 15px;"/>
+                <img src="studyImg\xianyou.png" class="line-right"  />
             </div>
-            <div style="width: 100%;height: 25%;border-top: 1px solid 	#EDEDED;box-sizing: border-box;">
-                    <div style="width: 30px;height: 30px;margin-top:3px;margin-left: 10px;float: left;">
-                            <img src="studyImg\相册.png" style="width: 25px;height: 25px; margin: auto 0"/>
+            <div  class="border-top-line four-div">
+                    <div class="item-image-div">
+                            <img src="studyImg\xiangce.png" class="item-image"/>
                     </div>
-                    <div style="float: left;margin-top: 6px;">
-                            <span style="margin-left: 10px;font-size: 13px;">相册</span>
+                    <div class="item-text-div">
+                            <span class="item-text">相册</span>
                     </div>
-                <img src="studyImg\线右.png" style="width: 15px;height: 15px;float: right;padding-top: 10px;padding-right: 15px;"/>
+                <img src="studyImg\xianyou.png" class="line-right"  />
             </div>
-            <div style="width: 100%;height: 25%;border-top: 1px solid #EDEDED;box-sizing: border-box;">
-                    <div style="width: 30px;height: 30px;margin-top:3px;margin-left: 10px;float: left;">
-                            <img src="studyImg\卡包.png" style="width: 25px;height: 25px; margin: auto 0"/>
+            <div class="border-top-line four-div">
+                    <div class="item-image-div">
+                            <img src="studyImg\kabao.png" class="item-image"/>
                     </div>
-                    <div style="float: left;margin-top: 6px;">
-                            <span style="margin-left: 10px;font-size: 13px;">卡包</span>
+                    <div class="item-text-div">
+                            <span class="item-text">卡包</span>
                     </div>
-                <img src="studyImg\线右.png" style="width: 15px;height: 15px;float: right;padding-top: 10px;padding-right: 15px;"/>
+                <img src="studyImg\xianyou.png" class="line-right"/>
             </div>
-            <div style="width: 100%;height: 25%; border-top: 1px solid 	#EDEDED;box-sizing: border-box;">
-                    <div style="width: 30px;height: 30px;margin-top:3px;margin-left: 10px;float: left;">
-                            <img src="studyImg\表情.png" style="width: 25px;height: 25px; margin: auto 0"/>
+            <div class="border-top-line four-div">
+                    <div class="item-image-div">
+                            <img src="studyImg\biaoqing.png" class="item-image"/>
                     </div>
-                    <div style="float: left;margin-top: 6px;">
-                            <span style="margin-left: 10px;font-size: 13px;">表情</span>
+                    <div class="item-text-div">
+                            <span class="item-text">表情</span>
                     </div>
-                <img src="studyImg\线右.png" style="width: 15px;height: 15px;float: right;padding-top: 10px;padding-right: 15px;"/>
+                <img src="studyImg\xianyou.png" class="line-right" />
             </div>
         </div>
         <!-- 设置 -->
-        <div style="width: 100%;height: 7%;background-color: white;margin-top: 8px">
-                <div style="width: 30px;height: 30px;margin-top:3px;margin-left: 10px;float: left;">
-                        <img src="studyImg\设置.png" style="width: 25px;height: 25px; margin: auto 0"/>
+        <div  class="white-bgColor options-div">
+                <div class="item-image-div">
+                        <img src="studyImg\shezhi.png" class="item-image"/>
                 </div>
-                <div style="float: left;margin-top: 6px;">
-                        <span style="margin-left: 10px;font-size: 13px;">设置</span>
+                <div class="item-text-div">
+                        <span class="item-text">设置</span>
                 </div>
-            <img src="studyImg\线右.png" style="width: 15px;height: 15px;float: right;padding-top: 10px;padding-right: 15px;"/>
+            <img src="studyImg\xianyou.png" class="line-right" />
         </div>
         <!-- 底部   微信、通讯录、发现、我 -->
         <!-- <div style="width: 100%;height: 12%;background-color: white;position: absolute;bottom: 0px;display: flex;flex-direction: row">

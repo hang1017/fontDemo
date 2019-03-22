@@ -60,3 +60,18 @@
     [type='checkbox']{
         margin:10px 0px 15px 0px;
     }
+
+## 六、em、rem、in、mm
+
+    em和rem：相对单位，相对于父项
+    in和mm：绝对单位，英寸，毫米，接近屏幕的实际测量值
+
+## 七、！important
+
+```
+    .pink-text {
+        color: pink !important; //最为重要，覆盖掉所有的声明
+    }
+```
+
+
