@@ -2,6 +2,8 @@
 
 ## 创建分支
 
+### 通过gitHub创建分支
+
     1、先打开你的仓库，找到Branch:master的下拉框
         目前的master选项意思：主分支
 
@@ -17,6 +19,51 @@
 
     4、创建完成后，稍等页面刷新，这是你就会看到你的分支已经变成了A分支
 
+### 通过TortoiseGit创建分支
+
+    1、右击鼠标，选择TortoiseGit，找到create Branch 点击它
+
+    2、Name:输入新分支的名称
+
+    3、Options:勾选Switch to new branch(不需要管中间的Base on)
+
+    4、点击确认
+
+    5、再次右击鼠标，选择TortoiseGit，找到并点击：Switch/checkout
+
+    6、Switch to:选中Branch,并找到你新创建的分支，直接点击OK
+
+    7、push你要在新分支上上传的文件
+
+        Ref:Local-新分支
+        Ref:Remote-手动输入新分支的名称
+        Destination：选择你要创建的仓库
+
+    8、点击OK。成功把新分支下索要提交的文件提交到远程仓库上。
+
+### 通过git命令行创建分支
+
+    1、git branch A     //在本地创建一个命名为A的分支
+
+    2、git branch       //查看当前自己所在的分支，绿色为你所在的分支
+
+    3、git branch -a    //查看服务器的所有分支以及自己当前所在的分支
+
+    4、git push origin(这是你创建的remote) A    //把新创建的A分支推送到远程仓库上
+
+    5、git checkout --track origin/A    //切换为远程仓库上的命名为A的远程分支
+
+    6、git branch --set-upstream localBranchName origin/branchName
+
+    好啦！操作至此，你已经成功了创建了新的分支，并把此分支推送到远程仓库中。
+
+    现在你就可以用该分支进行push/pull文件啦！
+
+    但是
+    请注意push/pull之前请一定要确定你当前的分支为新创建的分支！！！！
+    请注意push/pull之前请一定要确定你当前的分支为新创建的分支！！！！
+    请注意push/pull之前请一定要确定你当前的分支为新创建的分支！！！！
+    重要的事情说三遍！
 ## 在A分支中修改文件
 
     1、重点：记住了，当你在修改文件时，一定要确认你现在所属的分支为A分支，这样才能保证主分支代码的准确性！！！！！！
