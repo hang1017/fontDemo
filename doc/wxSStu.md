@@ -155,6 +155,261 @@
 
 ## 卡片模板
 
+### 一、模板搭建
+
+    这个很简单
+    在public-tpl再建两个模板，分别为：
+    moviecard.wxml、moviecard.wxss
+
+### 二、编写moviecard.wxml和moviecard.wxss
+
+    1、moviecard.wxml
+```
+    <import src="stars.wxml" />
+
+    <template name="movieCardTpl">
+        <view class='cardcontainer'>
+            <image class="cardimg" src='{{imgUrl}}' background-size="cover"></image>
+        <text>{{movieName}}</text>
+
+        //引入星星评分模板
+        <template is="starsTpl" data="{{rankNum:rankNum}}"></template>
+  </view>
+</template> 
+```
+    解释一下上面的代码：
+
+    首先要导入星星评分模板
+
+    搭建一个模板，并且建一个全局的view,name为：movieCardTpl
+
+    并且最重要的是要引入星星评分模板
+    并且data要写上去，不能因为moviecard模板右引用，就没把这里的data写上去
+
+    2、moviecard.wxss
+```
+@import "stars.wxss";
+
+.cardcontainer{
+  display: flex;
+  flex-direction: column;
+  padding: 0 22rpx;
+}
+.cardimg{
+  width: 200rpx;
+  height:280rpx;
+}
+.cardname{
+  font-size: 28rpx;
+  padding-top: 20rpx;
+  font-weight:500;
+}
+```
+    解释一下上面的代码：
+    
+    1、再该wxss上要引用star.wxss的声明
+
+    2、并且该模板可以使用felx属性的的column，呈现上下分布  
+
+### 三、引用moviecard模板
+
+    下面以index.wxml为例
+
+    1、首先要先import声明！
+
+    2、引用模板，代码如下：
+
+    <template is="movieCardTpl" data="{{movieName:movieName,rankNum:rankNum,imgUrl:userInfo.avatarUrl}}"></template>
+
+    3、记得要改index.wxss的声明！
+
+    4、再index.js里调用数据
+```
+    Page({
+        data: {
+            userInfo: {},
+            rankNum:5,
+            movieName: '航航',
+            imgUrl:'../images/touxiang.jpg'
+        },
+```
+
+
+## 静态主页
+
+### 一、全局配置文件的修改
+
+    1、修改app.wxss下的代码(注释掉那两行代码)，如下：
+```
+.container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+  justify-content: space-between;
+  /* padding: 200rpx 0; */
+  box-sizing: border-box;
+} 
+```
+
+    2、修改app.json下的代码：
+```
+{
+  "pages":[
+    "pages/index/index",
+    "pages/logs/logs",
+    "pages/test/test"
+  ],
+  "window":{
+    "backgroundTextStyle":"light",
+    "navigationBarBackgroundColor": "#44bb57",
+    "navigationBarTitleText": "航帅帅评分",
+    "navigationBarTextStyle":"white"
+  }
+}
+```
+
+### 二、搜索模板
+
+    1、再tpl里建两个文件，分别是searchBtn.wxml和searchBtn.wxss
+
+    2、searchBtn.wxml
+```
+    <template name="searchBtnTpl">
+        <view class='searchBtnView'>
+            <view class='searchInput'>
+                <icon type='search' size='13' color='#405f80'></icon>
+                <text>搜索</text>
+            </view>
+        </view>
+    </template>
+```
+
+    3、searchBtn.wxss
+
+```
+.searchBtnView{
+  width: 100%;
+  height: 86rpx;
+  background-color: #44BB57;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.searchInput{
+  background-color: white;
+  width: 92%;
+  height: 60rpx;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin-left: 4%;
+}
+
+.searchInput text{
+  margin:auto 0;
+  margin-left: 10rpx;
+  font-size: 28rpx;
+  color: #B4B4B4;
+}
+
+.searchInput icon{
+  margin: auto 0;
+  color: #B4B4B4;
+}
+
+```
+
+### 三、引用模板
+
+    1、先把index.wxml里没用的代码删除啦
+
+    2、wxml声明、引用
+        wxss声明
+
+### 四、搭建主页模板
+
+    1、tpl新建两个文件，分别是：movieList.wxml和movieList.wxss
+
+    2、movieList.wxml
+
+```
+<import src="moviecard.wxml"  />
+
+<template name="movieListTpl">
+  <view class='movieListView'>
+    <view class='mlHeader'>
+      <text>{{mlhTitle}}</text>
+      <text class='mlhMore'>查看更多 ></text>
+    </view>
+    <view class='mlBody'>
+      <block wx:for="{{movielist}}" wx:key="item">
+        <template is="movieCardTpl" data="{{...item}}"></template>
+      </block>
+    </view>
+  </view>
+</template>
+```
+
+    3、movieList.wxss
+```
+@import "moviecard.wxss";
+
+.movieListView{
+  margin-bottom: 20rpx;
+  background-color: white;
+}
+
+.mlHeader{
+ display: flex;
+  flex-direction: row;
+  justify-content:space-between;
+  padding: 20rpx;
+}
+
+.mlBody{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+
+.mlhMore{
+  float: right;
+  color: #44BB57;
+  padding-right: 26rpx;
+}
+```
+
+### 五、引用主页模板并配上数据
+
+    1、index.wxml声明并引用模板
+        index.wxss声明并引用模板
+
+        <template is="movieListTpl" data="{{mlhTitle:mlhTitle,movielist:movielist}}"></template>
+
+        如上那样配上数据格式
+
+    2、通过index.js配上假数据
+```
+    mlhTitle:'最新上映',
+    movielist:[
+      {
+        imgUrl:"",  
+        movieName:"航帅帅",
+        rankNum: 5,
+      },
+```
+
+    好啦！至此，你的静态模板页面就已经出来啦，还差最下面的个人中心切换按钮，先不着急哈！
+    
+
+
+
+
+
+
 
     
 
