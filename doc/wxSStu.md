@@ -402,9 +402,247 @@
       },
 ```
 
+```
+https://wx.qlogo.cn/mmopen/vi_32/PiajxSqBRaEJIWAnKOdQuz12KJMoib3kpGv9xqszicnAC0POLO3DpaEeYIpB8DxTicQuC41QmLFrubEQkVR9eOaBxw/0
+
+这是图片的路径，如果没有图片路径的话可以参考这个。
+```
+
     好啦！至此，你的静态模板页面就已经出来啦，还差最下面的个人中心切换按钮，先不着急哈！
     
 
+## 读取接口数据并显示在主页上
+
+### 一、统一地址变量
+
+```util.js
+
+var serverUrl = 'http://t.yushu.im';
+
+function serverUrlFactory(url){
+  return serverUrl+url;
+}
+module.exports = {
+  formatTime: formatTime,
+  serverUrlFactory:serverUrlFactory
+}
+
+```
+```
+先解释一下,第一步，不一定要做，如果你想提高代码的复用性可以这样做，你也可以在其他js页面直接调用接口
+
+这里做一个统一的封装
+
+稍微讲一下module.exports
+
+每个wxss模块都有一个内置的module对象。属性为exports
+
+通过该属性就可以对外共享本模块的私有变量和函数了。
+
+所以一定要记得把要共享的变量和数据放到exports属性里
+
+并且你要在哪个js里用，就在该js头部加上下面这段声明：
+var util = require('../../utils/util.js');
+
+上面的路径为豆瓣的数据路径。
+
+本来应该为：https://api.douban.com
+
+但是现在对小程序做了限制，所以你可以用我最上面的代码，比不过读取出来的是一些假数据
+
+
+```
+### 二、请求后台数据
+
+```
+在.js页面下编写请求代码，如（index.js）
+
+首先先编写一个方法来调用这个请求：
+
+在方法中调用wx.request({})
+
+来看下面的代码
+```
+
+```js
+getTheraterMovieList: function () {
+    var self = this;
+    wx.request({
+      url:util+serverDataFactory('/v2/movie/in_theaters'),
+      method:'post',
+      header:{
+        'content-type':'json'
+      },
+      data:requestsData,
+      success:function(res){
+        console.log(res);
+        self.setData({
+          theratersMovieList:self.movieDataFactory(res.data);
+        })
+      },
+      fail:function(err){
+        console.log(err);
+      }
+    })
+```
+```
+这个用法和ajax差不多(我是这样理解的)
+
+这个movieDataFactory(data),是下面的代码（一样写在index.js）
+```
+``` js
+movieDataFactory:function(data){
+    var minData= [];
+    for(var key in data.subjects){
+      minData.push({
+        medium: data.subjects[key].images.large,
+        title:data.subjects[key].title,
+        average:data.subjects[key].rating.average
+      })
+    }
+    return {
+      title:data.title,
+      subjects:minData
+    };
+  }
+```
+```
+把读取接口数据的代码放到外面来提高了代码的复用性。
+
+然后我们要在index.js---Onload方法里面调用方法
+
+好了！至此，我们就把后台接口的数据读取出来了，你可以运行查看接口数据来验证是否操作成功。
+
+如果接口数据没有显示出来不要着急，请参考四(下面)、
+
+那么接下来，我们就要把接口中的数据放到模板和前台中，让它显示出来了。
+```
+### 三、显示数据
+
+```
+因为有模板，有很多嵌套，所以会很乱
+
+但是我们一层一层往下走，就不会错
+
+1、index.wxml：模板引用的数据要修改
+
+<template is="movieListTpl" data="{{movielist:theraterMovieList}}"></template>
+
+2、movielist.wxml:
+
+<text>{{movielist.title}}</text>  //标题要修改
+
+<block wx:for="{{movielist.subjects}}" wx:key="item"> //便利的数据要修改
+
+3、moviecard.wxml:
+
+<image bindtap="bindViewTap" class="cardimg" src='{{medium}}' background-size="cover"></image>  
+<text class='cardname'>{{title}}</text>
+<template is="starsTpl" data="{{rankNum:average}}"></template>
+
+这里修改的是图片，电影名，评分。
+
+至此，你的主页就应该已经能显示出最新上映的电影啦。
+```
+### 四、微信安全
+
+```
+微信为了数据安全，在后台配置了合法域名。
+
+如果你只是自己写个demo测试的话，那么
+
+点开设置--项目设置--勾选不校验合法域名、web-view（业务域名）、TLS 版本以及 HTTPS 证书
+
+即可读取到数据
+
+如果要配置合法域名的话：
+你需要到微信公众号平台进行配置，具体自行百度。
+
+```
+
+### 五、调整样式
+
+```
+1、你是不是发现有些电影名太长了，影响了布局
+
+打开moviecard.wxss，去调整电影名的样式
+
+让它过长不换行，且超过的长度隐藏掉，代码如下：
+```
+```wxss
+width: 200rpx;
+white-space: nowrap;
+text-overflow: ellipsis;
+overflow: hidden;
+```
+```
+2、你是不是还发现有些电影还没评分：
+
+给“暂无分数”的文字加上wx.if的判断。
+
+给星星图片也加个判断，<block wx.if>,如果分数为0，就不要显示出星星来了。代码如下：
+```
+```wxml
+<text wx:if="{{rankNum == 0}}" class='noNum'>暂无分数</text>
+    <block wx:if="{{rankNum!=0}}">
+      <block  wx:for="{{[2,4,6,8,10]}}" wx:for-item="item">
+        <image wx:if="{{item > rankNum+1}}" src='/images/star-no.png'></image>
+        <image wx:elif="{{item === rankNum+1}}" src='/images/star-half.png'></image>
+        <image wx:else="{{item <= rankNum}}" src='/images/star-full.png'></image>
+      </block>
+    </block>
+```
+
+
+### 六、完整主页
+```
+有了最新上映的片段还不够，我们要主页补充完整！
+
+难道我们一个接口写一个wx.request吗？
+
+可以是可以，但是我们可以通过修改之前的代码，完成代码的服用
+
+看下面的代码：
+```js
+getTheraterMovieList: function (url,title,requestData,successCallBack) {
+    var self = this;
+    wx.request({
+      url: util.serverUrlFactory(url),
+      method:'GET',
+      header:{
+        "content-type":'json'
+      },
+      data:requestData,
+      success:function(res){
+        console.log(res);
+        successCallBack(res.data);
+      },
+      fail:function(err){
+        console.log(err);
+      }
+    })
+  },
+```
+```
+记下来我们在onload上添加代码，完成所有接口的调用：
+```
+```js
+var that = this;
+that.getTheraterMovieList("/v2/movie/in_theaters","近期上映",{count:3},function(data1){
+      that.getTheraterMovieList("/v2/movie/coming_soon", "即将上映", { count: 3 }, function (data2) {
+        that.getTheraterMovieList("/v2/movie/top250", "热门电影", { count: 3 }, function (data3) {
+          that.setData({
+            topMovieList: that.movieDataFactory(data3),
+            comingMovieList: that.movieDataFactory(data2),
+            theraterMovieList: that.movieDataFactory(data1),
+          })
+        });
+    });
+```
+
+```
+至此！我们的主页就完成啦！！！
+```
 
 
 
