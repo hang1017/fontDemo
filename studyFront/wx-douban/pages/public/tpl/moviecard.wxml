@@ -1,0 +1,12 @@
+<import src="stars.wxml" />
+
+<template name="movieCardTpl">
+  <view class='cardcontainer'>
+    <image bindtap="bindViewTap" class="cardimg" src='{{medium}}' background-size="cover"></image>
+    <text class='cardname'>{{title}}</text>
+    <template is="starsTpl" data="{{rankNum:average}}"></template>
+    <!-- <image class="cardimg" src='{{imgUrl}}'></image>
+     <text class='cardname'>{{movieName}}</text>
+    <template is="starsTpl" data="{{rankNum:rankNum}}"></template> -->
+  </view>
+</template> 

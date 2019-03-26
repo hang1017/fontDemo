@@ -1,0 +1,19 @@
+.starsAndNum{
+  display: flex;
+  flex-direction: row;
+}
+.rankStars{
+  display: flex;
+  flex-direction: row;
+  margin-top: 7rpx;
+}
+.rankStars image{
+  width: 30rpx;
+  height: 30rpx;
+}
+.rankNum{
+  color: #4A6141; 
+}
+.noNum{
+  font-size: 28rpx;
+}

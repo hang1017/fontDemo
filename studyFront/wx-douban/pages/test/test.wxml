@@ -1,0 +1,7 @@
+<import src="../public/tpl/moviecard.wxml" />
+
+<view class="container">
+
+<template is="movieCardTpl" data="{{movieName:movieName,rankNum:rankNum,imgUrl:userInfo.avatarUrl}}"></template>
+
+</view>

@@ -1,0 +1,28 @@
+@import "../public/tpl/movieList.wxss";
+
+
+.userinfo { 
+display: flex; 
+flex-direction: column; 
+align-items: center; 
+background-image: url("../../images/touxiang.jpg"); 
+background-repeat: no-repeat; 
+background-size:100% auto; 
+height: 400rpx; 
+background-color: green;
+} 
+.userinfo-avatar { 
+width: 140rpx; 
+height: 140rpx; 
+margin: 20rpx; 
+border-radius: 50%; 
+margin-top: 75rpx; 
+} 
+.userinfo-nickname { 
+color: #fff; 
+} 
+
+.header-bg{
+  width: 100%;
+  height: 100%;
+}

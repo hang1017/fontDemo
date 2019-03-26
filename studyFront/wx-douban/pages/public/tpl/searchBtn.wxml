@@ -1,0 +1,8 @@
+<template name="searchBtnTpl">
+  <view class='searchBtnView'>
+    <view class='searchInput'>
+      <icon type='search' size='13' color='#405f80'></icon>
+      <text>搜索</text>
+    </view>
+  </view>
+</template>

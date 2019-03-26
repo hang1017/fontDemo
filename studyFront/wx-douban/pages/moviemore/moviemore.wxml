@@ -1,0 +1,14 @@
+<!--pages/moviemore/moviemore.wxml-->
+<import src="../public/tpl/movieList.wxml" />
+<import src="../public/tpl/searchBtn.wxml" />
+<import src="../public/tpl/moviecard.wxml" />
+
+<view class='container'>
+<template is="searchBtnTpl"></template>
+<view class='movielist'>
+<block wx:for="{{movieList.subjects}}" wx:key="item">
+  <template is="movieCardTpl" data="{{...item}}"></template> 
+</block>
+</view>
+</view>
+

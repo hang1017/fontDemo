@@ -1,0 +1,11 @@
+/* pages/moviemore/moviemore.wxss */
+
+@import "../public/tpl/movieList.wxss";
+@import "../public/tpl/searchBtn.wxss";
+
+.movielist{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  padding-top: 20rpx;
+}

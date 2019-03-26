@@ -1,0 +1,29 @@
+<!--index.wxml-->
+<import src="../public/tpl/moviecard.wxml" />
+<import src="../public/tpl/searchBtn.wxml" />
+<import src="../public/tpl/movieList.wxml" />
+
+<view class="container">
+  <!-- <view class="userinfo">
+    <button wx:if="{{!hasUserInfo && canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 获取头像昵称 </button>
+    <block wx:else>
+      <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image>
+      <text class="userinfo-nickname">{{userInfo.nickName}}</text>
+    </block>
+  </view>
+  <view class="usermotto">
+    <text class="user-motto">{{motto}}</text>
+  </view> -->
+
+<!-- <template is="movieCardTpl" data="{{movieName:movieName,rankNum:rankNum,imgUrl:userInfo.avatarUrl}}"></template> -->
+
+<template is="searchBtnTpl"></template> 
+<!-- <template is="movieListTpl" data="{{mlhTitle:mlhTitle,movielist:movielist,imgUrl:imgUrl}}"></template>
+ <template is="movieListTpl" data="{{mlhTitle:mlhTitle,movielist:movielist,imgUrl:imgUrl}}"></template> -->
+<template is="movieListTpl" data="{{movielist:theraterMovieList}}"></template>
+<template is="movieListTpl" data="{{movielist:comingMovieList}}"></template>
+<template is="movieListTpl" data="{{movielist:topMovieList}}"></template>
+
+
+
+</view>

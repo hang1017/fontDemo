@@ -1,0 +1,22 @@
+@import "stars.wxss";
+
+.cardcontainer{
+  display: flex;
+  flex-direction: column;
+  padding: 0 22rpx;
+}
+.cardimg{
+  width: 180rpx;
+  height:260rpx;
+  border-radius:5px;
+}
+
+.cardname{
+  font-size: 28rpx;
+  padding-top: 20rpx;
+  font-weight:500;
+  width: 200rpx;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
