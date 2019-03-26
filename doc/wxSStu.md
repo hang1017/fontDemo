@@ -640,16 +640,462 @@ that.getTheraterMovieList("/v2/movie/in_theaters","近期上映",{count:3},funct
     });
 ```
 
+### 七、tabbar简单操作
+
+```json app.json
+"tabBar": {
+    "color": "#bfbfbf",
+    "selectedColor": "#1afa29",
+    "borderStyle": "white",
+    "backgroungColor": "white",
+    "list": [{
+      "pagePath": "pages/index/index",
+      "text": "首页",
+      "iconPath": "images/firstN.png",
+      "selectedIconPath": "images/firstY.png"
+    },{
+      "pagePath": "pages/user/user",
+      "text": "我",
+      "iconPath": "images/meNo.png",
+      "selectedIconPath": "images/meYes.png"
+    }]
+  }
+```
+```
+tabbar组件是官方支持的，所以我们可以直接调用
+
+list:为tabbar里的一个数组，最少两个，最多5个，按顺序排列。
+
+在list外的属性为该tabbar组件的全部属性
+
+包含了文字选中与否的颜色，边框颜色，背景颜色
+
+每个list的数组包含：页面url,文字，选中与否的图片样式
+
+https://developers.weixin.qq.com/miniprogram/dev/framework/config.html#tabbar
+
+该路径为官方对于小程序tabbar说明哈。
+```
+
 ```
 至此！我们的主页就完成啦！！！
 ```
 
+## 个人中心显示页面
 
+### 一、上半部分
 
+```
+上半部分为背景+头像+用户名
 
+该效果在我们刚刚创建完项目，运行起来的界面效果是一样的。
 
+但是个人中心是在不同的页面上显示，所以我们要新建一个页面包
 
+在上一小节中，我们已经建好了我们所要用的user页面。
+
+如果忘记了，请直接打开app.json,你就能记起来
+
+话不多说，我先把代码贴上去
+```
+
+```html
+ <import src="../public/tpl/movieList.wxml"  />
+ 
+<view class="container">
+  <image class='header-bg' src = '../../images/touxiang.jpg'></image>
+  <view class="userinfo"> 
+    <image class="userinfo-avatar" src="{{userInfo.avatarUrl}}" background-size="cover"></image> 
+    <text class="userinfo-nickname">{{userInfo.nickName}}</text> 
+  </view>
+  <template is="movieListTpl" data="{{movielist:wantMovieList}}"></template>
+  <template is="movieListTpl" data="{{movielist:lookedMovieList}}"></template> 
+</view>
+```
+```
+上图为user.wxml的代码。
+图片和文字的代码可以直接从index那里拷过来
+```
+```css
+@import "../public/tpl/movieList.wxss";
+
+.userinfo { 
+display: flex; 
+flex-direction: column; 
+align-items: center; 
+background-image: url("../../images/touxiang.jpg"); 
+background-repeat: no-repeat; 
+background-size:100% auto; 
+height: 400rpx; 
+background-color: green;
+} 
+.userinfo-avatar { 
+width: 140rpx; 
+height: 140rpx; 
+margin: 20rpx; 
+border-radius: 50%; 
+margin-top: 75rpx; 
+} 
+.userinfo-nickname { 
+color: #fff; 
+} 
+
+.header-bg{
+  width: 100%;
+  height: 100%;
+}
+```
+```
+上图为user.wxss的代码，也可以从index中拷过来
+
+接下来编写user.js，这里才是重点：
+
+首先先把
+
+const app = getApp()
+
+这段代码放在最上面，引入app.js获取一些全局的方法和信息
+
+其次在data中加上下面的代码：
+
+userInfo: {},
+
+最后在onload中调用下面的代码，把userInfo附上全局变量的信息
+
+this.setData({
+//有所改动
+userInfo: app.globalData.userInfo,
+hasUserInfo: true
+})
+
+对于上条代码有不懂的小伙伴可以console.log(app)你就能懂
+
+好了，那么现在你就能看到你的头像和文字显示出来了。
+```
+### 二、下半部分
+```
+那么现在我们开始编写，下面我想看和我看过的电影
+
+模板和movieList是一样的。但是因为我们没办法调到该数据
+
+所以我们就用最新上映和即将上映的数据来显示
+
+好了，那么你可以把wx.request调取接口数据的代码拷到user.js下去使用。
+
+在onload中实现即可。
+
+但是如果我们想复用该接口的方法，那么我们就可以把代码拷贝到util.js公用的js中进行调用，代码如下：
+```
+```js
+function getTheraterMovieList(url, title, requestData, successCallBack) {
+  var self = this;
+  var d ;
+  wx.request({
+    url: self.serverUrlFactory(url),  //此处的引用要把util改成slef
+    method: 'GET',
+    header: {
+      "content-type": 'json'
+    },
+    data: requestData,
+    success: function (res) {
+      console.log(res);
+      console.log("success~~~~~~~~~~");
+      res.data.title = title;
+      d = successCallBack(res.data);
+    },
+    fail: function (err) {
+      console.log(err);
+      console.log("fail~~~~~~~~~~~~");
+    }
+  })
+
+  // return{
+  //   d:d
+  // };
+}
+
+function movieDataFactory(data) {
+  var minData = [];
+  for (var key in data.subjects) {
+    minData.push({
+      medium: data.subjects[key].images.large,
+      title: data.subjects[key].title,
+      average: data.subjects[key].rating.average
+    })
+  }
+  return {
+    title: data.title,
+    subjects: minData
+  };
+}
+```
+```
+稍微修改一下代码的格式
+
+上面有处注释，请仔细看一下
+
+一定要注意把这两个方法放到module.exports里面去。这样外部才能调用到他们
+
+在user.js里声明util.js，并且调用的代码改成如下代码：
+```
+```js
+util.getTheraterMovieList("/v2/movie/in_theaters", "已观看", { count: 3 },function(data1){
+      util.getTheraterMovieList("/v2/movie/coming_soon", "即将上映", { count: 3 }, function (data2) {
+        that.setData({
+          wantMovieList: util.movieDataFactory(data1),
+          lookedMovieList: util.movieDataFactory(data2),
+        })
+      });
+    })
+```
+
+```
+那么，完美的代码就完成啦。
+```
+
+## 查看更多页面跳转
+
+### 一、跳转页面
+```
+先添加一个moviemore的页面包
+
+在我们的模板页面movieList.wxml中修改如下的代码：
+```
+```html
+<view class='mlHeader' catchtap='goToMoreMovie' data-movie-url='{{movielist.url}}'>
+      <text>{{movielist.title}}</text>
+      <text class='mlhMore'>查看更多 ></text>
+    </view>
+```
+```
+好了来解释一下新增的属性
+
+catchtap:绑定点击事件方法名(会在第三点讲解catch和bind的差别)
+
+data-:为给此点击事件传递的参数
+data-后面名称，用‘-’接，会一驼峰命名的方式显示出来。
+后期你们console一下就能知道。
+
+写完了模板的点击事件，但是去哪个js里写这个方法呢？
+我们的模板写在了public里，没有js
+
+这里告诉大家，我们就不停的往上找，直到找到有js的页面中，写在那个js里即可
+
+所以在这里我们就写在Index.js里，代码如下：
+```
+```js
+goToMoreMovie: function (event) {
+    var moreMovieUrl = event.currentTarget.dataset.movieUrl;
+    wx.navigateTo({
+      url: '../moviemore/moviemore?url='+moreMovieUrl,
+    })
+  }
+```
+```
+wx.navigateTo:保留当前页面，跳转到应用内的某个页面。但是不能跳到 tabbar 页面
+
+后面可以接参数
+
+至此。你将你将实现页面跳转的功能。
+```
+
+### 二、参数传递
+```
+心细的小伙伴可能发现了，我们传递的参数是个空值
+
+为什么呢？因为我们还没有传递的原因
+
+现在我们来回顾一下我们是怎么一步步把后台的数据传递到前台来：
+
+1、util.js--getTheraterMovieList
+把获取到的数据用successCallBack(res.data);的方式传递到js中
+
+2、index.js--onload
+这里获取到的data数据就是第一步获取到的。又把数据回传到util.js
+
+3、util.js--movieDataFactory
+该步骤是取出data中我们所需要的数据
+
+4、把获取到数据传递到index.js
+
+5、index.wxml--movielist.wxml
+
+那我们现在就把需要用到的url一层一层的传递出来。
+
+先从1、开始，res.data.url = url;把需要用到的url一起封装到res
+
+3、在取出需要的数据，返回时，加上url:data.url
+
+5、最后在movielist.wxml中传递数据
+```
+
+### 三、bind和catch区别
+
+```
+举个例子：
+
+有没有这样一种可能，两个view嵌套在一起，这里已外view和内view表示
+
+外view和内view都各自有绑定的点击事件，那么问题来了，我点击内view时会不会导致外view的触发？
+这也可以称为向上冒泡
+
+bindTap和catchTap就是用来解决这个问题的。
+
+bindTap:外view也会被点击，不阻止向上冒泡
+
+catchTap:外view不会被点击，阻止了向上冒泡
+```
+ 
+ ## 下拉刷新、上拉加载
+
+ ### 一、完成moviemore页面编写
+
+```html
+<import src="../public/tpl/searchBtn.wxml" />
+<import src="../public/tpl/moviecard.wxml" />
+
+<view class='container'>
+<template is="searchBtnTpl"></template>
+<view class='movielist'>
+<block wx:for="{{movieList.subjects}}" wx:key="item">
+  <template is="movieCardTpl" data="{{...item}}"></template> 
+</block>
+</view>
+</view>
+```
+```
+上面的代码为moviemore.wxml的代码
+
+至于为什么不直接用movielist的模板而是自己手动在编写一次呢?
+
+因为模板里的遍历是不换行的，这里我们需要让它换行
+
+所以小伙伴们就自行编写wxss就好啦，只要felx-wrap:wrap;即可
+
+---------------------------------
+
+怎么修改最上面的标题？
+
+怎么读取页面传递过来的参数？
+
+1、修改页面标题
+
+在onload函数中，加上下面的代码即可：
+```
+```js
+wx.setNavigationBarTitle({
+      title: "查看更多"
+})
+```
+```
+2、读取页面传递的参数：
+
+在onload函数中加上下面的代码：
+```
+```js
+var that = this;
+    that.url=options.url;
+    util.getTheraterMovieList(options.url, options.title, { count: 3 }, function (data1) {
+      that.setData({
+        movieList: util.movieDataFactory(data1),
+        url: options.url, 
+      })
+    })
+```
+```
+引用options.url即可读取到数据,并且调用该url，获取到值传递到前台
+```
+ ### 二、下拉刷新
+
+ ```
+ 1、moviemore.json加上下面这句话:
+
+ "enablePullDownRefresh": true  //开启该页面下拉刷新的功能
+
+2、在moviemore.js中找到onPullDownRefresh函数
+
+该函数就是用来实现下拉刷新的，加上下面的代码：
+ ```
+ ```js
+ console.log("用户下拉动作")
+    if (this.data.url === '') {
+      return;
+    }
+    var that = this;
+    console.log(that.data.url);
+    util.getTheraterMovieList(this.data.url, "查看更多", { count: 3 }, function (data1) {
+      that.setData({
+        movieList: util.movieDataFactory(data1),
+      })
+    })
+    wx.stopPullDownRefresh();   //结束刷新
+ ```
+ ```
+ 解释一下上面的代码：
+
+ this.data.url：为之前我们设置的url,现在为该js下全局的url
+
+ 调用接口即可实现刷新
+
+ 但是要记得在最后加上：wx.stopPullDownRefresh();
+
+ 至此，下拉刷新的功能就算完成啦，如果你觉得标题全是查看更多不清晰的话，你可以在页面继续传递title进来，即可改变。 
+ ```
+ ### 三、上拉加载
+
+```
+首先我们需要在moviemore.js里的data里补几个参数：
+
+url:"",
+movieList:[], //电影数组
+start:0,      //开始获取数据的位置
+count:10,     //每次获取的条数
     
+可能你还不清楚为什么要加这些东西，没关系，往下看你就明白了。
+```
+
+```js
+onReachBottom: function () {
+    console.log("到达底部啦~~~");
+    if (this.data.url === '') {
+      return;
+    } 
+    var that = this;
+
+    util.getTheraterMovieList(that.data.url, "查看更多", {start:that.data.start,count: that.data.count}, function (data1) {
+      var newdata = util.movieDataFactory(data1);
+      var olddata = that.data.movieList;
+      olddata.subjects = olddata.subjects.concat(newdata.subjects),
+      that.setData({
+        movieList: olddata,
+        // movieList:newdata,
+        start: that.data.start + that.data.count
+      })
+    })
+  },
+```
+```
+上面的代码为moviemore.js的代码，
+
+js里找到onReachBottom函数，该函数为上拉触底的所执行的函数
+
+当到达底部时，我们就调用接口获取更多的参数，但是获取哪些呢？
+
+从start数后开始的，获取count个
+
+然后把新数组和旧数组结合在一起：可以用到olddata.subjects.concat(newdata.subjects),
+
+现在你们就可以尝试一下效果拉
+
+如果你们发现第一次触及底部时获取到的数据和原来的一样，那么时因为你onload数据时没有加上start数，去加上就行拉！
+```
+
+
+
+
+
+
+
 
 
 

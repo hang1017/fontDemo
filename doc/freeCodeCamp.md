@@ -169,6 +169,41 @@
 
     z-index：~
 
+## 21、渐变色
+
+```css
+background: linear-gradient(gradient_direction, color 1, color 2, color 3, ...);
+```
+```
+第一个参数为颜色过渡开始的方向
+```
+
+```css
+div{ 
+    border-radius: 20px;
+    width: 70%;
+    height: 400px;
+    margin:  50 auto;
+    background: repeating-linear-gradient(
+      45deg,
+      yellow 0px,
+      yellow 40px,
+      black 40px,
+      black 80px
+    );
+  }
+```
+```
+上面引用的为重复指定渐变模式
+
+首先从0px开始
+在40px时混成第二种颜色
+但是因为20px也是第三种颜色，因此立即变成第三种颜色
+第三种颜色于第四种颜色混为红色
+```
+
+
+
 
 
 
