@@ -22,7 +22,11 @@ Page({
     wx.setNavigationBarTitle({
       title: "查看更多"
     })
-
+    wx.showToast({
+      title: '航航加载中~',
+      icon:'loading',
+      mask:true
+    })
     var that = this;
     that.url=options.url;
     util.getTheraterMovieList(options.url, options.title, { count: 10 }, function (data1) {
@@ -31,6 +35,7 @@ Page({
         url: options.url, 
         start:10
       })
+      wx.hideToast();
     })
   },
 
@@ -70,14 +75,23 @@ Page({
     if (this.data.url === '') {
       return;
     }
+    // wx.showToast({
+    //   title: '航航加载中~',
+    //   icon: 'loading',
+    //   mask: true
+    // })
+    wx.showNavigationBarLoading(); 
     var that = this;
     console.log(that.data.url);
-    util.getTheraterMovieList(this.data.url, "查看更多", { count: 10 }, function (data1) {
+    util.getTheraterMovieList(this.data.url, "查看更多", { start:0,count: 10 }, function (data1) {
       that.setData({
         movieList: util.movieDataFactory(data1),
+        start:0+that.data.count,
       })
     })
     wx.stopPullDownRefresh(); 
+    // wx.hideToast();
+    wx.hideNavigationBarLoading();
   },
 
   /**
