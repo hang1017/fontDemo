@@ -37,6 +37,22 @@ Page({
       })
       wx.hideToast();
     })
+
+    wx.getSetting({
+      success(res){
+        if (!res.authSetting['scope.writePhotosAlbum']){
+          wx.authorize({
+            scope: 'scope.writePhotosAlbum',
+            success(){
+              console.log("授权成功");
+            },
+            fail(){
+              console.log("授权失败~");
+            }
+          })
+        }
+      }
+    })
   },
 
   /**
@@ -122,6 +138,13 @@ Page({
   onShareAppMessage: function () {
 
   },
-
+  showImg: function (event) {
+    // console.log(event);
+    var imgSrc = event.currentTarget.dataset.imgSrc;
+    wx.previewImage({
+      // current:imgSrc,
+      urls: [imgSrc],
+    })
+  }
   
 })

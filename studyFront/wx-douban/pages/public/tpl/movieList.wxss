@@ -17,6 +17,7 @@
   flex-direction: row;
   flex-wrap: nowrap;
   widows: 300rpx;
+  overflow:auto;
   /* scroll-x:true; */
 }
 

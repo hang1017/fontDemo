@@ -1128,7 +1128,7 @@ wx.showToast({
 
 ### 一、前端设置点击事件
 
-1、在moviecard.wxml模板上修改如下代码：
+在moviecard.wxml模板上修改如下代码：
 
 ```html
 <image catchtap="showImg" class="cardimg" src='{{medium}}' data-img-src="{{medium}}"></image>
@@ -1136,7 +1136,9 @@ wx.showToast({
 
 设置点击事件，把图片路径传过去
 
-2、在index.js上增加点击的方法：
+### 二、js增加点击方法
+
+在index.js上增加点击的方法：
 
 ```js
 showImg:function (event){
