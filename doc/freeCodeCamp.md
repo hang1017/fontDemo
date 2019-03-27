@@ -119,6 +119,9 @@
 
     内阴影：box-shadow: X轴  Y轴  Rpx  color  inset;
 
+    可以尝试一下下面的代码：
+    box-shadow: 25px 10px 0 0 blue; 
+
 ## 十五、透明度
 
     opacity:~~
@@ -201,10 +204,15 @@ div{
 但是因为20px也是第三种颜色，因此立即变成第三种颜色
 第三种颜色于第四种颜色混为红色
 ```
+## 22、transform
 
+改变元素的大小
+transform:scale(1.5);
 
+可以使用hover进行触碰改变
 
-
+该属性能让元素沿着X/Y轴倾斜，正负都可以
+transform:skewX(24deg);
 
 
 

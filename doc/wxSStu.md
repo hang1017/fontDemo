@@ -1156,7 +1156,151 @@ showImg:function (event){
 
 好了。感觉去测试一下呀！
 
-## 
+## 获取用户权限、保存到相册、用户拒绝授权重新授权
+
+### 一、获取用户权限
+
+先看看什么是用户权限
+
+https://developers.weixin.qq.com/miniprogram/dev/api/wx.authorize.html?search-key=scope
+
+小伙伴们可以点开上面的路径为官网说明，下面我也会进行讲解
+
+scope----------------------对应接口----------------------描述
+
+scope.userInfo-------------wx.getUserInfo---------------用户信息
+
+scope.userLocation---------wx.getLocation---------------地理位置
+
+scope.address--------------wx.chooseAddress-------------通讯地址
+
+scope.record---------------wx.startRecord---------------录音功能
+
+scope.writePhotosAlbum-----wx.saveImageToPhotosAlbum----保存到相册
+
+获取用户权限有4个参数：分别是scope、success、fail、complete这个解释上面路径有
+
+你可以在刚点击进页面时就进行获取权限，也可以在操作某方法，比如点击图片事件时进行获取权限
+
+在你想增加的地方加上下面的代码：
+```js
+// 可以通过 wx.getSetting 先查询一下用户是否授权了
+wx.getSetting({
+    success(res) {
+      if (!res.authSetting[scope]) {
+        wx.authorize({
+          scope: scope,
+          success() {
+              console.log('授权成功')
+          }
+})}}})
+```
+
+放上我的代码给小伙伴们参考一下：
+```js
+wx.getSetting({
+      success(res){
+        if (!res.authSetting['scope.writePhotosAlbum']){
+          wx.authorize({
+            scope: 'scope.writePhotosAlbum',
+            success(){
+              console.log("授权成功");
+            },
+          })
+        }
+      }
+    })
+```
+
+那么当你点击确定的时候就授权成功保存到相册权限。
+
+### 二、清除权限数据
+
+如果你想重复测试，重复获取权限怎么办？
+
+打开app，找到右上角有个‘清缓存’的功能，选择‘清楚授权数据’，即可清除
+
+### 三、保存到相册
+
+我们先定个场景，当我们点击图片时，及把图片保存到本地相册中
+
+那么现在我们要分两步：
+
+#### 第一步：将图片保存到临时路径中
+
+```js
+showImg:function(event){
+    var imgSrc = event.currentTarget.dataset.imgSrc;
+    //下载文件
+    wx.downloadFile({
+      url:imgSrc,
+      success:function (res){
+        console.log(res);
+      }
+    })
+},
+```
+
+wx.downloadFile为下载文件的代码，运行程序，查看打印出来的日志
+
+你会找到一个名为tempFilePath的参数名，该参数就是把下载的文件保存为本地的临时文件
+
+#### 第二步：将临时文件保存到本地的永久文件中
+
+在上一步代码执行成功后，就是success里，放入下面的代码：
+
+```js
+wx.saveImageToPhotosAlbum({
+      filePath: res.tempFilePath,
+      success:function(data){
+        console.log(data);
+      },
+      fail:function(err){
+        console.log(err);
+      }
+})
+```
+
+完整代码在下：
+
+```js
+wx.downloadFile({
+      url: imgSrc,
+      success: function (res) {
+        console.log(res);
+        //将本地的临时文件保存到相册
+        wx.saveImageToPhotosAlbum({
+          filePath: res.tempFilePath,
+          success: function (data) {
+            console.log(data);
+          },
+          fail: function (err) {
+          }
+        })
+      }
+    })
+```
+
+好了，那么至此，只要你开放了权限，你只要点击图片就马上把图片保存到你的本地相册中
+
+### 四、拒绝授权、重新授权
+
+小伙伴们，你们可以测试一下是不是如果不给授权的话就没办法保存图片了呢？
+
+所以当我们要保存时，对提示出的失败消息进行判断，如果拒绝，则重新授权。
+
+代码如下：
+
+```js
+console.log("打开设置窗口");
+wx.openSetting({
+  success(settingdata){
+    conslole.log(settingdata);
+  }
+})
+```
+
+
 
 
 

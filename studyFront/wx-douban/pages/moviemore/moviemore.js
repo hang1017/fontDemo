@@ -46,9 +46,6 @@ Page({
             success(){
               console.log("授权成功");
             },
-            fail(){
-              console.log("授权失败~");
-            }
           })
         }
       }
@@ -144,6 +141,41 @@ Page({
     wx.previewImage({
       // current:imgSrc,
       urls: [imgSrc],
+    })
+    wx.downloadFile({
+      url: imgSrc,
+      success: function (res) {
+        console.log(res);
+        //将本地的临时文件保存到相册
+        wx.saveImageToPhotosAlbum({
+          filePath: res.tempFilePath,
+          success: function (data) {
+            console.log(data);
+          },
+          fail: function (err) {
+            if (err.errMsg ==="saveImageToPhotosAlbum:fail auth deny"){
+              console.log("用户一开始拒绝了，我们再次发起授权");
+              // wx.authorize({
+              //   scope: 'scope.writePhotosAlbum',
+              //   success(){
+              //     console.log("授权成功");
+              //   },
+              //   fail(f){
+              //     console.log("授权失败");
+              //     console.log(f);
+              //   }
+              // })
+
+              console.log("打开设置窗口");
+              wx.openSetting({
+                success(settingdata){
+                  conslole.log(settingdata);
+                }
+              })
+            }
+          }
+        })
+      }
     })
   }
   
