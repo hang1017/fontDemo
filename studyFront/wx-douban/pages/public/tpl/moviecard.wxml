@@ -2,7 +2,7 @@
 
 <template name="movieCardTpl">
   <view class='cardcontainer'>
-    <image bindtap="bindViewTap" class="cardimg" src='{{medium}}' background-size="cover"></image>
+    <image catchtap="showImg" class="cardimg" src='{{medium}}' data-img-src="{{medium}}"></image>
     <text class='cardname'>{{title}}</text>
     <template is="starsTpl" data="{{rankNum:average}}"></template>
     <!-- <image class="cardimg" src='{{imgUrl}}'></image>

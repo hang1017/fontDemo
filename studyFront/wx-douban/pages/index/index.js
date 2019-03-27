@@ -130,14 +130,22 @@ Page({
   //   };
   // },
 
-
   goToMoreMovie: function (event) {
     var moreMovieUrl = event.currentTarget.dataset.movieUrl;
-    console.log(event.currentTarget.dataset);
+    // console.log(event.currentTarget.dataset);
     wx.navigateTo({
       url: '../moviemore/moviemore?url='+moreMovieUrl,
     })
-  } 
+  } ,
+
+  showImg:function (event){
+    // console.log(event);
+    var imgSrc = event.currentTarget.dataset.imgSrc;
+    wx.previewImage({
+      // current:imgSrc,
+      urls: [imgSrc],
+    })
+  }
   
 })
 

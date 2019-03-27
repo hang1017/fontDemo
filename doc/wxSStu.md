@@ -1124,6 +1124,38 @@ wx.showToast({
 
 你可以先注释调隐藏的代码，进行测试，你就会看到效果。
 
+## 点击查看大图
+
+### 一、前端设置点击事件
+
+1、在moviecard.wxml模板上修改如下代码：
+
+```html
+<image catchtap="showImg" class="cardimg" src='{{medium}}' data-img-src="{{medium}}"></image>
+```
+
+设置点击事件，把图片路径传过去
+
+2、在index.js上增加点击的方法：
+
+```js
+showImg:function (event){
+    // console.log(event);
+    var imgSrc = event.currentTarget.dataset.imgSrc;
+    wx.previewImage({
+      // current:imgSrc,
+      urls: [imgSrc],
+    })
+  }
+```
+如果你发现你放大的高清图很模糊，没关系，那是因为你之前读取参数回传回来的是小张的缩略图
+
+你可以再回传一个lager类型的图片回来即可。
+
+好了。感觉去测试一下呀！
+
+## 
+
 
 
 
