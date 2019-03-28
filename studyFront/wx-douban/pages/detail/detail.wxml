@@ -1,0 +1,47 @@
+<!--pages/detail/detail.wxml-->
+<import src="../public/tpl/score.wxml" />
+<import src="../public/tpl/moviePerson.wxml" />
+
+<view class='container'>
+  <view class='header'>
+    <view class='imgs'>
+      <image class='header-img' src='{{large}}' catchtap='showImg' data-img-src="{{large}}"></image>
+    </view>
+    <view class='datas'>
+      <view class='header-title'>
+        <text>{{title}}</text><text>\n</text>
+      </view>
+      <view class='header-detail-view'>
+        <text class="header-detail">{{detail}}</text>
+      </view>
+      <view class='header-twoBtn'>
+        <view class="header-btn">
+          <image src='../../images/aixin.png'></image>
+          <text>想看</text>
+        </view>
+        <view class="header-btn">
+          <image src='../../images/star-full.png'></image>
+          <text>看过</text>
+        </view>
+      </view>
+    </view>
+  </view>
+  
+  <template is="scoreTpl"></template>
+
+  <view class="detail">
+    <view class='detail-title'>
+      <text>简介</text>
+    </view>
+    <view class="{{flag ?'detail-detail1':'detail-detail2'}}">
+      <text>{{detail_detail}}</text>
+    </view>
+    <view class='detail-open' catchtap='detail_open'>
+      <text>{{open}}</text>
+    </view>
+    <view></view>
+  </view>
+  <view class='t'>
+    <template is="personTpl" data="{{persons:persons}}"></template>
+  </view>
+</view>

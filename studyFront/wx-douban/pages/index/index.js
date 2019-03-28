@@ -4,7 +4,6 @@ const app = getApp();
 var util = require('../../utils/util.js');
 Page({
   data: {   
-    // motto: 'Hello World',
     userInfo: {},
     hasUserInfo: false,
     canIUse: wx.canIUse('button.open-type.getUserInfo')
@@ -72,7 +71,7 @@ Page({
   
 
     util.getTheraterMovieList("/v2/movie/in_theaters","近期上映",{count:4},function(data1){
-      console.log(data1);
+      // console.log(data1);
       util.getTheraterMovieList("/v2/movie/coming_soon", "即将上映", { count: 4 }, function (data2) {
         util.getTheraterMovieList("/v2/movie/top250", "热门电影", { count: 4 }, function (data3) {
           that.setData({
@@ -92,44 +91,7 @@ Page({
       hasUserInfo: true
     })
   },
-
-  // getTheraterMovieList: function (url,title,requestData,successCallBack) {
-  //   var self = this;
-  //   wx.request({
-  //     url: util.serverUrlFactory(url),
-  //     method:'GET',
-  //     header:{
-  //       "content-type":'json'
-  //     },
-  //     data:requestData,
-  //     success:function(res){
-  //       console.log(res);
-  //       console.log("success~~~~~~~~~~");
-  //       res.data.title = title;
-  //       successCallBack(res.data);
-  //     },
-  //     fail:function(err){
-  //       console.log(err);
-  //       console.log("fail~~~~~~~~~~~~");
-  //     }
-  //   })
-  // },
-
-  // movieDataFactory:function(data){
-  //   var minData= [];
-  //   for(var key in data.subjects){
-  //     minData.push({
-  //       medium: data.subjects[key].images.large,
-  //       title:data.subjects[key].title,
-  //       average:data.subjects[key].rating.average
-  //     })
-  //   }
-  //   return {
-  //     title:data.title,
-  //     subjects:minData
-  //   };
-  // },
-
+  
   goToMoreMovie: function (event) {
     var moreMovieUrl = event.currentTarget.dataset.movieUrl;
     // console.log(event.currentTarget.dataset);
@@ -137,6 +99,10 @@ Page({
       url: '../moviemore/moviemore?url='+moreMovieUrl,
     })
   } ,
+
+  goToDetail:function(event){
+    util.goToDetail(event);
+  },
 
   showImg:function (event){
     // console.log(event);

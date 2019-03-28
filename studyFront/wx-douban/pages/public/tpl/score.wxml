@@ -1,0 +1,15 @@
+<template name="scoreTpl">
+  <view class='score'>
+    <view class='score-header'>
+      <view>
+        <text>豆瓣评分</text>
+      </view>
+      <view>
+        <text>></text>
+      </view>
+    </view>
+    <view class='score-body'>
+
+    </view>
+  </view>
+</template>

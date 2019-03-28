@@ -1,0 +1,152 @@
+/* pages/detail/detail.wxss */
+@import "../public/tpl/score.wxss";
+@import "../public/tpl/moviePerson.wxss";
+
+.container{
+  display: flex;
+  flex-direction: column;
+  align-items:center;
+  padding:30rpx;
+  background-color: #F4F4F4;
+
+}
+
+.header{
+  /* border:1rpx solid yellow; */
+  height: 350rpx;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  padding: 10rpx 0;
+  justify-content:space-between;
+}
+
+.detail{
+  /* border:1rpx solid blue; */
+  /* height: 300rpx; */
+  width: 100%;
+  margin-top:60rpx;
+}
+
+
+.imgs{
+  /* border:1rpx solid black; */
+  width: 30%; 
+  border-radius: 10rpx;
+}
+
+.header-img{
+  width: 100%;
+  height: 100%;
+  padding: 10rpx;
+  border-radius: 10rpx;
+}
+
+.datas{
+  /* border:1rpx solid red; */
+  width: 62%;
+  /* padding-left: 20rpx; */
+}
+
+.header-title{
+  /* font-weight: bold; */
+  font-size: 60rpx;
+  width: 100%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.header-detail{
+  font-size: 25rpx;
+  color: #BDBDBD;
+  
+}
+
+.header-detail-view{
+line-height:35rpx;
+padding-top: 30rpx;
+}
+.header-twoBtn{
+  display: flex;
+  flex-direction: row;
+  justify-content:space-around;
+  width: 100%;
+}
+.header-btn{
+  width: 190rpx;
+  height: 60rpx;
+  font-size: 30rpx;
+  margin-top: 90rpx;
+  /* border: 1px solid red; */
+  background-color: white;
+  border-radius:10rpx;
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+  justify-content:center;
+}
+
+.header-btn image{
+  width: 35rpx;
+  height: 35rpx;
+  margin: auto 0;
+}
+
+.header-btn text{
+  margin:auto 0;
+  padding-left:10rpx; 
+}
+
+.detail-title{
+  font-size: 40rpx;
+  /* font-weight: bold; */
+  height: 60rpx;
+}
+
+.detail-detail1{
+  line-height: 50rpx;
+  /* height: 195rpx; */
+  width: 100%;
+  /* border: 1rpx solid yellow; */
+  margin-top: 20rpx;
+  /* display: flex;
+  flex-direction: row; */
+  white-space: wrap;
+  font-size: 30rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-overflow: -o-ellipsis-lastline;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+}
+
+.detail-detail2{
+  line-height: 50rpx;
+  /* height: 195rpx; */
+  width: 100%;
+  /* border: 1rpx solid yellow; */
+  margin-top: 20rpx;
+  /* display: flex;
+  flex-direction: row; */
+  white-space: wrap;
+  font-size: 30rpx;
+  overflow: visible;
+  text-overflow: clip;
+  /* text-overflow: -o-ellipsis-lastline; */
+  display: block;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+}
+
+
+.detail-open{
+  height: 30rpx;
+  color: #BDBDBD;
+  font-size: 30rpx;
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+

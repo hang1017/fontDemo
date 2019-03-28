@@ -135,6 +135,11 @@ Page({
   onShareAppMessage: function () {
 
   },
+
+  goToDetail: function (event) {
+    util.goToDetail(event);
+  },
+  
   showImg: function (event) {
     // console.log(event);
     var imgSrc = event.currentTarget.dataset.imgSrc;

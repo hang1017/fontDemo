@@ -1,0 +1,18 @@
+<template name="personTpl">
+  <view class='person'>
+    <view class='detail-title'>
+      <text>影人</text>
+    </view>
+    <view class='personlist'>
+      <block wx:for="{{persons}}" wx:key="{{item}}">
+        <view class='person-card'>
+          <image src="{{item.avatars.large}}" catchtap='showImg' data-img-src="{{imgSrc}}"></image>
+          <view class='person-name'>
+            <text>{{item.name}}</text>
+          </view>
+          <text class="person-performer">演员</text>
+        </view>
+      </block>
+    </view>
+  </view>
+</template>

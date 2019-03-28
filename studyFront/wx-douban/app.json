@@ -1,10 +1,12 @@
 {
   "pages":[
+    
     "pages/index/index",
     "pages/logs/logs",
     "pages/test/test",
     "pages/user/user",
-    "pages/moviemore/moviemore"
+    "pages/moviemore/moviemore",
+    "pages/detail/detail"
   ],
   "window":{
     "backgroundTextStyle":"light",
