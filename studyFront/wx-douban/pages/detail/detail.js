@@ -17,20 +17,20 @@ Page({
   onLoad: function (options) {
     var that = this;
     let object = JSON.parse(options.subject);
-    // console.log(object);
+    console.log(object);
     var a = "";
-    for (var i =0;i< object.genres.nv_length;i++){
-      a += object.genres[i]+' ';
+    for (var i =0;i< object.subject.casts.length;i++){
+      a += object.subject.casts[i].name+' ';
     }
-    a += "/ " + object.countries[0]+" / "+object.year+"年上映 / 片长128分钟(片长为假数据)";
+    a += "/ " + object.subject.countries[0]+" / "+object.subject.year+"年上映 / 片长128分钟(片长为假数据)";
     // console.log(object.images.large);
     that.setData({ 
       title: object.title, 
-      large:object.images.large,
+      large:object.subject.images.large,
       detail:a,
-      detail_detail: object.summary,
+      detail_detail: object.subject.summary,
       open:"展开",
-      persons:object.casts,
+      persons:object.subject.casts,
     });
     // console.log(that.subject);
   },

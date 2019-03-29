@@ -27,7 +27,11 @@
     </view>
   </view>
   
-  <template is="scoreTpl"></template>
+  <!-- <template is="scoreTpl"></template> -->
+  <view class="scoreCom">
+     <scoreCom></scoreCom>
+  </view>
+  
 
   <view class="detail">
     <view class='detail-title'>
@@ -43,5 +47,6 @@
   </view>
   <view class='t'>
     <template is="personTpl" data="{{persons:persons}}"></template>
+    <moviePersonCom persons="{{persons}}"></moviePersonCom>
   </view>
 </view>

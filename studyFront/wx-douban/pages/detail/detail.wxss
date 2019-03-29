@@ -1,11 +1,12 @@
 /* pages/detail/detail.wxss */
-@import "../public/tpl/score.wxss";
+/* @import "../public/tpl/score.wxss"; */
 @import "../public/tpl/moviePerson.wxss";
 
 .container{
   display: flex;
   flex-direction: column;
   align-items:center;
+
   padding:30rpx;
   background-color: #F4F4F4;
 
@@ -149,4 +150,13 @@ padding-top: 30rpx;
   flex-direction: row-reverse;
 }
 
+.scoreCom{
+  width: 94%;
+  margin-top:40rpx;
+  padding: 20rpx 20rpx;
+  border: 1rpx solid yellow;
+  /* display: flex;
+  flex-direction: column; */
+  position: relative;
+}
 

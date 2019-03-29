@@ -1,22 +1,29 @@
  <import src="../public/tpl/movieList.wxml"  />
- <!-- <view class="container">
-  <view class="userinfo">
-   <button wx:if="{{!hasUserInfo && canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 获取头像昵称 </button>
-    <block wx:else>
-      <image class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image>
-      <text class="userinfo-nickname">{{userInfo.nickName}}</text>
-    </block>
-  </view>
-  <template is="movieListTpl" data="{{movielist:wantMovieList}}"></template>
-  <template is="movieListTpl" data="{{movielist:lookedMovieList}}"></template>
-  </view> -->
 <view class="container">
-  <image class='header-bg' src = '../../images/touxiang.jpg'></image>
+  <!-- <image class='header-bg' src = '../../images/touxiang.jpg'></image> -->
   <view class="userinfo"> 
     <image class="userinfo-avatar" src="{{userInfo.avatarUrl}}" background-size="cover"></image> 
     <text class="userinfo-nickname">{{userInfo.nickName}}</text> 
   </view>
-  <template is="movieListTpl" data="{{movielist:wantMovieList}}"></template>
-  <template is="movieListTpl" data="{{movielist:lookedMovieList}}"></template> 
+
+  <!-- 以观看 -->
+  <movieListCom title="{{wantMovieList.title}}" subjects='{{wantMovieList}}' > 
+    <view class='mvl'>
+      <movieCardCom title="{{item.title}}" subject="{{item}}" wx:for="{{wantMovieList.subjects}}" item="{{item}}"  medium="{{item.medium}}" wx:key="index">
+        <starCom rankNum="{{item.average}}"></starCom>
+      </movieCardCom>
+    </view>
+  </movieListCom>
+  
+  <!-- 想看 -->
+  <movieListCom title="{{lookedMovieList.title}}" subjects='{{lookedMovieList}}' > 
+    <view class='mvl'>
+      <movieCardCom title="{{item.title}}" subject="{{item}}" wx:for="{{lookedMovieList.subjects}}" item="{{item}}"  medium="{{item.medium}}" wx:key="index" >
+        <starCom rankNum="{{item.average}}"></starCom>
+      </movieCardCom>
+    </view>
+  </movieListCom>
+  <!-- <template is="movieListTpl" data="{{movielist:wantMovieList}}"></template> -->
+  <!-- <template is="movieListTpl" data="{{movielist:lookedMovieList}}"></template>  -->
 </view>
 

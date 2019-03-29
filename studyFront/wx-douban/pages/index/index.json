@@ -1,3 +1,8 @@
 {
-  "usingComponents": {}
+  "usingComponents": {
+    "searchBtnCom":"../../components/searchBtnCom/searchBtn",
+    "starCom":"../../components/starCom/stars",
+    "movieCardCom":"../../components/movieCardCom/movieCard",
+    "movieListCom":"../../components/movieListCom/movieList"
+  }
 }

@@ -3,12 +3,10 @@
 <template name="movieListTpl">
   <view class='movieListView'>
     <view class='mlHeader' catchtap='goToMoreMovie' data-movie-url='{{movielist.url}}'>
-      <!-- <text>{{mlhTitle}}</text> -->
       <text>{{movielist.title}}</text>
       <text class='mlhMore'>查看更多 ></text>
     </view>
     <view class='mlBody'>
-      <!-- <block wx:for="{{movielist}}" wx:key="item"> -->
       <block wx:for="{{movielist.subjects}}" wx:key="item">
         <template is="movieCardTpl" data="{{...item}}"></template>
       </block>

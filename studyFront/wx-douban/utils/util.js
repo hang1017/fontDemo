@@ -31,10 +31,8 @@ function getTheraterMovieList(url, title, requestData, successCallBack) {
     },
     data: requestData,
     success: function (res) {
-      // console.log(res);
       res.data.title = title;
       res.data.url = url;
-      // console.log(res.data);
 
       d = successCallBack(res.data);
     },
@@ -63,6 +61,7 @@ function movieDataFactory(data) {
 }
 
 function goToDetail(event){
+  // console.log(event);
   wx.navigateTo({
     url: '../detail/detail?subject=' + JSON.stringify(event.currentTarget.dataset.imgSrc),
   })

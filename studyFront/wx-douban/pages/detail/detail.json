@@ -1,3 +1,6 @@
 {
-  "usingComponents": {}
+  "usingComponents": {
+    "scoreCom": "../../components/scoreCom/score",
+    "moviePerson":"../../components/moviePersonCom/moviePerson"
+  }
 }

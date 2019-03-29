@@ -6,30 +6,30 @@ Page({
   data: {   
     userInfo: {},
     hasUserInfo: false,
-    canIUse: wx.canIUse('button.open-type.getUserInfo')
+    canIUse: wx.canIUse('button.open-type.getUserInfo'),
     // starArr:[2,2,1,0],
-    // rankNum:5,
-    // movieName: '航航',
-    // imgUrl:'../images/touxiang.jpg',
-    // mlhTitle:'最新上映',
-    // movielist:[
-    //   {
-    //     imgUrl:"https://wx.qlogo.cn/mmopen/vi_32/PiajxSqBRaEJIWAnKOdQuz12KJMoib3kpGv9xqszicnAC0POLO3DpaEeYIpB8DxTicQuC41QmLFrubEQkVR9eOaBxw/0", 
-    //     movieName:"航帅帅",
-    //     rankNum: 0,
-    //   },
-    //   {
-    //     imgUrl: "https://wx.qlogo.cn/mmopen/vi_32/PiajxSqBRaEJIWAnKOdQuz12KJMoib3kpGv9xqszicnAC0POLO3DpaEeYIpB8DxTicQuC41QmLFrubEQkVR9eOaBxw/0",
-    //     movieName: "航帅帅",
-    //     rankNum: 5,
-    //   },
-    //   {
-    //     imgUrl: "https://wx.qlogo.cn/mmopen/vi_32/PiajxSqBRaEJIWAnKOdQuz12KJMoib3kpGv9xqszicnAC0POLO3DpaEeYIpB8DxTicQuC41QmLFrubEQkVR9eOaBxw/0",
-    //     movieName: "航帅帅",
-    //     rankNum: 5,
-    //   },
+    rankNum:5,
+    movieName: '航航',
+    imgUrl:'https://wx.qlogo.cn/mmopen/vi_32/PiajxSqBRaEJIWAnKOdQuz12KJMoib3kpGv9xqszicnAC0POLO3DpaEeYIpB8DxTicQuC41QmLFrubEQkVR9eOaBxw/0',
+    mlhTitle:'最新上映',
+    movielist:[
+      {
+        imgUrl:"https://wx.qlogo.cn/mmopen/vi_32/PiajxSqBRaEJIWAnKOdQuz12KJMoib3kpGv9xqszicnAC0POLO3DpaEeYIpB8DxTicQuC41QmLFrubEQkVR9eOaBxw/0", 
+        movieName:"航帅帅",
+        rankNum: 2,
+      },
+      {
+        imgUrl: "https://wx.qlogo.cn/mmopen/vi_32/PiajxSqBRaEJIWAnKOdQuz12KJMoib3kpGv9xqszicnAC0POLO3DpaEeYIpB8DxTicQuC41QmLFrubEQkVR9eOaBxw/0",
+        movieName: "航帅帅",
+        rankNum: 7,
+      },
+      {
+        imgUrl: "https://wx.qlogo.cn/mmopen/vi_32/PiajxSqBRaEJIWAnKOdQuz12KJMoib3kpGv9xqszicnAC0POLO3DpaEeYIpB8DxTicQuC41QmLFrubEQkVR9eOaBxw/0",
+        movieName: "航帅帅",
+        rankNum: 5,
+      },
       
-    // ]
+    ]
   },
   //事件处理函数
   bindViewTap: function() {
@@ -79,6 +79,7 @@ Page({
             comingMovieList: util.movieDataFactory(data2),
             theraterMovieList: util.movieDataFactory(data1),
           })
+          console.log(that.data.theraterMovieList);
         });
     });
     });

@@ -160,17 +160,6 @@ Page({
           fail: function (err) {
             if (err.errMsg ==="saveImageToPhotosAlbum:fail auth deny"){
               console.log("用户一开始拒绝了，我们再次发起授权");
-              // wx.authorize({
-              //   scope: 'scope.writePhotosAlbum',
-              //   success(){
-              //     console.log("授权成功");
-              //   },
-              //   fail(f){
-              //     console.log("授权失败");
-              //     console.log(f);
-              //   }
-              // })
-
               console.log("打开设置窗口");
               wx.openSetting({
                 success(settingdata){

@@ -10,19 +10,7 @@
         <image wx:else="{{item <= rankNum}}" src='/images/star-full.png'></image>
       </block>
     </block>
-    <!-- <block wx:for="{{starArr}}" wx:for-item="item">
-      <image wx:if="{{item == 0}}" src='/images/star-no.png'></image>
-      <image wx:elif="{{item == 1}}" src='/images/star-half.png'></image>
-      <image wx:else="{{item == 2}}" src='/images/star-full.png'></image>
-    </block> -->
-
-      <!-- <image src='/images/star-full.png'></image>
-      <image src='/images/star-full.png'></image>
-      <image src='/images/star-full.png'></image>
-      <image src='/images/star-half.png'></image>
-      <image src='/images/star-no.png'></image> -->
     </view>
     <text wx:if="{{rankNum!=0}}" class='rankNum'>{{rankNum}}</text>
-    <!-- <text class='rankNum'>7.5</text> -->
   </view>
 </template>

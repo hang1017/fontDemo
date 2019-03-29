@@ -2,8 +2,7 @@
 
 const app = getApp()
 var util = require('../../utils/util.js');
-// import {showText} from "../../utils/util.js";
-// var ind = require('../index/index.js');
+
 Page({
 
   /**
@@ -48,7 +47,7 @@ Page({
       }
     }
     util.getTheraterMovieList("/v2/movie/in_theaters", "已观看", { count: 3 },function(data1){
-      util.getTheraterMovieList("/v2/movie/coming_soon", "即将上映", { count: 3 }, function (data2) {
+      util.getTheraterMovieList("/v2/movie/coming_soon", "特想看", { count: 3 }, function (data2) {
         that.setData({
           wantMovieList: util.movieDataFactory(data1),
           lookedMovieList: util.movieDataFactory(data2),

@@ -4,8 +4,40 @@
 <import src="../public/tpl/movieList.wxml" />
 
 <view class="container">
-  <template is="searchBtnTpl"></template> 
-  <template is="movieListTpl" data="{{movielist:theraterMovieList}}"></template>
+  <searchBtnCom></searchBtnCom>
+
+  <!-- 近期上映 -->
+  <movieListCom title="{{theraterMovieList.title}}" subjects='{{theraterMovieList}}' > 
+    <view class='mvl'>
+      <movieCardCom title="{{item.title}}" subject="{{item}}"  wx:for="{{theraterMovieList.subjects}}" item="{{item}}"  medium="{{item.medium}}" wx:key="index" >
+        <starCom rankNum="{{item.average}}"></starCom>
+      </movieCardCom>
+    </view>
+  </movieListCom>
+  
+  <!-- 即将上映 -->
+  <movieListCom title="{{comingMovieList.title}}" subjects='{{comingMovieList}}' > 
+    <view class='mvl'>
+      <movieCardCom title="{{item.title}}" subject="{{item}}"  wx:for="{{comingMovieList.subjects}}" item="{{item}}"  medium="{{item.medium}}" wx:key="index" >
+        <starCom rankNum="{{item.average}}"></starCom>
+      </movieCardCom>
+    </view>
+  </movieListCom>
+
+  <!-- 热门电影 -->
+  <movieListCom title="{{topMovieList.title}}" subjects='{{topMovieList}}' > 
+    <view class='mvl'>
+      <movieCardCom title="{{item.title}}" subject="{{item}}" wx:for="{{topMovieList.subjects}}" item="{{item}}"  medium="{{item.medium}}" wx:key="index">
+        <starCom rankNum="{{item.average}}"></starCom>
+      </movieCardCom>
+    </view>
+  </movieListCom>
+
+
+
+
+  <!-- 模板样式 -->
+  <!-- <template is="movieListTpl" data="{{movielist:theraterMovieList}}"></template>
   <template is="movieListTpl" data="{{movielist:comingMovieList}}"></template>
-  <template is="movieListTpl" data="{{movielist:topMovieList}}"></template>
+  <template is="movieListTpl" data="{{movielist:topMovieList}}"></template> -->
 </view>
