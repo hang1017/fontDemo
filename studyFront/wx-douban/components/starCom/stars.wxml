@@ -1,0 +1,14 @@
+<!--components/starCom/stars.wxml-->
+<view class='starsAndNum'>
+    <view class='rankStars'>
+    <text wx:if="{{rankNum == 0}}" class='noNum'>暂无分数</text>
+    <block wx:if="{{rankNum!=0}}">
+      <block  wx:for="{{[2,4,6,8,10]}}" wx:for-item="item" wx:key="index">
+        <image wx:if="{{item > rankNum+1}}" src='/images/star-no.png'></image>
+        <image wx:elif="{{item === rankNum+1}}" src='/images/star-half.png'></image>
+        <image wx:else="{{item <= rankNum}}" src='/images/star-full.png'></image>
+      </block>
+    </block>
+    </view>
+    <text wx:if="{{rankNum!=0}}" class='rankNum'>{{rankNum}}</text>
+  </view>

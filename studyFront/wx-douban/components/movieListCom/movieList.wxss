@@ -1,0 +1,28 @@
+/* components/movieListCom/movieList.wxss */
+
+.movieListView{
+  margin-bottom: 20rpx;
+  background-color: white;
+}
+
+.mlHeader{
+ display: flex;
+  flex-direction: row;
+  justify-content:space-between;
+  padding: 20rpx;
+}
+
+.mlBody{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  widows: 300rpx;
+  overflow:auto;
+  /* scroll-x:true; */
+}
+
+.mlhMore{
+  float: right;
+  color: #44BB57;
+  padding-right: 26rpx;
+}

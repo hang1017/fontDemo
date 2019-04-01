@@ -1,0 +1,14 @@
+<!--components/movieListCom/movieList.wxml-->
+<view class='movieListView'>
+    <view class='mlHeader' catchtap='goToMoreMovie' data-movie-url='{{subjects.url}}'>
+      <text>{{title}}</text>
+      <text class='mlhMore'>查看更多 ></text>
+    </view>
+    <view class='mlBody'>
+      <block wx:for="{{subjects}}" wx:key="item">
+        <view>
+          <slot></slot>
+        </view>
+      </block>
+    </view>
+  </view>

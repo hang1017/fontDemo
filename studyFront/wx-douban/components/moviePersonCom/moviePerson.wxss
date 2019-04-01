@@ -1,0 +1,43 @@
+/* components/moviePersonCom/moviePerson.wxss */
+
+.person{
+  /* border:1rpx solid black; */
+  height: 420rpx;
+  width: 100%;
+  margin-top: 60rpx;
+  float: left;
+}
+
+.personlist{
+  /* border: 1rpx solid yellow; */
+  margin-top: 20rpx;
+  height: 80%;
+  width:100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  overflow:auto;
+}
+
+.personlist image{
+  width: 180rpx;
+  height:260rpx;
+  border-radius:5px;
+}
+
+.person-card{
+  display: flex;
+  flex-direction: column;
+  justify-content:space-between;
+  padding-right: 40rpx;
+}
+.person-performer{
+  font-size: 20rpx;
+  color: #BDBDBD;
+}
+.person-name{
+  font-size: 25rpx;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}

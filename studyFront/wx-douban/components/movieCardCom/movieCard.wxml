@@ -1,0 +1,8 @@
+<!--components/movieCardCom/movieCard.wxml-->
+<view class='cardcontainer'>
+    <image catchtap="goToDetail" data-img-src="{{subject}}" class="cardimg" src='{{medium}}' ></image>
+    <text class='cardname'>{{title}}</text>
+    <view>
+      <slot></slot>
+    </view>
+  </view>
