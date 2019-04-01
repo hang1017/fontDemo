@@ -198,7 +198,6 @@ div{
 ```
 ```
 上面引用的为重复指定渐变模式
-
 首先从0px开始
 在40px时混成第二种颜色
 但是因为20px也是第三种颜色，因此立即变成第三种颜色
@@ -212,7 +211,101 @@ transform:scale(1.5);
 可以使用hover进行触碰改变
 
 该属性能让元素沿着X/Y轴倾斜，正负都可以
+
 transform:skewX(24deg);
+
+## 23、动画属性和@keyframes规则
+
+```css
+#anim {
+  animation-name: colorful;
+  animation-duration: 3s;
+}
+@keyframes colorful {
+  0% {
+    background-color: blue;
+  }
+  100% {
+    background-color: yellow;
+  }
+}
+```
+
+1、animation-name:设置动画的名称
+
+2、animation-duration:设置动画的时间长度
+
+3、@keyframes:规则链接到具有名称的动画属性
+
+4、animation-fill-mode:forwards;动画结束时运用于元素的样式
+
+在使元素运动时：
+
+可以在@keyframes上设置top,left,right,buttom,进行偏移
+
+5、animation-iteration-count:3 or infinte; 使元素进行无限的运动，也可以跟次数
+
+6、animation-timing-function:改变动画时间，下面为一些参数：
+
+ease(默认值):开始缓慢，中间加速，最后缓慢
+
+ease-in:开始缓慢，结束时加速
+
+ease-out:开始时加速，结束时缓慢
+
+linear:恒定的动画速度
+
+可以通过贝塞尔曲线更好的控制动画播放的方式，于animation-timing-fnction一起使用
+
+animation-timing-function: cubic-bezier(0.25,0.25,0.75,0.75);
+
+我也看不懂
+
+# image
+
+## 1、alt
+
+alt 在 img 标签中是必须品
+
+若网页已经有给图片做说明的话，alt显得多余，但是最好不要省略，用空字符代替。
+
+## 2、Article
+
+Article 是一个分段元素，用于包装独立的自包含内容。该标记适用于博客条目，论坛帖子或新闻文章
+
+## 3、audio 音视频播放器
+
+```html
+<audio id="meowClip" controls>
+  <source src="audio/meow.mp3" type="audio/mpeg" />
+  <source src="audio/meow.ogg" type="audio/ogg" />
+</audio>
+```
+controls:显示了浏览器默认播放，暂停和其他控件，并支持键盘功能。
+
+type="audio/mpeg"：表示类型，要记得加上去
+
+## 4、figure、figcaption
+
+```html
+<figure>
+  <img src="roundhouseDestruction.jpeg" alt="Photo">
+  <br>
+  <figcaption>
+    text.
+  </figcaption>
+</figure>
+
+```
+两项一起使用，包含可视化表示，(图表和图像等)和标题等。
+
+改善图表等访问性
+
+
+
+
+
+
 
 
 
