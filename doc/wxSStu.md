@@ -34,18 +34,18 @@ stars.wxss:该文件类似于css文件，用来编写stars.wxml样式的文件
 
 ```html
 <!-- 声明模板的名称 -->
-  <template name="starsTpl">
-    <view class='starsAndNum'>
-      <view class='rankStars'>
-        <image src='/images/star-full.png'></image>
-        <image src='/images/star-full.png'></image>
-        <image src='/images/star-full.png'></image>
-        <image src='/images/star-half.png'></image>
-        <image src='/images/star-no.png'></image>
-      </view>
-      <text class='rankNum'>7.5</text>
+<template name="starsTpl">
+  <view class='starsAndNum'>
+    <view class='rankStars'>
+      <image src='/images/star-full.png'></image>
+      <image src='/images/star-full.png'></image>
+      <image src='/images/star-full.png'></image>
+      <image src='/images/star-half.png'></image>
+      <image src='/images/star-no.png'></image>
     </view>
-  </template>
+    <text class='rankNum'>7.5</text>
+  </view>
+</template>
 ```
     
 我来解释一下该wxml文件的内容(以下为我的理解，未必正确)：
@@ -63,18 +63,18 @@ stars.wxss:该文件类似于css文件，用来编写stars.wxml样式的文件
   display: flex;
   flex-direction: row;
   }
-   .rankStars{
-    display: flex;
-    flex-direction: row;
-    margin-top: 7rpx;
-  }
-  .rankStars image{
-    width: 30rpx;
-    height: 30rpx;
-  }
-  .rankNum{
-    color: #4A6141;
-  }
+.rankStars{
+  display: flex;
+  flex-direction: row;
+  margin-top: 7rpx;
+}
+.rankStars image{
+  width: 30rpx;
+  height: 30rpx;
+}
+.rankNum{
+  color: #4A6141;
+}
 ```
 上面的代码就是对wxml文件的样式进行修饰
     
@@ -85,7 +85,7 @@ stars.wxss:该文件类似于css文件，用来编写stars.wxml样式的文件
 1、引用模板前，一定要先声明，及在你要引入的页面最上方添加下一下的代码：
 
 ```html
-    <import src="../public/tpl/stars.wxml" />
+<import src="../public/tpl/stars.wxml" />
 ```
 
 2、引用模板：
@@ -93,7 +93,7 @@ stars.wxss:该文件类似于css文件，用来编写stars.wxml样式的文件
 在你需要用到模板的地方加上下面的代码，如在index.wxml下
 
 ```html
-    <template is="starsTpl"></template>
+<template is="starsTpl"></template>
 ```
 
 除了引用wxml的模板以外，我们不能忘记stars.wxss的文件引用
@@ -101,7 +101,7 @@ stars.wxss:该文件类似于css文件，用来编写stars.wxml样式的文件
 找到index.wxss文件，打开它，在最上面加上以下这行代码：
 
 ```css
-    @import "../public/tpl/stars.wxss" ;
+@import "../public/tpl/stars.wxss" ;
 ```
 
 很好，这时候只要你打开真机调试就能看到非常nice的效果了。
@@ -184,11 +184,11 @@ moviecard.wxml、moviecard.wxss
 
 <template name="movieCardTpl">
   <view class='cardcontainer'>
-  <image class="cardimg" src='{{imgUrl}}' background-size="cover"></image>
-  <text>{{movieName}}</text>
+    <image class="cardimg" src='{{imgUrl}}' background-size="cover"></image>
+    <text>{{movieName}}</text>
 
-  //引入星星评分模板
-  <template is="starsTpl" data="{{rankNum:rankNum}}"></template>
+    //引入星星评分模板
+    <template is="starsTpl" data="{{rankNum:rankNum}}"></template>
   </view>
 </template> 
 ```
@@ -236,7 +236,9 @@ moviecard.wxml、moviecard.wxss
 
 2、引用模板，代码如下：
 
+```html
 <template is="movieCardTpl" data="{{movieName:movieName,rankNum:rankNum,imgUrl:userInfo.avatarUrl}}"></template>
+```
 
 3、记得要改index.wxss的声明！
 
@@ -249,7 +251,8 @@ Page({
     rankNum:5,
     movieName: '航航',
     imgUrl:'../images/touxiang.jpg'
-},
+  },
+})
 ```
 
 ## 静态主页
@@ -297,10 +300,10 @@ Page({
 ```html
 <template name="searchBtnTpl">
   <view class='searchBtnView'>
-  <view class='searchInput'>
-  <icon type='search' size='13' color='#405f80'></icon>
-  <text>搜索</text>
-  </view>
+    <view class='searchInput'>
+      <icon type='search' size='13' color='#405f80'></icon>
+      <text>搜索</text>
+    </view>
   </view>
 </template>
 ```
@@ -416,12 +419,12 @@ Page({
 
 ```css
 mlhTitle:'最新上映',
-  movielist:[
-    {
-      imgUrl:"",  
-      movieName:"航帅帅",
-      rankNum: 5,
-    },
+movielist:[
+  {
+    imgUrl:"",  
+    movieName:"航帅帅",
+    rankNum: 5,
+  },
 ```
 
 
@@ -489,24 +492,25 @@ var util = require('../../utils/util.js');
 
 ```js
 getTheraterMovieList: function () {
-    var self = this;
-    wx.request({
-      url:util+serverDataFactory('/v2/movie/in_theaters'),
-      method:'post',
-      header:{
-        'content-type':'json'
-      },
-      data:requestsData,
-      success:function(res){
-        console.log(res);
-        self.setData({
-          theratersMovieList:self.movieDataFactory(res.data);
-        })
-      },
-      fail:function(err){
-        console.log(err);
-      }
-    })
+  var self = this;
+  wx.request({
+    url:util+serverDataFactory('/v2/movie/in_theaters'),
+    method:'post',
+    header:{
+      'content-type':'json'
+    },
+    data:requestsData,
+    success:function(res){
+      console.log(res);
+      self.setData({
+        theratersMovieList:self.movieDataFactory(res.data);
+      })
+    },
+    fail:function(err){
+      console.log(err);
+    }
+  })
+}
 ```
 
 这个用法和ajax差不多(我是这样理解的)
@@ -515,19 +519,19 @@ getTheraterMovieList: function () {
 
 ``` js
 movieDataFactory:function(data){
-    var minData= [];
-    for(var key in data.subjects){
-      minData.push({
-        medium: data.subjects[key].images.large,
-        title:data.subjects[key].title,
-        average:data.subjects[key].rating.average
-      })
-    }
-    return {
-      title:data.title,
-      subjects:minData
-    };
+  var minData= [];
+  for(var key in data.subjects){
+    minData.push({
+      medium: data.subjects[key].images.large,
+      title:data.subjects[key].title,
+      average:data.subjects[key].rating.average
+    })
   }
+  return {
+    title:data.title,
+    subjects:minData
+  };
+}
 ```
 
 把读取接口数据的代码放到外面来提高了代码的复用性。
@@ -611,13 +615,14 @@ overflow: hidden;
 
 ```html
 <text wx:if="{{rankNum == 0}}" class='noNum'>暂无分数</text>
-    <block wx:if="{{rankNum!=0}}">
-      <block  wx:for="{{[2,4,6,8,10]}}" wx:for-item="item">
-        <image wx:if="{{item > rankNum+1}}" src='/images/star-no.png'></image>
-        <image wx:elif="{{item === rankNum+1}}" src='/images/star-half.png'></image>
-        <image wx:else="{{item <= rankNum}}" src='/images/star-full.png'></image>
-      </block>
+  <block wx:if="{{rankNum!=0}}">
+    <block  wx:for="{{[2,4,6,8,10]}}" wx:for-item="item">
+      <image wx:if="{{item > rankNum+1}}" src='/images/star-no.png'></image>
+      <image wx:elif="{{item === rankNum+1}}" src='/images/star-half.png'></image>
+      <image wx:else="{{item <= rankNum}}" src='/images/star-full.png'></image>
     </block>
+  </block>
+</text>
 ```
 
 
@@ -632,23 +637,23 @@ overflow: hidden;
 看下面的代码：
 ```js
 getTheraterMovieList: function (url,title,requestData,successCallBack) {
-    var self = this;
-    wx.request({
-      url: util.serverUrlFactory(url),
-      method:'GET',
-      header:{
-        "content-type":'json'
-      },
-      data:requestData,
-      success:function(res){
-        console.log(res);
-        successCallBack(res.data);
-      },
-      fail:function(err){
-        console.log(err);
-      }
-    })
-  },
+  var self = this;
+  wx.request({
+    url: util.serverUrlFactory(url),
+    method:'GET',
+    header:{
+      "content-type":'json'
+    },
+    data:requestData,
+    success:function(res){
+      console.log(res);
+      successCallBack(res.data);
+    },
+    fail:function(err){
+      console.log(err);
+    }
+  })
+},
 ```
 
 记下来我们在onload上添加代码，完成所有接口的调用：
@@ -656,37 +661,37 @@ getTheraterMovieList: function (url,title,requestData,successCallBack) {
 ```js
 var that = this;
 that.getTheraterMovieList("/v2/movie/in_theaters","近期上映",{count:3},function(data1){
-      that.getTheraterMovieList("/v2/movie/coming_soon", "即将上映", { count: 3 }, function (data2) {
-        that.getTheraterMovieList("/v2/movie/top250", "热门电影", { count: 3 }, function (data3) {
-          that.setData({
-            topMovieList: that.movieDataFactory(data3),
-            comingMovieList: that.movieDataFactory(data2),
-            theraterMovieList: that.movieDataFactory(data1),
-          })
-        });
+  that.getTheraterMovieList("/v2/movie/coming_soon", "即将上映", { count: 3 }, function (data2) {
+    that.getTheraterMovieList("/v2/movie/top250", "热门电影", { count: 3 }, function (data3) {
+      that.setData({
+        topMovieList: that.movieDataFactory(data3),
+        comingMovieList: that.movieDataFactory(data2),
+        theraterMovieList: that.movieDataFactory(data1),
+      })
     });
+  });
 ```
 
 ### 七、tabbar简单操作
 
 ```json 
 "tabBar": {
-    "color": "#bfbfbf",
-    "selectedColor": "#1afa29",
-    "borderStyle": "white",
-    "backgroungColor": "white",
-    "list": [{
-      "pagePath": "pages/index/index",
-      "text": "首页",
-      "iconPath": "images/firstN.png",
-      "selectedIconPath": "images/firstY.png"
-    },{
-      "pagePath": "pages/user/user",
-      "text": "我",
-      "iconPath": "images/meNo.png",
-      "selectedIconPath": "images/meYes.png"
-    }]
-  }
+  "color": "#bfbfbf",
+  "selectedColor": "#1afa29",
+  "borderStyle": "white",
+  "backgroungColor": "white",
+  "list": [{
+    "pagePath": "pages/index/index",
+    "text": "首页",
+    "iconPath": "images/firstN.png",
+    "selectedIconPath": "images/firstY.png"
+  },{
+    "pagePath": "pages/user/user",
+    "text": "我",
+    "iconPath": "images/meNo.png",
+    "selectedIconPath": "images/meYes.png"
+  }]
+}
 ```
 
 tabbar组件是官方支持的，所以我们可以直接调用
@@ -725,7 +730,7 @@ https://developers.weixin.qq.com/miniprogram/dev/framework/config.html#tabbar
 话不多说，我先把代码贴上去
 
 ```html
- <import src="../public/tpl/movieList.wxml"  />
+<import src="../public/tpl/movieList.wxml"  />
  
 <view class="container">
   <image class='header-bg' src = '../../images/touxiang.jpg'></image>
@@ -746,24 +751,24 @@ https://developers.weixin.qq.com/miniprogram/dev/framework/config.html#tabbar
 @import "../public/tpl/movieList.wxss";
 
 .userinfo { 
-display: flex; 
-flex-direction: column; 
-align-items: center; 
-background-image: url("../../images/touxiang.jpg"); 
-background-repeat: no-repeat; 
-background-size:100% auto; 
-height: 400rpx; 
-background-color: green;
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  background-image: url("../../images/touxiang.jpg"); 
+  background-repeat: no-repeat; 
+  background-size:100% auto; 
+  height: 400rpx; 
+  background-color: green;
 } 
 .userinfo-avatar { 
-width: 140rpx; 
-height: 140rpx; 
-margin: 20rpx; 
-border-radius: 50%; 
-margin-top: 75rpx; 
+  width: 140rpx; 
+  height: 140rpx; 
+  margin: 20rpx; 
+  border-radius: 50%; 
+  margin-top: 75rpx; 
 } 
 .userinfo-nickname { 
-color: #fff; 
+  color: #fff; 
 } 
 
 .header-bg{
@@ -790,9 +795,9 @@ userInfo: {},
 
 ```js
 this.setData({
-//有所改动
-userInfo: app.globalData.userInfo,
-hasUserInfo: true
+  //有所改动
+  userInfo: app.globalData.userInfo,
+  hasUserInfo: true
 })
 ```
 
@@ -868,18 +873,16 @@ function movieDataFactory(data) {
 
 ```js
 util.getTheraterMovieList("/v2/movie/in_theaters", "已观看", { count: 3 },function(data1){
-      util.getTheraterMovieList("/v2/movie/coming_soon", "即将上映", { count: 3 }, function (data2) {
-        that.setData({
-          wantMovieList: util.movieDataFactory(data1),
-          lookedMovieList: util.movieDataFactory(data2),
-        })
-      });
+  util.getTheraterMovieList("/v2/movie/coming_soon", "即将上映", { count: 3 }, function (data2) {
+    that.setData({
+      wantMovieList: util.movieDataFactory(data1),
+      lookedMovieList: util.movieDataFactory(data2),
     })
+  });
+})
 ```
 
-
 那么，完美的代码就完成啦。
-
 
 ## 查看更多页面跳转
 
@@ -891,9 +894,9 @@ util.getTheraterMovieList("/v2/movie/in_theaters", "已观看", { count: 3 },fun
 
 ```html
 <view class='mlHeader' catchtap='goToMoreMovie' data-movie-url='{{movielist.url}}'>
-      <text>{{movielist.title}}</text>
-      <text class='mlhMore'>查看更多 ></text>
-    </view>
+  <text>{{movielist.title}}</text>
+  <text class='mlhMore'>查看更多 ></text>
+</view>
 ```
 
 好了来解释一下新增的属性
@@ -913,11 +916,11 @@ data-后面名称，用‘-’接，会一驼峰命名的方式显示出来。
 
 ```js
 goToMoreMovie: function (event) {
-    var moreMovieUrl = event.currentTarget.dataset.movieUrl;
-    wx.navigateTo({
-      url: '../moviemore/moviemore?url='+moreMovieUrl,
-    })
-  }
+  var moreMovieUrl = event.currentTarget.dataset.movieUrl;
+  wx.navigateTo({
+    url: '../moviemore/moviemore?url='+moreMovieUrl,
+  })
+}
 ```
 
 wx.navigateTo:保留当前页面，跳转到应用内的某个页面。但是不能跳到 tabbar 页面
@@ -983,12 +986,12 @@ catchTap:外view不会被点击，阻止了向上冒泡
 <import src="../public/tpl/moviecard.wxml" />
 
 <view class='container'>
-<template is="searchBtnTpl"></template>
-<view class='movielist'>
-<block wx:for="{{movieList.subjects}}" wx:key="item">
-  <template is="movieCardTpl" data="{{...item}}"></template> 
-</block>
-</view>
+  <template is="searchBtnTpl"></template>
+  <view class='movielist'>
+    <block wx:for="{{movieList.subjects}}" wx:key="item">
+      <template is="movieCardTpl" data="{{...item}}"></template> 
+    </block>
+  </view>
 </view>
 ```
 
@@ -1012,7 +1015,7 @@ catchTap:外view不会被点击，阻止了向上冒泡
 
 ```js
 wx.setNavigationBarTitle({
-      title: "查看更多"
+  title: "查看更多"
 })
 ```
 
@@ -1022,13 +1025,13 @@ wx.setNavigationBarTitle({
 
 ```js
 var that = this;
-    that.url=options.url;
-    util.getTheraterMovieList(options.url, options.title, { count: 3 }, function (data1) {
-      that.setData({
-        movieList: util.movieDataFactory(data1),
-        url: options.url, 
-      })
-    })
+that.url=options.url;
+util.getTheraterMovieList(options.url, options.title, { count: 3 }, function (data1) {
+  that.setData({
+    movieList: util.movieDataFactory(data1),
+    url: options.url, 
+  })
+})
 ```
 
 引用options.url即可读取到数据,并且调用该url，获取到值传递到前台
@@ -1046,17 +1049,17 @@ var that = this;
 
  ```js
  console.log("用户下拉动作")
-    if (this.data.url === '') {
-      return;
-    }
-    var that = this;
-    console.log(that.data.url);
-    util.getTheraterMovieList(this.data.url, "查看更多", { count: 3 }, function (data1) {
-      that.setData({
-        movieList: util.movieDataFactory(data1),
-      })
+  if (this.data.url === '') {
+    return;
+  }
+  var that = this;
+  console.log(that.data.url);
+  util.getTheraterMovieList(this.data.url, "查看更多", { count: 3 }, function (data1) {
+    that.setData({
+      movieList: util.movieDataFactory(data1),
     })
-    wx.stopPullDownRefresh();   //结束刷新
+  })
+  wx.stopPullDownRefresh();   //结束刷新
  ```
 
  解释一下上面的代码：
@@ -1087,23 +1090,23 @@ count:10,     //每次获取的条数
 
 ```js
 onReachBottom: function () {
-    console.log("到达底部啦~~~");
-    if (this.data.url === '') {
-      return;
-    } 
-    var that = this;
+  console.log("到达底部啦~~~");
+  if (this.data.url === '') {
+    return;
+  } 
+  var that = this;
 
-    util.getTheraterMovieList(that.data.url, "查看更多", {start:that.data.start,count: that.data.count}, function (data1) {
-      var newdata = util.movieDataFactory(data1);
-      var olddata = that.data.movieList;
-      olddata.subjects = olddata.subjects.concat(newdata.subjects),
-      that.setData({
-        movieList: olddata,
+  util.getTheraterMovieList(that.data.url, "查看更多", {start:that.data.start,count: that.data.count}, function (data1) {
+    var newdata = util.movieDataFactory(data1);
+    var olddata = that.data.movieList;
+    olddata.subjects = olddata.subjects.concat(newdata.subjects),
+    that.setData({
+      movieList: olddata,
         // movieList:newdata,
-        start: that.data.start + that.data.count
-      })
+      start: that.data.start + that.data.count
     })
-  },
+  })
+},
 ```
 
 上面的代码为moviemore.js的代码，
@@ -1173,13 +1176,13 @@ wx.showToast({
 
 ```js
 showImg:function (event){
-    // console.log(event);
-    var imgSrc = event.currentTarget.dataset.imgSrc;
-    wx.previewImage({
-      // current:imgSrc,
-      urls: [imgSrc],
-    })
-  }
+  // console.log(event);
+  var imgSrc = event.currentTarget.dataset.imgSrc;
+  wx.previewImage({
+    // current:imgSrc,
+    urls: [imgSrc],
+  })
+}
 ```
 如果你发现你放大的高清图很模糊，没关系，那是因为你之前读取参数回传回来的是小张的缩略图
 
@@ -1197,17 +1200,13 @@ https://developers.weixin.qq.com/miniprogram/dev/api/wx.authorize.html?search-ke
 
 小伙伴们可以点开上面的路径为官网说明，下面我也会进行讲解
 
-scope----------------------对应接口----------------------描述
-
-scope.userInfo-------------wx.getUserInfo---------------用户信息
-
-scope.userLocation---------wx.getLocation---------------地理位置
-
-scope.address--------------wx.chooseAddress-------------通讯地址
-
-scope.record---------------wx.startRecord---------------录音功能
-
-scope.writePhotosAlbum-----wx.saveImageToPhotosAlbum----保存到相册
+|scope | 对应接口| 描述|
+|  :-:  | :-:  | :-:  |
+scope.userInfo|wx.getUserInfo|用户信息
+scope.userLocation|wx.getLocation|地理位置
+scope.address|wx.chooseAddress|通讯地址
+scope.record|wx.startRecord|录音功能
+scope.writePhotosAlbum|wx.saveImageToPhotosAlbum|保存到相册
 
 获取用户权限有4个参数：分别是scope、success、fail、complete这个解释上面路径有
 
@@ -1217,30 +1216,30 @@ scope.writePhotosAlbum-----wx.saveImageToPhotosAlbum----保存到相册
 ```js
 // 可以通过 wx.getSetting 先查询一下用户是否授权了
 wx.getSetting({
-    success(res) {
-      if (!res.authSetting[scope]) {
-        wx.authorize({
-          scope: scope,
-          success() {
-              console.log('授权成功')
-          }
+  success(res) {
+    if (!res.authSetting[scope]) {
+      wx.authorize({
+        scope: scope,
+        success() {
+        console.log('授权成功')
+      }   
 })}}})
 ```
 
 放上我的代码给小伙伴们参考一下：
 ```js
 wx.getSetting({
-      success(res){
-        if (!res.authSetting['scope.writePhotosAlbum']){
-          wx.authorize({
-            scope: 'scope.writePhotosAlbum',
-            success(){
-              console.log("授权成功");
-            },
-          })
-        }
-      }
+  success(res){
+    if (!res.authSetting['scope.writePhotosAlbum']){
+      wx.authorize({
+        scope: 'scope.writePhotosAlbum',
+        success(){
+          console.log("授权成功");
+        },
+      })
     })
+  }
+})
 ```
 
 那么当你点击确定的时候就授权成功保存到相册权限。
@@ -1261,14 +1260,14 @@ wx.getSetting({
 
 ```js
 showImg:function(event){
-    var imgSrc = event.currentTarget.dataset.imgSrc;
-    //下载文件
-    wx.downloadFile({
-      url:imgSrc,
-      success:function (res){
-        console.log(res);
-      }
-    })
+  var imgSrc = event.currentTarget.dataset.imgSrc;
+  //下载文件
+  wx.downloadFile({
+    url:imgSrc,
+    success:function (res){
+      console.log(res);
+    }
+  })
 },
 ```
 
@@ -1282,13 +1281,13 @@ wx.downloadFile为下载文件的代码，运行程序，查看打印出来的�
 
 ```js
 wx.saveImageToPhotosAlbum({
-      filePath: res.tempFilePath,
-      success:function(data){
-        console.log(data);
-      },
-      fail:function(err){
-        console.log(err);
-      }
+  filePath: res.tempFilePath,
+  success:function(data){
+    console.log(data);
+  },
+  fail:function(err){
+    console.log(err);
+  }
 })
 ```
 
@@ -1296,20 +1295,20 @@ wx.saveImageToPhotosAlbum({
 
 ```js
 wx.downloadFile({
-      url: imgSrc,
-      success: function (res) {
-        console.log(res);
-        //将本地的临时文件保存到相册
-        wx.saveImageToPhotosAlbum({
-          filePath: res.tempFilePath,
-          success: function (data) {
-            console.log(data);
-          },
-          fail: function (err) {
-          }
-        })
+  url: imgSrc,
+  success: function (res) {
+    console.log(res);
+    //将本地的临时文件保存到相册
+    wx.saveImageToPhotosAlbum({
+      filePath: res.tempFilePath,
+      success: function (data) {
+        console.log(data);
+      },
+      fail: function (err) {
       }
     })
+  }
+})
 ```
 
 好了，那么至此，只要你开放了权限，你只要点击图片就马上把图片保存到你的本地相册中
