@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app"></div>
+
+    <script type="text/babel">
+        // ReactDOM.render(
+        //     <h1>hello world</h1>,
+        //     document.getElementById("app")
+        // )
+
+    class ShoppingList extends React.Component {
+        render() {
+            return (
+            <div className="shopping-list">
+                <h1>Shopping List for {this.props.name}</h1>
+                <ul>
+					<li>Instagram</li>
+					<li>WhatsApp</li>
+					<li>Oculus</li>
+                </ul>
+            </div>
+            );
+        }
+    }
+
+    ReactDOM.render(
+            // <h1>hello world</h1>,
+            <ShoppingList name="hang" />,
+            document.getElementById("app")
+        )
+    </script>
+
+    <script src="https://cdn.bootcss.com/react/16.8.4/umd/react.development.js"></script>
+    <script src="https://cdn.bootcss.com/react-dom/16.8.4/umd/react-dom.development.js"></script>
+    <script src="https://cdn.bootcss.com/babel-standalone/7.0.0-beta.3/babel.js"></script>
+</body>
+</html>
