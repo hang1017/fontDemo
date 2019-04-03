@@ -16,6 +16,24 @@
         // )
 
     class ShoppingList extends React.Component {
+    
+        constructor(){
+            super();
+            this.state={
+                seconds:0
+            }
+        }
+
+        tick(){
+            this.setState({
+                seconds:this.state.seconds+1
+            })
+        }
+
+        componentDidMount(){
+            this.interval = setInterval(() => this.tick(), 1000);
+        }
+
         render() {
             return (
             <div className="shopping-list">
@@ -26,6 +44,7 @@
 					<li>Oculus</li>
                 </ul>
             </div>
+            <div>second:{this.state.seconds}</div>
             );
         }
     }

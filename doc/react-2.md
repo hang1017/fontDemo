@@ -385,11 +385,223 @@ const current = history[this.state.stepNumber];
 
 结束！ 成功！
 
+# 官网文档学习
+
+## 一、componentWillMount 和 componentDidMount 的区别
+
+1、
+
+will:将要装载，在 render 之前调用
+
+Did:装载完成，在 render 之前调用
+
+2、
+
+will：每一个组件 render 之前立即调用
+
+Did:render 之后不会立即调用，而是所有子组件都 render 完之后才可以调用
+
+3、
+
+will:可以在服务端被调用，也可以在浏览器被调用
+
+Did:只能在浏览器端被调用，在服务器短使用 react 的时候不会被调用
+
+## 二、定时器：
+
+初始化一个 new Date();
+
+```js
+constructor(){
+        super();
+        this.state={
+            timeText:""
+        }
+    }
+```
+
+定义一个方法用来修改时间：
+
+```js
+    tick(){
+        this.setState({
+            timeText:new Date().toLocaleTimeString()
+        })
+    }
+```
+
+调用 componentDidMount() 生命周期函数，设置定时器
+
+```js
+componentDidMount(){
+        this.timeID = setInterval(()=>(this.tick(),1000));
+    }
+```
+
+最后调用 componentWillUnmount 函数当组件被移除时，定时器也要被清除
+
+```js
+componentWillUnmount(){
+        clearInterval(this.timeID);
+    }
+```
+
+## 三、状态更新可能时异步
+
+```js
+// Correct
+this.setState((prevState, props) => ({
+  counter: prevState.counter + props.increment
+}));
+```
+
+## 四、状态的更新合并
+
+当初始化有数组时，如下：
+
+```js
+constructor(props) {
+    super(props);
+    this.state = {
+      posts: [],
+      comments: []
+    };
+  }
+```
+
+进行浅合并
+
+```js
+componentDidMount() {
+    fetchPosts().then(response => {
+      this.setState({
+        posts: response.posts
+      });
+    });
+
+    fetchComments().then(response => {
+      this.setState({
+        comments: response.comments
+      });
+    });
+  }
+```
+## 五、事件处理
 
 
+当事件需要更新状态时，最最简单的方法是在 初始化上绑定：
 
+```js
+this.handleClick = this.handleClick.bind(this);
+```
 
+如果你觉得上面的方法还是麻烦的话，可以采用下面的方法：
 
+```js
+handleClick = () => {
+    console.log('this is:', this);
+  }
+```
+
+若你需要向事件传递参数的话：
+
+```js
+<button onClick={(e) => this.deleteRow(id, e)}>Delete Row</button>
+<button onClick={this.deleteRow.bind(this, id)}>Delete Row</button>
+```
+
+如果通过 bind 进行传参的话，需要注意 e 的存放位置：
+
+```js
+deleteRow(id,e){
+    e.preventDefault();
+}
+```
+
+## 六、关于表达式的写法
+
+```js
+{unreadMessages.length > 0 &&
+        <h2>
+          You have {unreadMessages.length} unread messages.
+        </h2>
+      }
+```
+
+之所以能这样做，是因为在 JavaScript 中
+
+true && expression 总是返回 expression，
+
+而 false && expression 总是返回 false。
+
+因此，如果条件是 true，&& 右侧的元素就会被渲染，
+
+如果是 false，React 会忽略并跳过它。
+
+## 七、三目运算符
+
+```js
+render() {
+  const isLoggedIn = this.state.isLoggedIn;
+  return (
+    <div>
+      {isLoggedIn ? (
+        <LogoutButton onClick={this.handleLogoutClick} />
+      ) : (
+        <LoginButton onClick={this.handleLoginClick} />
+      )}
+    </div>
+  );
+}
+```
+
+## 八、列表、数组遍历
+
+对数组进行遍历：
+
+```js
+const doubled = numbers.map((number) => number * 2);
+```
+
+最好每个元素在列表中都拥有独一无二的key:
+
+```js
+const todoItems = todos.map((todo) =>
+  <li key={todo.id}>
+    {todo.text}
+  </li>
+);
+```
+
+当元素没有确定的 key ，你可以使用它的序列号index 作为 key
+
+```js
+const todoItems = todos.map((todo, index) =>
+  // Only do this if items have no stable IDs
+  <li key={index}>
+    {todo.text}
+  </li>
+);
+```
+
+可以查看[深度解析 key 的必要性](https://react.docschina.org/docs/reconciliation.html#%E9%80%92%E5%BD%92%E5%AD%90%E8%8A%82%E7%82%B9)
+
+也可以来一些骚操作
+
+```js
+function NumberList(props) {
+  const numbers = props.numbers;
+  return (
+    <ul>
+      {numbers.map((number) =>
+        <ListItem key={number.toString()}
+                  value={number} />
+
+      )}
+    </ul>
+  );
+}
+```
 
 
 
