@@ -301,6 +301,81 @@ type="audio/mpeg"：表示类型，要记得加上去
 
 改善图表等访问性
 
+## 5、for
+
+把 for 属性用在 input 标签上，会使表单更具可读性
+
+for 属性的值必须与表单的属性值相同
+
+## 6、fieldset
+
+将 fieldset 和 legend 用于 form 表单中的单选按钮效果很好
+
+可参考如下代码：
+
+```html
+<form>
+  <fieldset>
+    <legend>Choose one of these three items:</legend>
+    <input id="one" type="radio" name="items" value="one">
+    <label for="one">Choice One</label><br>
+    <input id="two" type="radio" name="items" value="two">
+    <label for="two">Choice Two</label><br>
+    <input id="three" type="radio" name="items" value="three">
+    <label for="three">Choice Three</label>
+  </fieldset>
+</form>
+```
+
+## 7、accesskey
+
+指定一个快捷键来激活或将焦点带到一个元素
+
+```html
+<button accesskey="b">Important Button</button>
+```
+
+# Responsive Web Design Principles 响应式WEB设计原则
+
+## 1、@media 
+
+```css
+@media (max-height:800px){
+    p{
+      font-size:10px;
+    }
+  }
+```
+当高度低于 800px 时，变成该 CSS 样式
+
+## 2、排版响应
+
+vw:10vw 将是视口宽度的10%
+
+vh:3vh 将是视口高度的3%
+
+vmin:70vmin 将是视口较小尺寸（高度和宽度）的70%
+
+vmax:100vmax 将是视口的更大尺寸（高度和宽度）的100%
+
+# CSS Flexbox: Use display (CSS Flexbox 挑战简介)
+
+## 一、flex-shrink 
+
+用于设置块和块的比例，设值为1、2、3、4.。。
+
+## 二、flex-grow
+
+用法和上面一样把，一个是扩大一个是缩小
+
+## 三、flex-basis
+
+在使用flex-shrink 进行调整之前，该属性指定项目的初始大小：flex-grow
+
+可使用的单位：px,em,%
+
+
+
 
 
 
