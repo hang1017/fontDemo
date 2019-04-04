@@ -2,3 +2,11 @@ textarea{
     width: 200px;
     height: 50px;
 }
+
+checkBox{
+    padding:30px;
+}
+
+fieldset{
+    width: 300px;
+}

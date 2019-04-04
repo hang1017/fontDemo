@@ -3,13 +3,13 @@ import ReactDOM from 'react-dom';
 import './index.css';
 
 function ItemList(props){
-        return(
-            <ul>
-                {props.items.map(item=>(
-                <li key={item}>{item}</li>
-                ))}
-            </ul>
-        )
+    return(
+        <ul>
+            {props.items.map(item=>(
+            <li key={item}>{item}</li>
+            ))}
+        </ul>
+    )
 }
 
 function ShowText(props){
@@ -59,25 +59,51 @@ class JsxText extends React.Component{
 }
 
 class SelTest extends React.Component{
-    constructor(){
-        super();
+    constructor(props){
+        super(props);
         this.state={
-            selText:'hang2'
+            selText:'hang2',
+            boil:''
         }
         this.onSelChange = this.onSelChange.bind(this);
-        this.onSelSubmit = this.onSelSubmit.bind(this)
+        this.onSelSubmit = this.onSelSubmit.bind(this);
+        // this.boilInput = this.props.boilInput;
     }
 
     onSelChange(e){
-        this.setState({
-            selText:e.target.value
-        })
+        const target = e.target;
+        if(target.type === 'radio'){
+            console.log(e.target.value);
+        }else if(target.type === 'select'){
+            this.setState({
+                selText:e.target.value
+            })
+        }else if(target.name==='input1'){
+            console.log(target.value);
+        }
+        
     }
 
     onSelSubmit(e){
         e.preventDefault();
         alert(this.state.selText);
     }
+
+    // boilInput(){
+    //     // alert();
+    //     let cb = "";
+    //     if(this.props.boilInput >100){
+    //         cb="水开啦";
+    //     }else{
+    //         cb="水没开";
+    //     }
+    //     console.log(cb);
+    //     this.setState({
+    //         boil:this.cb
+    //     })
+    // }
+
+    
 
     render(){
         return (
@@ -88,14 +114,54 @@ class SelTest extends React.Component{
                             <option value={item} key={item}>{item}</option>
                         )}
                     </select>
+                    <br/>
+                    <input type="radio" name="radio1" value="hang11" onChange={this.onSelChange}/>left
+                    <input type="radio" name="radio1" value="hang22" onChange={this.onSelChange}/>right
+                    <input type="radio" name="radio1" value="hang33" onChange={this.onSelChange}/>top
+                    <input type="radio" name="radio1" value="hang44" onChange={this.onSelChange}/>bottom
+                    <br/>
+                    <input name='input1' onChange={this.onSelChange}/>
+                    <input name='input2' onChange={this.onSelChange}/>
+                    <input name='input3' onChange={this.onSelChange}/>
+                    <input name='input4' onChange={this.onSelChange}/>
+                    <br/>
                     <button>submit</button>
                 </form>
+                <label>{this.props.boilInput}</label>
             </div>
         )
     }
 }
 
-// setInterval(JsxText,1000);
+function Boil(props){
+    return(
+        <div>
+            <fieldset>
+                <legend>请输入水温({props.aOrb})：</legend>
+                <input value={props.boilText} onChange={props.onchange} />
+            </fieldset>
+        </div>
+    )
+}
+
+function toA(b){
+    return (b - 32) * 5 / 9;
+}
+
+function toB(a){
+    return (a * 9 / 5) + 32;
+}
+
+function tryConvert(temperature, convert) {
+  const input = parseFloat(temperature);
+  if (Number.isNaN(input)) {
+    return '';
+  }
+  const output = convert(input);
+  const rounded = Math.round(output * 1000) / 1000;
+  return rounded.toString();
+}
+
 
 class TodoApp extends React.Component{
     constructor(props){
@@ -103,11 +169,13 @@ class TodoApp extends React.Component{
         this.handleChange = this.handleChange.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
         this.handleInputText = this.handleInputText.bind(this)
+        this.bindleInput = this.bindleInput.bind(this)
         this.state={
             itemList:[],
             text:'',
             inputText:'',
-            selItem:['hang1','hang2','hang3','hang4']
+            selItem:['hang1','hang2','hang3','hang4'],
+            boilText:0
         }
     }
 
@@ -128,6 +196,22 @@ class TodoApp extends React.Component{
     handleInputText(e){
         this.setState({
             inputText:e.target.value
+        })
+    }
+
+    bindleInput(e){
+        const v = e.target.value;
+        let va = "";
+        if(parseFloat(v)>100){
+            va="水开啦"
+        }else if(parseFloat(v)<100){
+            va="水没开"
+        }
+        else{
+            va = "请输入水温";
+        }
+        this.setState({
+            boilText:va
         })
     }
 
@@ -160,7 +244,13 @@ class TodoApp extends React.Component{
                     <JsxText />
                 </div>
                 <div>
-                    <SelTest selItem={this.state.selItem}/>
+                    <SelTest selItem={this.state.selItem} boilInput={this.state.boilText} />
+                </div>
+                <div>
+                    <Boil aOrb="a" onchange={this.bindleInput}/>
+                </div>
+                <div>
+                    <Boil aOrb="b" onchange={this.bindleInput}/>
                 </div>
             </div>
         )
@@ -201,7 +291,6 @@ class Game extends React.Component{
 
 ReactDOM.render(
     <Game />,
-    
     document.getElementById('root')
   );
 
