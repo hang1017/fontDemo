@@ -212,7 +212,7 @@ transform:scale(1.5);
 
 该属性能让元素沿着X/Y轴倾斜，正负都可以
 
-transform:skewX(24deg);
+transform:skewX(24deg); 
 
 ## 23、动画属性和@keyframes规则
 
@@ -374,7 +374,94 @@ vmax:100vmax 将是视口的更大尺寸（高度和宽度）的100%
 
 可使用的单位：px,em,%
 
+## 四、flex 的速记属性
 
+flex:1 0 10px;  意思为：
+
+flex-grow:1;
+
+flex-shrink:0;
+
+flex-basis:10px;
+
+默认为：flex:0 1 auto;
+
+## 五、order 属性：
+
+```css
+order:1 2 3 4 ...
+```
+
+按顺序排列 由大到小
+
+## 六、aign-self 属性
+
+可以单独调整每个项目的对齐方式
+
+align-self ：center or flex-end
+
+# CSS Grid(CSS 网格)
+
+```css
+display:grid;
+
+display-template-columns:50px 50px 50px;
+
+grid-template-rows:50px 50px;
+
+grid-template-columns: auto 50px 10% 2fr 1fr;
+```
+
+解释一下上面第 四 行的代码：
+
+共5列，第一列：自由，第二列：50 第三列：10%；最后分3份
+
+```css
+grid-column-gap: 10px;  //创建表格列的间隙
+
+grid-row-gap:5px;   //创建表格行的间隙
+
+grid-gap:10px 20px;     //更快的创建表格行和列的间隙
+
+grid-column:1 / 3;  //从左侧网格第一个垂直线开始，跨越到第三行，消耗两列
+
+grid-row:2/4;   //同上
+
+justify-self:start center end;  //水平对齐内容在单元格的位置
+
+align-self：同上;   //垂直对齐
+
+ justify-items：同上;   //所有项目水平对齐
+
+ align-items:同上;  //所有项目垂直对齐
+
+ grid-area:footer;  //设置网格区域，如 footer 位置
+
+ grid-area: horizontal line to start at / vertical line to start at / horizontal line to end at / vertical line to end at;  3/1/4/4
+
+grid-template-rows: repeat(100, 50px);  //创建100列，每列50px;
+
+grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));创建灵活的布局和限制每项的尺寸
+
+grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+```
+
+上面两者的区别：
+
+当容器的大小超过所有项目组合的大小时
+
+auto-fill:继续插入空行或列并将项目推到一边
+
+auto-fit：折叠这些空行或列并拉伸项目以适合容器的大小
+
+## 二、使用 @Media 创建灵活的布局
+
+```css
+grid-template-areas:
+    "header header"
+    "advert content"
+    "footer footer";
+```
 
 
 
