@@ -71,6 +71,20 @@ module.exports = function override(config, env) {
 npm install babel-plugin-import --save-dev
 ```
 
+修改 `config-overrides.js` 文件
+
+```js
+const { override, fixBabelImports } = require('customize-cra');
+
+ module.exports = override(
+   fixBabelImports('import', {
+     libraryName: 'antd',
+     libraryDirectory: 'es',
+    //  style: 'css',
+      style:true,
+   }),
+```
+
 ### 尝试运行
 
 给 App.js 插入一条数据
