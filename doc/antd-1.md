@@ -273,11 +273,103 @@ import { Affix, Button } from 'antd';
 </Affix>
 ```
 
+## Form 表单
 
+先来看一些 div 中要怎么编写表单：
 
+```js
+const { getFieldDecorator } = this.props.form;  //这句话写在 render() 下
 
+<Form {...formItemLayout}>    //自定义方法，下面会做解释
+  <Form.Item
+    label="E-mail"
+  >
+    {getFieldDecorator('email',{    
+      rules:[{
+        type:'email',message:'The input is not valid E-mail!' //这时 Email 的格式判断
+      },{
+        required:true,message:'Please input your E-mail!'
+      }],
+    })(
+      <Input />
+    )}
+  </Form.Item>
 
+  <Form.Item
+    label="Password"
+  >
+    {getFieldDecorator('password', {
+      rules: [{
+        required: true, message: 'Please input your password!',
+      }, {
+        validator: this.validateToNextPassword, //自定义的方法，下面会编写
+      }],
+    })(
+      <Input type="password" />
+    )}
+  </Form.Item>
+  <Form.Item
+    label="Comfirm Password"
+  >
+    {getFieldDecorator('confirm',{
+      rules:[{
+        required:true,message:'Please confirm your password!',
+      },{
+        validator: this.compareToFirstPassword, //自定义的方法，下面会编写
+      }]
+    })(
+      <Input type="password"  />
+    )}
+  </Form.Item>
+  <Form.Item
+    label={(
+      <span>
+        Nickname&nbsp;
+        <Tooltip title="What do you want others to call you?">
+          <Icon type="question-circle-o" />
+        </Tooltip>
+      </span>
+    )}
+  >
+    {getFieldDecorator('confirm',{
+      rules:[{
+        required:true,message:'Please confirm your password!',
+      }]
+    })(
+      <Input />
+    )
+    }
+  </Form.Item>
+</Form>
+```
 
+解释一下上面的代码：
+
+formItemLayout：是表单的样式，也是自定义的方法，如果你修改格式的话会垂直排列。样式难看
+
+getFieldDecorator：是antd的form的属性，能够对表单表单进行校验，并在点击确定时校验
+
+rules:为校验的规则，通过上面的代码便能了解
+
+如果你运行时发现 getFieldDecorator 报 undefined 错
+
+说明你没将 Form 封装成高阶组件
+
+如果你是 exports 可以在最后修改下面的代码：
+
+```js
+export default Form.create({name: 'register'})(App);
+```
+
+如果你是直接在本类上写的话：
+
+```js
+const WrappedRegistrationForm = Form.create({ name: 'register' })(App);
+```
+
+label:也可以加一些好看的标签，并通过标签给出提示。
+
+因为量太多，就不再详细讲解，任何疑问请参考[官网](https://ant.design/components/form-cn/) 
 
 
 

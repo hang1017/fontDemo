@@ -1,12 +1,49 @@
 import React, { Component } from 'react';
 // import Button from 'antd/lib/button';
-import { Button,Typography,Row, Col, Slider,Tag,Tabs,Statistic, PageHeader, Steps,Icon } from 'antd';
+import { DatePicker } from 'antd';
+import { Button,Typography,Row, Col, Input,Tooltip,Select,Checkbox,AutoComplete,Slider,Tag,Tabs,Statistic, PageHeader, Steps,Icon ,Cascader,Form} from 'antd';
 import './App.css';
+import FormItem from 'antd/lib/form/FormItem';
+import { registerDecorator } from 'handlebars';
 // import Header from 'antd/lib/calendar/Header';
 // import Paragraph from 'antd/lib/typography/Paragraph';
 // import {Router, Route, Link, hashHistory} from 'react-router';
+ 
+// import {createForm} from'rc-form';
 
 const {Text,Title,Paragraph} = Typography;
+
+
+const {RangePicker} = DatePicker;
+
+// const FormItem = Form.Item;
+
+const { Option } = Select;
+const AutoCompleteOption = AutoComplete.Option;
+
+const residences = [{
+  value: 'zhejiang',
+  label: 'Zhejiang',
+  children: [{
+    value: 'hangzhou',
+    label: 'Hangzhou',
+    children: [{
+      value: 'xihu',
+      label: 'West Lake',
+    }],
+  }],
+}, {
+  value: 'jiangsu',
+  label: 'Jiangsu',
+  children: [{
+    value: 'nanjing',
+    label: 'Nanjing',
+    children: [{
+      value: 'zhonghuamen',
+      label: 'Zhong Hua Men',
+    }],
+  }],
+}];
 
 const steps = [{
   title: 'First',
@@ -24,13 +61,16 @@ class App extends Component {
   gutters = {};
   columns = {};
 
-  constructor(){
-    super();
+  constructor(props){
+    super(props);
     this.state={
       str:"hang",
       gutterKey:1,
       colCountKey:2,
-      current:0
+      current:0,
+      confirmDirty: false,
+      autoCompleteResult: [],
+      confirmDirty:false
     };
     [8,16,24,32,40,48].forEach((value,i)=>{this.gutters[i]=value;});
     [2,3,4,6,8,12].forEach((value,i)=>{this.columns[i]=value});
@@ -52,7 +92,46 @@ class App extends Component {
     this.setState({colCountKey:colCountKey});
   }
 
+  handleConfirmBlur=(e)=>{
+    const value = e.target.value;
+    this.setState({confirmDirty: this.state.confirmDirty || !!value})
+  }
+
+  validateToNextPassword=(rule,value,callback)=>{
+    console.log(rule);
+    console.log(value);
+    console.log(callback);
+    const form = this.props.form;
+    if (value && this.state.confirmDirty) {
+      form.validateFields(['confirm'], { force: true });
+    }
+    callback();
+  }
+
+  compareToFirstPassword = (rule, value, callback) => {
+    const form = this.props.form;
+    if (value && value !== form.getFieldValue('password')) {
+      callback('Two passwords that you enter is inconsistent!');
+    } else {
+      callback();
+    }
+  }
+
+  handleWebsiteChange =(value) =>{
+    let autoCompleteResult;
+    if(!value){
+      autoCompleteResult=[];
+    }else{
+      autoCompleteResult = ['.com', '.org', '.net'].map(domain => `${value}${domain}`);
+    }
+    this.setState({ autoCompleteResult });
+  }
+
   render() {
+
+    const { getFieldDecorator } = this.props.form;
+
+    const { autoCompleteResult } = this.state;
 
     const { gutterKey ,colCountKey} = this.state;
     const cols = [];
@@ -61,6 +140,28 @@ class App extends Component {
 
     const TabPane = Tabs.TabPane;
     const Step = Steps.Step;
+
+    const options = [{
+      value:'福建',
+      label:'福建',
+      children:[{
+        value:'福州',
+        label:'福州'
+      },{
+        value:'漳州',
+        label:'漳州'
+      }]
+    },{
+      value:'广东',
+      label:'广东',
+      children:[{
+        value:'广州',
+        label:'广州'
+      },{
+        value:'东莞',
+        label:'东莞'
+      }]
+    }]
 
     const Description = ({term,children,span=12})=>(
       <Col span={span}>
@@ -107,6 +208,44 @@ class App extends Component {
         </Col>
       </Row>
     )
+
+    const prefixSelector = getFieldDecorator('prefix',{
+      initialValue: '86',
+    })(
+      <Select>
+        <Option value="86">+86</Option>
+        <Option value="87">+87</Option>
+      </Select>
+    );
+
+    const websiteOptions = autoCompleteResult.map(website=>(
+      <AutoCompleteOption key={website}>{website}</AutoCompleteOption>
+    ));
+
+    const formItemLayout = {
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 8 },
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 16 },
+      },
+    };
+
+    const tailFormItemLayout = {
+      wrapperCol: {
+        xs: {
+          span: 24,
+          offset: 0,
+        },
+        sm: {
+          span: 16,
+          offset: 8,
+        },
+      },
+    };
+
 
     return (
       <div className="App">
@@ -227,9 +366,152 @@ class App extends Component {
               }
             </div>
         </div>
+
+        {/* 级联下拉框 */}
+        <div>
+          <Cascader options={options} placeholder="Please select" />
+        </div>
+
+        {/* 日期选择器 */}
+        <div>
+          <RangePicker></RangePicker>
+        </div>
+
+        {/* 表单 */}
+        <div style={{width:'600px'}}>
+          <Form {...formItemLayout}>
+              <Form.Item
+                label="E-mail"
+              >
+                {getFieldDecorator('111',{
+                  rules:[{
+                    type:'email',message:'The input is not valid E-mail!'
+                  },{
+                    required:true,message:'Please input your E-mail!'
+                  }],
+                })(
+                  <Input />
+                )}
+              </Form.Item>
+              <Form.Item
+                label="Password"
+              >
+                {getFieldDecorator('password', {
+                  rules: [{
+                    required: true, message: 'Please input your password!',
+                  }, {
+                    validator: this.validateToNextPassword,
+                  }],
+                })(
+                  <Input type="password" />
+                )}
+              </Form.Item>
+              <Form.Item
+                label="Comfirm Password"
+              >
+                {getFieldDecorator('confirm',{
+                  rules:[{
+                    required:true,message:'Please confirm your password!',
+                  },{
+                    validator: this.compareToFirstPassword,
+                  }]
+                })(
+                  <Input type="password"  />
+                )
+                }
+              </Form.Item>
+              <Form.Item
+                label={(
+                  <span>
+                    Nickname&nbsp;
+                    <Tooltip title="What do you want others to call you?">
+                      <Icon type="question-circle-o" />
+                    </Tooltip>
+                  </span>
+                )}
+              >
+                {getFieldDecorator('confirm',{
+                  rules:[{
+                    required:true,message:'Please confirm your password!',
+                  }]
+                })(
+                  <Input />
+                )
+                }
+              </Form.Item>
+              <Form.Item
+                label="address"
+              >
+                {getFieldDecorator('add',{
+                  rules:[{
+                    type:'array',required:true,message:"please choose your address!!"
+                  }]
+                })(
+                  <Cascader options={options} placeholder="Please select" />
+                )}
+              </Form.Item>
+              <Form.Item
+                label="phone number"
+              >
+                {getFieldDecorator('phone',{
+                  rules:[{
+                    required:true,message:"Please input your phone number!"
+                  }]
+                })(
+                  <Input addonBefore={prefixSelector} style={{ width: '100%' }} />
+                )}
+              </Form.Item>
+              <Form.Item
+                label="Website"
+              >
+                {getFieldDecorator('website', {
+                  rules: [{ required: true, message: 'Please input website!' }],
+                })(
+                  <AutoComplete
+                    dataSource={websiteOptions}
+                    onChange={this.handleWebsiteChange}
+                    placeholder="website"
+                  >
+                    <Input />
+                  </AutoComplete>
+                )}
+              </Form.Item>
+              <Form.Item
+                label="Captcha"
+                extra="We must make sure that your are a human."
+              >
+                <Row gutter={8}>
+                  <Col span={12}>
+                    {getFieldDecorator('captcha', {
+                      rules: [{ required: true, message: 'Please input the captcha you got!' }],
+                    })(
+                      <Input />
+                    )}
+                  </Col>
+                  <Col span={12}>
+                    <Button>Get captcha</Button>
+                  </Col>
+                </Row>
+              </Form.Item>
+              <Form.Item {...tailFormItemLayout}>
+                {getFieldDecorator('agreement',{
+                  valuePropName: 'checked',
+                })(
+                  <Checkbox>I have read the <a href="">agreement</a></Checkbox>
+                )}
+              </Form.Item>
+              <Form.Item {...tailFormItemLayout}>
+                <Button type="primary" htmlType="submit">Register</Button>
+              </Form.Item>
+          </Form>
+        </div>
       </div>
     );
   }
 }
 
-export default App;
+// const WrappedRegistrationForm = Form.create({ name: 'register' })(App);
+
+
+// export default App;
+export default Form.create({name: 'register'})(App);
