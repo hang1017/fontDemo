@@ -1,17 +1,215 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import { Button,Layout,Typography,Carousel,Card,Row, Col,Modal } from 'antd';
+import { Button,Layout,Typography,Carousel,Card,Row, Col,Modal,Input,Form,Icon,Checkbox,Drawer } from 'antd';
 
 const {Text} = Typography;
 const {Header, Content,} = Layout;
-// const { Meta } = Card;
+const {TextArea} = Input;
 
-class DogCard extends React.Component{
+const formItemLayout = {
+    labelCol: {
+      xs: { span: 24 },
+      sm: { span: 5 },
+    },
+    wrapperCol: {
+      xs: { span: 24 },
+      sm: { span: 16 },
+    },
+  };
+
+const tailItemLayout = {
+    wrapperCol: {
+        xs: {
+            span:24,
+            offset:0
+        },
+        sm: {
+            span:18,
+            offset:3
+        }
+    }
+}
+
+const OneButtonLayout = {
+    wrapperCol:{
+        xw: {
+            span:24,
+            offset:0
+        },
+        sm: {
+            span:10,
+            offset:10
+        }
+    }
+}
+
+class ShowFindModal extends React.Component{
 
     constructor(props){
         super(props);
     }
+
+    showFindSubmit = (e) =>{
+        e.preventDefault();
+        this.props.form.validateFields((err,values)=>{
+            if(!err){
+                console.log(err);
+            }else{
+                this.props.showFindSubmit(values);
+            }
+        })
+    }
+
+    render(){
+
+        const {getFieldDecorator} = this.props.form;
+
+        return(
+            <div>
+                <Drawer 
+                    visible={this.props.showFindModalState}
+                    width={600}
+                    onClose={this.props.onClose}
+                    placement="left"
+                    title="一起寻找小伙伴吧！"
+                >
+                    <div>
+                        <Form {...formItemLayout} onSubmit={this.showFindSubmit}>
+                            <Form.Item
+                                label="PetName"
+                            >
+                                {getFieldDecorator('name',{
+                                    rules:[{required:true,message:"please enter your pet name~"}]
+                                })(
+                                    <Input  />
+                                )}
+                            </Form.Item>
+                            <Form.Item
+                                label="PetAge"
+                            >
+                                {getFieldDecorator('age',{
+                                    rules:[{required:true,message:"please enter your pet age~"}]
+                                })(
+                                    <Input/>
+                                )}
+                            </Form.Item>
+                            <Form.Item
+                                label="PetDetail"
+                            >
+                                {getFieldDecorator('detail',{
+                                    rules:[{required:true,message:'please enter your detail~'}]
+                                })(
+                                    <TextArea rows={6}/>
+                                )}
+                            </Form.Item>
+                            <Form.Item
+                                label="PhoneNumber"
+                            >
+                                {getFieldDecorator('phone',{
+                                    rules:[{required:true,message:'you need make sure we can find you~'}]
+                                })(
+                                    <Input/>
+                                )}
+                            </Form.Item>
+                            <Form.Item
+                                label="LosingAddr"
+                            >
+                                {getFieldDecorator('addr',{
+                                    rules:[{required:true,message:'pelase enter your pet losing address~'}]
+                                })(
+                                    <Input/>
+                                )}
+                            </Form.Item>
+                            <Form.Item {...OneButtonLayout}>
+                                    <Button htmlType="submit" type="primary" size="large">提交</Button>
+                            </Form.Item>
+                        </Form>
+                    </div>
+                </Drawer>
+            </div>
+        )
+    }
+}
+
+class LoginModal extends React.Component{
+
+    constructor(props){
+        super(props);
+    }
+
+    handleSubmit=(e)=>{
+        e.preventDefault();
+        this.props.form.validateFields((err,values)=>{
+            if(err){
+                return;
+            }else{
+                this.props.handleSubmit(values);
+            }
+        })
+    }
+
+    render(){
+        const { getFieldDecorator } = this.props.form;
+        return(
+            <div>
+                <Modal 
+                    title="用户登录"
+                    visible={this.props.loginMedalState}
+                    onCancel={this.props.handleCancel}
+                    // onOk={this.props.handleOk}
+                    footer={null}
+                >
+                <Form {...formItemLayout} onSubmit={this.handleSubmit}>
+                    <Form.Item
+                        label='账号'
+                    >
+                        {getFieldDecorator('account',{
+                            rules:[{required:true,message: 'please enter your account!'}]
+                        })(
+                            <Input 
+                                prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                                placeholder="Account"
+                            />
+                        )}
+                    </Form.Item>
+                    <Form.Item
+                        label='密码'
+                    >
+                        {getFieldDecorator('pwd',{
+                            rules:[{required:true,message: 'please enter your password!'}]
+                        })(
+                            <Input 
+                                type="password"
+                                prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                                placeholder="Password"
+                            />
+                        )}
+                    </Form.Item>
+                    <Form.Item {...tailItemLayout}>
+                        {getFieldDecorator('remember',{
+                            valuePropName:'checked',
+                            initialValue:false,
+                        })(
+                            <Checkbox>remember me</Checkbox>
+                            
+                        )}
+                           <a href="#" className="login_form_forgot" >Forgot password</a> 
+                    </Form.Item>
+                    <Form.Item {...tailItemLayout}>
+                        <div className="login_form_button_div">
+                            <Button className="login_form_button">注册</Button>     
+                            <Button htmlType="submit" className="login_form_button" type="primary">登录</Button>  
+                        </div>   
+                    </Form.Item>
+                </Form>
+                </Modal>
+            </div>
+        )
+    }
+}
+
+class DogCard extends React.Component{
 
     render(){
         return(
@@ -58,6 +256,10 @@ class FindDog extends React.Component{
     constructor(){
         super();
         this.state = {
+            loginMedalState :false,
+            showFindModalState:false,
+            userName:'未登录',
+            flag : false,
             details:[{
                 "name":"hang1",
                 "age":"15",
@@ -82,13 +284,66 @@ class FindDog extends React.Component{
                 "detail":"白白的",
                 "address":"中海寰宇天下",
                 "phone":"1234567890"
+            }],
+            userInfo:[{
+                account:"hang1",
+                pwd:"123"
+            },{
+                account:"hang2",
+                pwd:"123"
+            },{
+                account:"hang3",
+                pwd:"123"
             }]
         }
+    }
+
+    loginButton=()=>{
+        this.setState({
+            loginMedalState:!this.state.loginMedalState
+        })
+    }
+
+    handleCancel=(e)=>{
+        this.setState({
+            loginMedalState:!this.state.loginMedalState
+        })
+    }
+
+    handleSubmit=(e)=>{
+        let f = false;
+        this.state.userInfo.map((item,index) => {
+            if(item.account === e.account && item.pwd === e.pwd){
+                this.setState({
+                    loginMedalState:!this.state.loginMedalState,
+                    userName:e.account,
+                    flag:true
+                })
+                f = true;
+            }
+        })
+        if(!f){
+            alert("输入有误，请重新输入~~");
+        }
+    }
+
+    showFindButton=(e)=>{
+        this.setState({
+            showFindModalState:true
+        })
+    }
+
+    onClose = () => {
+        this.setState({
+            showFindModalState:false
+        })
     }
 
     render(){
 
         const {details} = this.state;
+        const LoginModalDiv = Form.create({ name: 'login' })(LoginModal);
+        const ShowFindModalDiv = Form.create({ name: 'showFind' })(ShowFindModal);
 
         return(
             <div>
@@ -98,27 +353,50 @@ class FindDog extends React.Component{
                             <Text className="header_text">流浪猫狗救助站</Text>
                         </div>
                         <div className="header_button_div">
-                            <Text className="header_button_text">航帅帅</Text>
-                            <Button>个人中心</Button>
-                            <Button>登录</Button>
+                            <Text className="header_button_text">{this.state.userName}</Text>
+                            <Button onClick={this.showFindButton}>个人中心</Button>
+                            <Button onClick={this.loginButton}>{this.state.flag? "注销":"登录"}</Button>
                         </div>
                     </Header>
                     <Content>
                         <div className="content_slider_div">
                             <Carousel autoplay>
-                                <div className="carousel_div"><h3>1</h3></div>
-                                <div className="carousel_div"><h3>2</h3></div>
-                                <div className="carousel_div"><h3>3</h3></div>
-                                <div className="carousel_div"><h3>4</h3></div>
+                                <div className="carousel_div">
+                                    <img alt="img1" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />
+                                </div>
+                                <div className="carousel_div">
+                                    <img alt="img2" src="https://img3.doubanio.com/view/photo/s_ratio_poster/public/p1394851986.webp" />                                
+                                </div>
+                                <div className="carousel_div">
+                                    <img alt="img3" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />
+                                </div>
+                                <div className="carousel_div">
+                                    <img alt="img4" src="https://img3.doubanio.com/view/photo/s_ratio_poster/public/p1394851986.webp" />
+                                </div>
                             </Carousel>
                         </div>
                         <div className="content_card_div">
                             {
                                 details.map((item, index) => (
-                                    <DogCard detail={item}/>
+                                    <div>
+                                        <DogCard detail={item}/>
+                                    </div>
                                 ))
                             }
-                            
+                        </div>
+                        <div>
+                            <LoginModalDiv 
+                                loginMedalState = {this.state.loginMedalState}
+                                // handleOk = {this.handleOk}
+                                handleCancel = {this.handleCancel}
+                                handleSubmit = {this.handleSubmit}
+                            />
+                        </div>
+                        <div>
+                            <ShowFindModalDiv
+                                showFindModalState = {this.state.showFindModalState}
+                                onClose = {this.onClose} showFindSubmit = {this.showFindSubmit}
+                            />
                         </div>
                     </Content>
 
@@ -127,6 +405,7 @@ class FindDog extends React.Component{
         )
     }
 } 
+
 
 ReactDOM.render(
     <FindDog />,

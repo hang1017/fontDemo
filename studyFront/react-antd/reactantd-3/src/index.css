@@ -40,12 +40,17 @@
     background-color: rgba(0, 0, 0, 0.671);
 }
 
+.carousel_div img{
+    width: 100%;
+    height: 100%;
+}
+
 .content_card_div{
     display: flex;
     flex-direction: row;
-    /* align-items: flex-start; */
-    justify-content: center;
-    flex-wrap: wrap;
+    flex-wrap:wrap;
+    /* align-items: left; */
+    justify-content: left;
     /* height: 200px; */
 }
 
@@ -95,3 +100,20 @@
     flex-direction: row;
     flex-wrap: wrap;
 }
+
+.login_form_forgot{
+    float: right;
+}
+
+.login_form_button_div{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.login_form_button{
+    width: 30%;
+}
+
+
