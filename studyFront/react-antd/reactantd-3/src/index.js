@@ -44,6 +44,16 @@ const OneButtonLayout = {
     }
 }
 
+class UserDetailsModal extends React.Component{
+    render(){
+        return(
+            <div>
+                
+            </div>
+        )
+    }
+}
+
 class ShowFindModal extends React.Component{
 
     constructor(props){
@@ -53,7 +63,7 @@ class ShowFindModal extends React.Component{
     showFindSubmit = (e) =>{
         e.preventDefault();
         this.props.form.validateFields((err,values)=>{
-            if(!err){
+            if(err){
                 console.log(err);
             }else{
                 this.props.showFindSubmit(values);
@@ -258,6 +268,7 @@ class FindDog extends React.Component{
         this.state = {
             loginMedalState :false,
             showFindModalState:false,
+            showUserModalState:false,
             userName:'未登录',
             flag : false,
             details:[{
@@ -265,25 +276,29 @@ class FindDog extends React.Component{
                 "age":"15",
                 "detail":"黑黑的",
                 "address":"中海寰宇天下",
-                "phone":"1234567"
+                "phone":"1234567",
+                "uname":"hang1"
             },{
                 "name":"hang2",
                 "age":"15",
                 "detail":"白白的",
                 "address":"中海寰宇天下",
-                "phone":"1234567890"
+                "phone":"1234567890",
+                "uname":"hang1"
             },{
                 "name":"hang3",
                 "age":"15",
                 "detail":"白白的",
                 "address":"中海寰宇天下",
-                "phone":"1234567890"
+                "phone":"1234567890",
+                "uname":"hang2"
             },{
                 "name":"hang4",
                 "age":"15",
                 "detail":"白白的",
                 "address":"中海寰宇天下",
-                "phone":"1234567890"
+                "phone":"1234567890",
+                "uname":"hang2"
             }],
             userInfo:[{
                 account:"hang1",
@@ -328,15 +343,44 @@ class FindDog extends React.Component{
     }
 
     showFindButton=(e)=>{
-        this.setState({
-            showFindModalState:true
-        })
+        if(this.state.userName === "未登录"){
+            alert("您还没有登录，请您先登录好吗~");
+        }else{
+            this.setState({
+                showFindModalState:true
+            })
+        }
     }
 
     onClose = () => {
         this.setState({
             showFindModalState:false
         })
+    }
+
+    showFindSubmit = (e) =>{
+        let detail = [{
+            "name":e.name,
+            "age":e.age,
+            "detail":e.detail,
+            "address":e.addr,
+            "phone":e.phone,
+            "uname":this.state.userName
+        }]
+        this.setState({
+            details:this.state.details.concat(detail),
+            showFindModalState:false
+        })
+    }
+
+    showUserDetails = (e) =>{
+        if(this.state.userName === "未登录"){
+            alert("您还没有登录，请您先登录好吗~");
+        }else{
+            this.setState({
+                showUserModalState:true
+            })
+        }
     }
 
     render(){
@@ -349,12 +393,15 @@ class FindDog extends React.Component{
             <div>
                 <Layout>
                     <Header className="header_main">
+                        <div>
+                            <Button onClick={this.showUserDetails}>个人中心</Button>
+                        </div>
                         <div className="header_title">
                             <Text className="header_text">流浪猫狗救助站</Text>
                         </div>
                         <div className="header_button_div">
                             <Text className="header_button_text">{this.state.userName}</Text>
-                            <Button onClick={this.showFindButton}>个人中心</Button>
+                            <Button onClick={this.showFindButton}>求助帖</Button>
                             <Button onClick={this.loginButton}>{this.state.flag? "注销":"登录"}</Button>
                         </div>
                     </Header>
