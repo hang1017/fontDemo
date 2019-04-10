@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import { Button,Layout,Typography,Carousel,Card,Row, Col,Modal,Input,Form,Icon,Checkbox,Drawer } from 'antd';
+import { Button,Layout,Typography,Carousel,Card,Row, Col,Modal,Input,Form,Icon,Checkbox,Drawer,InputNumber } from 'antd';
 
 const {Text} = Typography;
 const {Header, Content,} = Layout;
@@ -45,20 +45,32 @@ const OneButtonLayout = {
 }
 
 class UserDetailsModal extends React.Component{
+
     render(){
         return(
             <div>
-                
+                <Drawer
+                    visible = {this.props.showUserModalState} 
+                    width = {450}
+                    onClose = {this.props.onClose}
+                    title = "我的求助帖"
+                    placement="right"
+                >
+                    <div>
+                        {
+                            this.props.userDetails.map((item,index) =>(
+                                <DogCard key={index} detail = {item} />
+                            ))
+                        }
+                        
+                    </div>
+                </Drawer>
             </div>
         )
     }
 }
 
 class ShowFindModal extends React.Component{
-
-    constructor(props){
-        super(props);
-    }
 
     showFindSubmit = (e) =>{
         e.preventDefault();
@@ -101,7 +113,7 @@ class ShowFindModal extends React.Component{
                                 {getFieldDecorator('age',{
                                     rules:[{required:true,message:"please enter your pet age~"}]
                                 })(
-                                    <Input/>
+                                    <InputNumber min={0} max={100} />,
                                 )}
                             </Form.Item>
                             <Form.Item
@@ -143,10 +155,6 @@ class ShowFindModal extends React.Component{
 }
 
 class LoginModal extends React.Component{
-
-    constructor(props){
-        super(props);
-    }
 
     handleSubmit=(e)=>{
         e.preventDefault();
@@ -237,6 +245,10 @@ class DogCard extends React.Component{
                             <Col span={16} >{this.props.detail.name}</Col>
                         </Row>
                         <Row>
+                            <Col span={6} offset={2}>Master:</Col>
+                            <Col span={16} >{this.props.detail.uname}</Col>
+                        </Row>
+                        <Row>
                             <Col span={6} offset={2}>Age:</Col>
                             <Col span={16} >{this.props.detail.age}</Col>
                         </Row>
@@ -271,29 +283,30 @@ class FindDog extends React.Component{
             showUserModalState:false,
             userName:'未登录',
             flag : false,
+            userDetails:[],
             details:[{
-                "name":"hang1",
+                "name":"dog1",
                 "age":"15",
                 "detail":"黑黑的",
                 "address":"中海寰宇天下",
                 "phone":"1234567",
                 "uname":"hang1"
             },{
-                "name":"hang2",
+                "name":"dog2",
                 "age":"15",
                 "detail":"白白的",
                 "address":"中海寰宇天下",
                 "phone":"1234567890",
                 "uname":"hang1"
             },{
-                "name":"hang3",
+                "name":"dog3",
                 "age":"15",
                 "detail":"白白的",
                 "address":"中海寰宇天下",
                 "phone":"1234567890",
                 "uname":"hang2"
             },{
-                "name":"hang4",
+                "name":"dog4",
                 "age":"15",
                 "detail":"白白的",
                 "address":"中海寰宇天下",
@@ -335,6 +348,14 @@ class FindDog extends React.Component{
                     flag:true
                 })
                 f = true;
+                this.state.details.map((d,i) => {
+                    if(d.uname === e.account) {
+                        this.setState ({
+                            userDetails:this.state.userDetails.concat(d)
+                        })
+                    }
+                })
+                console.log(this.state.userDetails);
             }
         })
         if(!f){
@@ -354,7 +375,8 @@ class FindDog extends React.Component{
 
     onClose = () => {
         this.setState({
-            showFindModalState:false
+            showFindModalState:false,
+            showUserModalState:false
         })
     }
 
@@ -369,7 +391,8 @@ class FindDog extends React.Component{
         }]
         this.setState({
             details:this.state.details.concat(detail),
-            showFindModalState:false
+            showFindModalState:false,
+            userDetails:this.state.userDetails.concat(detail)
         })
     }
 
@@ -425,7 +448,7 @@ class FindDog extends React.Component{
                         <div className="content_card_div">
                             {
                                 details.map((item, index) => (
-                                    <div>
+                                    <div key={index}>
                                         <DogCard detail={item}/>
                                     </div>
                                 ))
@@ -442,8 +465,17 @@ class FindDog extends React.Component{
                         <div>
                             <ShowFindModalDiv
                                 showFindModalState = {this.state.showFindModalState}
-                                onClose = {this.onClose} showFindSubmit = {this.showFindSubmit}
+                                onClose = {this.onClose} 
+                                showFindSubmit = {this.showFindSubmit}
                             />
+                        </div>
+                        <div>
+                            <UserDetailsModal
+                                showUserModalState = {this.state.showUserModalState}
+                                onClose = {this.onClose} 
+                                userDetails = {this.state.userDetails}
+                            />
+
                         </div>
                     </Content>
 
