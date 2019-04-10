@@ -1,0 +1,265 @@
+.o1{
+    width: 300px;
+    height: 100px;
+    border: 1px solid red;
+    /* float: left; */
+}
+
+.o1-1{
+    width: 90px;
+    height: 90px;
+    background-color: aqua;
+    border: 1px solid black;
+    /* margin-left: -10px; */
+    margin-right: 10px;
+    float: left;
+}
+.o1-2{
+    width: 90px;
+    height: 90px;
+    background-color: sienna;
+    border: 1px solid black;
+    float: left;
+    /* margin-left: -50px; */
+}
+
+.o2{
+    width: 150px;
+    height: 100px;
+    background-color: aquamarine;
+    /* float: left; */
+    display: flow-root;
+}
+
+.o2-1{
+    width: 50px;
+    height: 50px;
+    background-color: red;
+    shape-outside: circle();
+    float: left;
+    display: flow-root;
+}
+
+.o2-2{
+    width: 100px;
+    /* height: 20px; */
+    float: left;
+}
+
+.o3{
+    display: flex;
+    width: 200px;
+    height: 50px;
+    margin:auto;
+}
+
+.o3>div{
+    width: 20px;
+    height: 20px;
+    border:  1px solid red;
+    flex-grow: 0.1;
+}
+
+.o4{
+    width: 300px;
+    height: 50px;
+    border: 1px solid skyblue;
+    /* display: block; */
+    
+}
+
+.o4-1{
+    /* width: 10px; */
+    border: 1px solid red;
+    /* position: fixed; */
+    left: 10px;
+    right: 10px;
+}
+
+.o5{
+    width: 200px;
+    height: 150px;
+    border: 1px solid skyblue;
+}
+
+.o5-1{
+    width: 50px;
+    height: 50px;
+    background-color: aquamarine;
+    border: 1px solid black;
+    z-index: 1;
+    position: relative;
+}
+.o5-2{
+    width: 50px;
+    height: 50px;
+    background-color: aquamarine;
+    border: 1px solid black;
+    margin-top: -20px;
+    margin-left: 20px;
+    z-index: 2;
+    position: relative;
+}
+.o5-3{
+    width: 50px;
+    height: 50px;
+    background-color: aquamarine;
+    border: 1px solid black;
+    margin-top: -20px;
+    margin-left: 40px;
+    z-index: 1;
+    position: relative;
+}
+
+.o5-4{
+    width: 30px;
+    height: 30px;
+    background-color:red;
+}
+
+.o6{
+    width: 200px;
+    height: 800px;
+    border:  1px solid skyblue;
+}
+
+.o6-1{
+    width: 100%;
+    height: 330px;
+    background-color: gray;
+}
+.o6-2{
+    width: 100%;
+    height: 40px;
+    background-color: aqua;
+    position: sticky;
+    top: 50vh;
+    bottom: 45vh;
+}
+.o6-3{
+    width: 100%;
+    height: 330px;
+    background-color: gray;
+}
+
+.o7{
+    width: 230px;
+    height: 150px;
+    border:1px solid skyblue;
+}
+
+.o7>ul{
+    list-style: none;
+    text-align: center;
+    padding-left: 0;
+    /* padding-top: 0; */
+}
+
+.o7>ul>li+li{
+    border-top: 1px dashed red;
+}
+
+.o8{
+    width: 100px;
+    height: 100px;
+    background-color: aquamarine;
+}
+
+.o8-1{
+    border: 100px solid;
+    border-color: red yellow transparent gray;
+}
+
+.o9{
+    display: table;
+    width: 450px;
+    height: 100px;
+    background-color: skyblue;
+    border-spacing: 30px 10px;
+}
+
+.o9 div{
+    border:1px solid red;
+    display: table-cell;
+}
+
+.o10{
+    width: 300px;
+    height: 250px;
+    border: 1px solid skyblue;
+}
+.o10-1{
+    width: 50px;
+    height: 50px;
+    background-color: aquamarine;
+    border-radius: 100%;
+    margin-top: 10px;
+    position: relative;
+    animation: move 2s linear infinite;
+    animation-direction: normal;
+}
+.o10-2{
+    width: 50px;
+    height: 50px;
+    background-color: aquamarine;
+    border-radius: 100%;
+    margin-top: 10px;
+    animation: move 2s linear infinite;
+    animation-direction: reverse;
+}
+.o10-3{
+    width: 50px;
+    height: 50px;
+    background-color: aquamarine;
+    border-radius: 100%;
+    margin-top: 10px;
+    animation: move 2s linear infinite;
+    animation-direction:alternate-reverse;
+}
+.o10-4{
+    width: 50px;
+    height: 50px;
+    background-color: aquamarine;
+    border-radius: 100%;
+    margin-top: 10px;
+    animation: move 2s linear infinite;
+    animation-direction:alternate;
+}
+
+@keyframes move{
+    0%{
+        background-color: red;
+    }
+    100%{
+        transform: translate(400%,0);
+    }
+}
+
+.o11 {
+    width: 100px;
+    height: 100px;
+    border: 1px solid skyblue;
+    border-radius: 100%;
+    background: conic-gradient(red 0 30%,green 40% 70%,blue 70% 100%);
+}
+
+.o12{
+    width: 300px;
+    height: 300px;
+    border: 1px solid skyblue;
+}
+
+.o13{
+    width: 100px;
+    height: 100px;
+    background-color: red;
+    border: 10px dashed blue;
+    outline: 5px solid green;
+    outline-offset: -10px;
+}
+
+
+
+
+
+
