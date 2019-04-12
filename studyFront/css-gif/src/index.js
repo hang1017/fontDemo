@@ -74,8 +74,13 @@ class CssGif extends React.Component{
                     <img src="../../studyImg/biaoqing.png" alt="img" />
                 </div> */}
                 
-                <div className="o13">
-                    
+                {/* 设置outline */}
+                <div className="o13"></div>
+
+                {/* 暂停动画 */}
+                <div className = "o14">
+                    <br/>
+                    <div className="o14-1"></div>
                 </div>
             </div>
         )

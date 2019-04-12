@@ -159,9 +159,41 @@ outline: 5px solid green;
 outline-offset: -10px;
 ```
 
+## 十七、table-size
 
+浏览器默认为8个空格，table-size可以指定空格长度
 
+```css
+table-size:2,4,5,6...
+```
 
+## 十八、 暂停动画
+
+动画一开始设置 `@keyframes`
+
+```css
+@keyframes rotate {
+    100%{
+        transform:rotate(1turn);
+    }
+}
+```
+
+设置覆盖时暂停：
+
+```css
+.o14-1{
+    width: 100px;
+    height: 100px;
+    background-color: skyblue;
+    animation: rotate 3s linear infinite;
+    animation-play-state: running;
+}
+
+.o14-1:hover{
+    animation-play-state:paused
+}
+```
 
 
 

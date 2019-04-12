@@ -195,9 +195,309 @@ FIFO：先进先出
 
 `函数是对象，函数名是指针`
 
+#### Boolean 类型
 
+```js
+var a = new Boolean(false);
+var b = false;
 
+var c = a && true;
+var d = b && true;
 
+alert(c);   //true 
+alert(d);   //false
+```
+
+布尔表达式中所有对象都会被转成 `true`
+
+```js
+alert(typeof a)     //object
+alert(typeof b)     //boolean
+```
+
+`typeof` 操作符对基本类型返回的是 `boolean`,对引用类型返回的是 `object`
+
+#### Number 类型
+
+```js
+var num = 10;
+alert(num.toString(2)); //可以转成2进制。8 16进制类似
+
+alert(num.toFixed(2));  //按照指定的小数返回类型的字符串
+```
+
+## 第六章 面向对象程序设计
+
+### 对象属性
+
+#### 数据属性：
+
+`Configuation`:能否修改其属性的特性。默认 `true`
+
+`Enumberable`:能否通过 `for-in` 循环返回属性。默认 `true`
+
+`Writable`:能否修改其属性其值。 默认 `true`
+
+`Value`: 默认 `undefined`
+
+来看下面的代码，演示：
+
+```js
+vae person = {};
+Object.defineProperty(person,"name"{
+    wirtable:false;
+    value:'hang'
+})
+```
+
+#### 访问器属性
+
+`Configuation`:能否修改其属性的特性。默认 `true`
+`Enumberable`:能否通过 `for-in` 循环返回属性。默认 `true`
+`Get`:在读取属性时调用函数。默认 `undefined`
+`Set`:在写入属性时调用函数。默认 `undefined`
+
+### 创建对象
+
+#### 工厂模式
+
+```js
+function createPerson(name,age){
+    var o = new Object();
+    o.name =name;
+    o.age = age;
+    o.sayName = function(){
+        alert();
+    }
+    return o;
+}
+```
+
+#### 构造函数
+
+构造函数跟上面代码差不多。
+
+#### 原型模型
+
+到时再翻书
+
+### 继承
+
+这个也到时再翻书
+
+## 第七章 函数表达式
+
+### 闭包
+
+闭包：有权访问另一个函数作用域中的变量的函数
+
+#### 闭包与变量
+
+闭包只能取得包含函数中任何变量的最后一个值。看下面的例子
+
+```js
+function createFunction(){
+    var result = new Array();
+    for(var  i = 0;i<10;i++){
+        result[i] = function(){
+            return i;
+        }
+    }
+    return result;
+}
+```
+
+每个函数都返回 `10`，每个函数的作用域链中都保存着 `createFunctions()` 函数的活动对象，所以引用的是同一个变量 `i`。
+
+可以使用下面的代码，完成预期效果：
+
+```js
+function createFunction(){
+    var result = new Array();
+    for(var  i = 0;i<10;i++){
+        result[i] = function(num){
+            return function(){
+                return num;
+            };
+        }(i);
+    }
+    return result;
+}
+```
+
+这个版本中，定义了一个匿名函数，并将立即执行该匿名函数的结果赋值给数组
+
+这里的匿名函数有一个参数 `num`,在调用函数时我们传入变量 `i`,由于函数参数时按值传递的。会将变量 `i`的当前值赋给参数 `num`,在这个匿名函数的内部，又创建了一个访问 `num` 的闭包。
+
+这样 `result` 数组中的每个函数都有自己的 `num` 变量副本了。
+
+#### this 对象
+
+当定义一个同名的全局变量和局部变量时
+
+调用 `this.变量` 会输出全局变量
+
+每个函数被调用时都会自动获取两个特殊的变量：`this` 和 `arguments`
+
+内部函数在搜索这两个变量时，只会搜索到其活动对象为止。
+
+如果你希望 `this` 访问到局部变量，可以使用如下一行代码：
+
+```js
+var that = this;
+```
+
+```js
+var name = "window";
+
+var object = {
+    name:"Object",
+    getNameFunc : function(){
+        return function(){
+            return this.name;
+        }
+    }
+}
+```
+```js
+var name = "window";
+
+var object = {
+    name:"Object",
+    getNameFunc : function(){
+        return this.name;
+    }
+}
+```
+
+#### 内存泄漏
+
+当闭包的作用域中保存着一个 HTML 元素。意味着该元素无法被销毁。如下面代码：
+
+```js
+function a(){
+    var e = document.getElementById("se");
+    e.onclick = function (){
+        alert(e.id);
+    }
+}
+```
+
+之傲匿名函数的存在，e 的引用就至少为一。占用的内存永远不会被回收。
+
+稍微修改一下代码：
+
+```js
+function a(){
+    var e = document.getElementById("se");
+    var cc = e.id;
+    e.onclick = function (){
+        alert(cc);
+    }
+    e = null;
+```
+
+虽然还是不能解决内存泄漏，但是至少能够接触对 DOM 对象的引用。顺利减少其引用数。
+
+闭包会引用包含函数的整个活动对象，其中包含 e.
+
+### 模仿块级元素
+
+匿名函数可以用来模仿块级作用域。
+
+## 第八章 BOM (浏览器对象模型)
+
+BOM 的核心对象：window
+
+全局变量不能通过 `delete` 操作符删除，而直接在 `window` 对象上的定义的属性上可以，看下面的例子：
+
+```js
+var age = 19;
+window.color = "red";
+
+delete window.age;      //false;
+delete window.color;    //true;
+
+alert(window.age);      //29
+alert(window.color);    //undefined
+```
+
+#### 窗口的位移:
+
+```js
+window.moveTo(0,0);     //将窗口移动到左上角
+window.moveBy(0,100);   //将窗口向。。移动
+```
+
+#### 窗口大小：
+
+`innerWidth`,`innerHeight`,`outerWidth`,`outerHeight`
+
+`inner`:容器页面视图区的大小(减少边框)
+
+`outer`：浏览器窗口本身的尺寸
+
+#### 导航和打开窗口：
+
+```js
+window.open("http://www.baidu.com","topFrame");
+<a href="" target = "topframe"/>    //两句可以画等号
+```
+
+#### 间歇调用、超时调用
+
+超时时间
+
+```js
+var timeoutId = setTimeout(function(){      //设置超时时间
+    alert("hello world");
+},1000)
+
+clearTimeout(timeoutId);                    //取消
+```
+
+间歇时间
+
+```js
+setInterval(function(){
+    alert("hello world");
+},1000)
+```
+
+来看常见使用间歇调用的例子：
+
+```js
+var min = 0;
+var max = 10;
+var intervalId = null;
+
+function incrementNumber(){
+    num++;
+
+    if(num==max){
+        clearInterval(intervalId);
+    }
+}
+
+intervalId = setInterval(incrementNumber,500);
+```
+
+#### 系统对话框
+
+确认框：可以用 `confirm("~")`;
+
+提示输入框：`var res = prompt("~","~");` 第二个参数可带默认输入值
+
+### history 对象
+
+```js
+history.go(-1);
+history.go(1);
+history.back();
+history.forward();
+```
+
+## 第九章 客户端检测
 
 
 

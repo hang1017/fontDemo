@@ -258,6 +258,24 @@
     outline-offset: -10px;
 }
 
+.o14-1{
+    width: 100px;
+    height: 100px;
+    background-color: skyblue;
+    animation: rotate 3s linear infinite;
+    animation-play-state: running;
+}
+
+.o14-1:hover{
+    animation-play-state:paused
+}
+
+@keyframes rotate {
+    100%{
+        transform:rotate(1turn);
+    }
+}
+
 
 
 
