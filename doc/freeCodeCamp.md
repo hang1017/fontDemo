@@ -463,7 +463,42 @@ grid-template-areas:
     "footer footer";
 ```
 
+# Basic JavaScript (基础JavaScript)
 
+## 一、数组
+
+```js
+var a = ["hang",1];                 //数组
+var b = [["hang2",2],["hang1",1]];  //数组嵌套数组
+myArray.push(["dog",3]);            //插入数组
+var c = myArray.pop();              //弹出数组的最后一个元素
+var d = myArray.shift();            //弹出数组的第一个元素
+myArray.unshift(["hang4",33]);      //将值插入到数组的第一个位置
+```
+
+## 二、比较运算符
+
+```js
+3 ==  '3'   //true
+3 === '3'   //false
+```
+
+## 三、switch 运算符
+
+```js
+switch(a){
+    case "a":
+    case "b":
+        qq = "a or b";
+        break; 
+    case "c":
+    case "d":
+        qq = "c or d";
+        break;
+    default:
+        qq = "..";
+}
+```
 
 
 
