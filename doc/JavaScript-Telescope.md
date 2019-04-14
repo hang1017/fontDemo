@@ -499,8 +499,221 @@ history.forward();
 
 ## 第九章 客户端检测
 
+## 第十章 DOM(文档对象类型)
+
+### 一、Node类型
+
+#### 1、操作节点
+
+```js
+var a = someNode.appendChild(newNode);          //向列表的末尾添加一个节点
+
+var b = someNode.insertBefore(newNode,null);    //插入节点再特定的位置，null为最后一个节点
+var b = someNode.insertBefore(newNode,someNode.firstChild);    //成为第一个节点
+var b = someNode.insertBefore(newNode,someNode.lastChild);    //成为最后一个子节点的前一个节点
+
+var c = someNode.replaceChild(newNode,someNode.firstChild);     //替换 someNode的第一个节点
+```
+
+#### 2、其他方法
+
+`cloneNode(true/false)` 为克隆节点，`true` / `false` 为选择是否执行深复制
+
+深复制：复制该节点和其整个子节点数
+
+浅复制：只复制节点本身，会后的节点副本属于文档所有，因为并没有父节点，该节点成为一个孤儿。
+
+### 二、Document 类型
+
+#### 1、文档信息
+
+```js
+console.log(document.title);            //标题
+console.log(document.childNodes);       //文档子节点
+console.log(document.URL);              //完整的URL
+console.log(document.domain);           //取得域名
+console.log(document.referrer);         //原页面的URL
+
+console.log(document.nodeType);         //9。这是代表文档类型
+console.log(document.nodeName);         //"#document"
+console.log(document.parentNode+document.nodeValue);    //都为null
+
+console.log(element.nodeType);          //1。同上，这是代表文档类型
+console.log(element.nodeName);          //元素的标签名
+console.log(element.Value);             //null
+console.log(element.parentNode);        //Document/Element
+
+console.log(text.nodeType);             //3
+console.log(text.nodeName);             //"#text"
+
+console.log(comment.nodeType);          //8
 
 
+```
+
+#### 2、查找方法
+
+```js
+document.getElementById("");            //查ID
+document.getElementByTagName("");       //查标签名  
+document.getElementByName("");          //查name
+document.anchors                        //查找所有带 name 属性的<a>标签
+document.links                          //文档中所有的带href的<a>标签
+document.forms                          //文档中的所有<form>元素
+document.images                         //文档中所有的<img>元素
+```
+
+DOM 一致性检测
+
+```js
+var hasXmlDom = document.implementation.hasFeature("XML","1.0");    //返回boolean值
+```
+
+文档写入：
+
+```js
+document.write("<script type=\"text/javascript\"  src=\"file.js\"><\/script>");
+```
+
+延迟执行：
+
+```js
+widnow.onload = function(){
+    document.write("hang");
+}
+```
+
+#### 3、element 的特性操作
+
+取得特性：
+
+```js
+var div = document.getElementById("myDiv");
+console.log(div.getAttribute("id"));
+console.log(div.getAttribute("title"));
+```
+
+除了 `getAttribute()`,还有 `setAttribute()`,`removeAttribute()` 都可以用来操作特性
+
+设置特性(若已存在则替换，设置的特性名都会被变成小写)：
+
+```js
+div.setAttribute("id","cc");
+div.setAttribute("class","mm");
+```
+
+**Element 是使用 attributes 属性的唯一一个节点**
+
+#### 4、创建元素
+
+```js
+var div = document.createElement("div");
+
+document.body.appendChild(div);
+```
+
+#### 5、Text 类型
+
+有对 `text` 节点的操作，但包括增删改替换。具体在书中 `270` 页。
+
+```js
+var element = document.createElement("div");
+element.className = "message";
+
+var textNode = document.createTextNode("Hello World!");
+element.appendChild(textNode);
+
+document.body.appendChild(element);
+
+var newNode = element.firstChild.spiltText(5);
+console.log(element.firstChild.nodeValue);          //"Hello"
+console.log(element.nodeValue);                     //"world!"
+console.log(element.childNodes.length);             //2
+```
+
+### 三、DOM 操作技术
+
+#### 1、动态脚本
+
+1、表格的操作
+
+```js
+var table = document.createElement("table");
+table.border = 1;
+table.width = "100%";
+
+var tbody = document.createElement("tbody");
+table.appendChild(tbody);
+
+tbody.insertRow(0);
+tbody.rows[0].insertCell(0);
+tbody.rows[0].cells[0].appendChild(document.createTextNode("Cell 1,1"));
+tbody.rows[0].insertCell(1);
+tbody.rows[0].cells[1].appendChild(document.createTextNode("Cell 1,2"));
+
+document.body.appendChild(table);
+```
+
+## 第十一章 DOM 扩展
+
+### 一、选择符 API
+
+#### querySelector()
+
+```js
+var myDiv = document.querySelector("#myDiv");   //取得 ID 为 "myDiv" 的元素
+```
+
+#### querySelectorAll()
+
+获取所有符合的元素
+
+```js
+var ems = document.getElementById("myDiv").querySelectorAll("em");  //返回一个nodeList实例
+```
+
+### 二、HTML 5
+
+#### classList 属性
+
+`className` 的增删改操作起来比较麻烦
+
+可以用 `classList` 替换
+
+```js
+<div class = "bd user disabled">...</div>
+
+div.classList.remove("disbaled");
+div.classList.add("disbaled");
+div.classList.toggle("disbaled");
+```
+
+保证其他的类不受影响，极大的优化了操作的复杂性
+
+
+#### HTMLDocument 的变化
+
+1、readyState 属性
+
+loading 正在加载文档
+
+complete 已经加载完文档
+
+```js
+if(document.readyState == 'complete'){
+    ...
+}
+```
+
+`innerText` 和 `innerHTML` 区别：
+
+这两个属性的用法为输出页面的值，不同的是：
+
+`innerText`：输出标签内的文字
+
+`innerHTML`: 输出整个标签，包括标签的内容。
+
+## 第十二章 DOM2 和 DOM3 的变化
 
 
 
