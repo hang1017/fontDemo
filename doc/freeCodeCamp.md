@@ -500,9 +500,76 @@ switch(a){
 }
 ```
 
+## 四、对象进行查找
 
+```js
+var aa = {
+    'alpha':'Adams',
+    'bravo':'Boston',
+}
+result = aa[val];       //只能用括号表示法
+```
 
+## 五、测试对象的属性是否存在
 
+```js
+var aa = {
+    a:"cc",
+}
+myObj.hasOwnProperty("a");
+```
+
+## 六、卡了很久的关卡------javaScript---Record Collection   
+
+```js
+function updateRecords(id, prop, value) {
+  if (prop === "tracks" && value !== "") {
+   if(collection[id][prop]) {
+    collection[id][prop].push(value);
+   }
+   else {
+    collection[id][prop]=[value];
+   }
+  } else if (value !== "") {
+    collection[id][prop] = value;
+  } else {
+    delete collection[id][prop];
+  }
+  return collection;
+}
+```
+
+## 七、使用随机数
+
+1、生成 `0-1` 之间的分数
+
+```js
+Math.random()
+```
+
+2、生成随机的整数(如下为生成0~9之间的整数)
+
+```js
+Math.floor(Math.random()*10);
+```
+
+3、生成某个范围内的随机数
+
+```js
+Math.floor(Math.random() * (max - min + 1)) + min
+```
+
+## 八、将二进制数转化为十进制数
+
+```js
+parseInt(str,2);
+```
+
+## 九、多条件的三元运算符
+
+```js
+return (a === b) ? "a and b are equal" : (a > b) ? "a is greater" : "b is greater";
+```
 
 
 

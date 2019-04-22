@@ -28,6 +28,8 @@ $ npm install react-app-rewired --save-dev
 
 ```
 $ yarn add react-app-rewired customize-cra
+
+$ npm install customize-cra --save-dev
 ```
 
 ### 修改 package.json 文件
