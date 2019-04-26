@@ -571,6 +571,52 @@ parseInt(str,2);
 return (a === b) ? "a and b are equal" : (a > b) ? "a is greater" : "b is greater";
 ```
 
+# ES6 语法
+
+## 一、使用 const 声明一个数组
+
+用 `const` 声明的数组，数组名是不能修改的
+
+但是数组的值是可以改变的，请参照下面的代码
+
+```js
+"use strict";
+const s = [5, 6, 7];
+s = [1, 2, 3]; // throws error, trying to assign a const
+s[2] = 45; // works just as it would with an array declared with var or let
+console.log(s); // returns [5, 6, 45]
+```
+
+## 二、控制 const 声明的对象属性不被修改
+
+`Object.freeze(~)`：可以冻结整个对象，使属性无法被增删改
+
+```js
+let obj = {
+  name:"FreeCodeCamp",
+  review:"Awesome"
+};
+Object.freeze(obj);
+obj.review = "bad"; //will be ignored. Mutation not allowed
+obj.newProp = "Test"; // will be ignored. Mutation not allowed
+console.log(obj); 
+// { name: "FreeCodeCamp", review:"Awesome"}
+```
+
+## 三、高阶函数--filter()、map()
+
+`filter`: 用来检查每个元素--arr.filter((num) =>~)
+
+`map`:用来遍历数组的每个元素--arr.map( num => {~})
+
+```js
+const arr = [4, 5.6, -9.8, 3.14, 42, 6, 8.34, -2];
+const squaredIntegers = arr.filter( (num) => num > 0 && num % parseInt(num) === 0 ).map( (num) => Math.pow(num, 2) );
+```
+
+
+
+
 
 
 

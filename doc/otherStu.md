@@ -98,3 +98,10 @@ arr.slice(-2);      //输出数组的最后两个数
 ```
 
 
+## git 起冲突的代码操作
+
+```bash
+git stash
+git pull
+git stash pop
+```
