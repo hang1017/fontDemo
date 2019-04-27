@@ -614,6 +614,72 @@ const arr = [4, 5.6, -9.8, 3.14, 42, 6, 8.34, -2];
 const squaredIntegers = arr.filter( (num) => num > 0 && num % parseInt(num) === 0 ).map( (num) => Math.pow(num, 2) );
 ```
 
+## 四、解构函数
+
+```js
+const AVG_TEMPERATURES = {
+  today: 77.5,
+  tomorrow: 79
+};
+const { today, tomorrow } = avgTemperatures;
+```
+
+## 五、解构嵌套函数：
+
+```js
+const a = {
+  start: { x: 5, y: 6},
+  end: { x: 6, y: -9 }
+};
+const { start : { x: startX, y: startY }} = a;
+console.log(startX, startY); // 5, 6
+```
+
+## 六、解构数组
+
+```js
+const [a, b,,, c] = [1, 2, 3, 4, 5, 6];
+console.log(a, b, c); // 1, 2, 5
+
+// 用 ES6 的方法截取数组
+const [a,b,...arr] = list; 
+```
+
+## 七、将对象作为函数的参数传递
+
+箭头函数的括号，直接放上对象属性
+
+```js
+const profileUpdate =（profileData）=> { 
+  const {name，age，nationality，location} = profileData; 
+  //用这些变量做一些事情
+}
+
+// 可以改成下面的代码
+const profileUpdate =（{name，age，nationality，location}）=> { 
+  / *对这些字段执行某些操作* / 
+}
+```
+
+## 八、import 和 require 的不同
+
+`require()`：导入外部文件和模块中的函数和代码。全部导入可能会占内存
+
+`import()`:可以选择加载给定文件中的模块或文件中的哪些部分。
+
+## 九、使用 * 导出文件所有内容
+
+```js
+import * as str from "~";
+```
+
+**注意**：引用文件要用 `""`,不能用 `'`,会报错。
+
+
+
+
+
+
 
 
 
