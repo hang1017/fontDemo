@@ -1,6 +1,88 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import "./index.css";
+import { Button } from 'antd';
+import { createStore } from 'redux';
+import { Router,Route,browserHistory } from 'react-router';
+import { Provider } from 'react-redux';
+// import FilterLink from './components/FilterLink'
+import Root from './components/Root';
+
+class Game2 extends React.Component {
+    render() {
+        return (
+            <div>
+
+            </div>
+        )
+    }
+}
+
+class Game1 extends React.Component {
+
+    state = {
+        name: 'hang',
+        age: 12,
+    }
+
+    counter = (state = 0,action) => {
+        switch(action.type) {
+            case 'INCREMENT':
+                return state+1;
+            case 'DECREMENT':
+                return state-1;
+            default:
+                return state;
+        }
+    }
+
+    render() {
+
+        const Root = ({ store }) => (
+            <Provider store={store}>
+              <Router >
+                <Route path="/(:filter)" component={Game2} />
+              </Router>
+            </Provider>
+          );
+
+        let store = createStore(this.counter);
+        store.subscribe(() => {
+            console.log("~");
+            console.log(store.getState());
+        })
+
+        store.dispatch({type: 'INCREMENT'});
+        store.dispatch({type: 'INCREMENT'});
+        store.dispatch({type: 'DECREMENT'});
+
+        return (
+            <div>
+                {/* <Root/> */}
+                {/* <div>
+                    <p>
+                        Show:
+                        {" "}
+                        <FilterLink filter="all">
+                        All
+                        </FilterLink>
+                        {", "}
+                        <FilterLink filter="active">
+                        Active
+                        </FilterLink>
+                        {", "}
+                        <FilterLink filter="completed">
+                        Completed
+                        </FilterLink>
+                    </p>
+                </div> */}
+                <div>
+                    <Root />
+                </div>
+            </div>
+        )
+    }
+}
 
 class Game extends React.Component{
     render(){
@@ -101,6 +183,9 @@ class Game extends React.Component{
                 <div>{n}</div>
                 <div>{o}</div>
                 <div>{p}</div>
+                <div><Button>aa</Button></div>
+                <hr/>
+                <div><Game1/></div>
                 {/* <div>{q}</div> */}
                 {/* <div>{template}</div> */}
 

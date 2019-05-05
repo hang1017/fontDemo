@@ -675,6 +675,222 @@ import * as str from "~";
 
 **注意**：引用文件要用 `""`,不能用 `'`,会报错。
 
+# 正则表达式
+
+## 一、忽略大小写
+
+`i`:能够忽略大小写
+
+```js
+let myString = "freeCodeCamp";
+let fccRegex = /freecodecamp/i; // Change this line
+let result = fccRegex.test(myString);
+```
+
+## 二、获取重复的字符
+
+`g`:多次搜索或提取模式
+
+```js
+let twinkleStar = "Twinkle, twinkle, little star";
+let starRegex = /Twinkle/ig; // Change this line
+let result = twinkleStar.match(starRegex); // Change this line
+```
+
+## 三、匹配全字符
+
+`.`:通配全部字符。
+
+```js
+let exampleStr = "Let's have fun with regular expressions!";
+let unRegex = /.un/; // Change this line
+let result = unRegex.test(exampleStr);
+```
+
+## 四、灵活性匹配
+
+```js
+let quoteSample = "Beware of bugs in the above code; I have only proved it correct, not tried it.";
+let vowelRegex = /[aeiou]/ig; // Change this line
+let result = quoteSample.match(vowelRegex); // Change this line
+console.log(result);
+```
+
+## 五、遍历匹配
+
+```js
+let quoteSample = "The quick brown fox jumps over the lazy dog.";
+let alphabetRegex = /[a-z]/ig; // Change this line
+let result = quoteSample.match(alphabetRegex); // Change this line
+```
+
+## 六、匹配不想要
+
+`^`:
+
+```js
+let quoteSample = "3 blind mice.";
+let myRegex = /^0-9aeiou/ig; // Change this line
+let result = quoteSample.match(myRegex); // Change this line
+```
+
+## 七、多次出现
+
+`+`:匹配多次出现。
+
+```js
+let difficultSpelling = "Mississipspi";
+let myRegex = /s+/ig; // Change this line
+let result = difficultSpelling.match(myRegex);
+console.log(result);
+
+/// ss,ss,s
+```
+
+## 八、出现零次后多次的字符
+
+`*`:匹配出现 0 次或多次的字符
+
+```js
+let chewieQuote = "Aaaaaaaaaaaaaaaarrrgh!";
+let chewieRegex = /ar*/ig; // Change this line
+let result = chewieQuote.match(chewieRegex);
+console.log(result);
+```
+
+## 九、\w
+
+` \w`:可以简化匹配数字字母 = `[A-Za-z0-9_]`
+
+`\W`:可以匹配字符串中的非字符串和数字
+
+## 十、\d
+
+`\d`:快捷版的匹配数字 = `[0-9]`
+
+`\D`:匹配非数字
+
+## 十一、限制个数
+
+`{3,}`:逗号前位最少几位，逗号后位最多几位。
+
+```js
+let username = "RegexGuru";
+let userCheck = /[a-zA-Z]{2,}\d*$/; // Change this line
+let result = userCheck.test(username);
+console.log(result);
+```
+
+## 十二、匹配空格
+
+`\s`：可以用来匹配空格、回车符、换页符、换行符
+
+`\S`:用来不匹配这些
+
+```js
+let sample = "Whitespace is important in separating words";
+let countNonWhiteSpace = /\S/g; // Change this line
+let result = sample.match(countNonWhiteSpace);
+```
+
+## 十三、判断都有或全无
+
+`?``:检查前一个元素中的零个或者一个。可以将此符号视为前一个元素是可选的。
+
+```js
+let american = "color";
+let british = "colour";
+let rainbowRegex= /colou?r/;
+rainbowRegex.test(american); // Returns true
+rainbowRegex.test(british); // Returns true
+```
+
+## 十四、正面前瞻、负面前瞻
+
+`(?=...)`:确保搜索模式中的元素存在。
+
+`(?!...)`:确保搜索模式中额元素不存在。
+
+不太懂。直接看代码：
+
+```js
+let quit = "qu";
+let noquit = "qt";
+let quRegex= /q(?=u)/;
+let qRegex = /q(?!u)/;
+quit.match(quRegex); // Returns ["q"]
+noquit.match(qRegex); // Returns ["q"]
+```
+
+```js
+let password = "abc123";
+let checkPass = /(?=\w{3,6})(?=\D*\d)/;
+checkPass.test(password); // Returns true
+```
+
+## 十五、重用匹配
+
+`\1`:可以用来匹第一组的模式。
+
+但是下面这个 `^` 我真不太懂什么意思啊。
+
+```js
+let repeatNum = "42 42 42";
+let reRegex = /^(\d+)\s\1\s\1$/; // Change this line
+let result = repeatNum.match(reRegex);
+console.log(result);
+```
+
+## 十六、对符合模式的样式进行替换
+
+代码样式：`错误模式`.replace(`正则表达式`,`替换的字符`);
+
+```js
+let wrongText = "The sky is silver.";
+let silverRegex = /silver/;
+wrongText.replace(silverRegex, "blue");
+// Returns "The sky is blue."
+```
+
+也可以进行位置的替换：
+
+使用 `$` 代替符合位置的字符。
+
+```js
+"Code Camp".replace(/(\w+)\s(\w+)/, '$2 $1');
+// Returns "Camp Code"
+```
+
+## 十七、取消空格
+
+```js
+let hello = "   Hello, World!  ";
+let wsRegex = /^\s+|\s+$/g; // Change this line
+let result = hello.replace(wsRegex,''); // Change this line
+console.log(result);
+```
+
+# 调试(Debugging)
+
+使用 `console.clear()`(不带参数)，可以清除打印的消息。
+
+使用 `typeof` 可以检查变量或常量的类型。
+
+# 基本数据结构挑战 (the Basic Data Structure)
+
+关于 `splice()` 删除和替换
+
+`arr.splice(索引数,个数)`：删除
+
+`arr.splice(索引数,个数,替换内容)`:替换，替换内容不限个数
+
+关于 `slice()` 复制数组项
+
+`slice(开始的索引数(有包括),结束的索引数(不包括))`:提取、复制
+
+
+
+
 
 
 

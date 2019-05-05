@@ -80,7 +80,7 @@ this.setState({
 ```
 
 下面的代码是公共组件的操作，只是个事例，可以有不同的修改。
-```js
+```js   
 initData = params => {
     const { pagination, getSearch } = params;
     const tableData = {
@@ -96,6 +96,8 @@ initData = params => {
 ### 3、日期的转化
 
 ```js
+import moment from 'moment';
+
 dValue = moment(dataValue, 'YYYYMMDD').format('YYYY-MM-DD');
 ```
 
@@ -106,6 +108,50 @@ dValue = moment(dataValue, 'YYYYMMDD').format('YYYY-MM-DD');
 ```js
 onRef={v => (this.SearchBox = v)}
 ```
+
+### 5、导出 BizCharts 图表
+
+```js
+<Chart
+    height={chartHeight}
+    scale={scale}
+    forceFit
+    data={data}
+    onGetG2Instance={chartIns => {      //这才是重点
+        this.chartIns = chartIns;       //可以直接参考官网-常见问题
+    }}
+>
+```
+
+点击导出图表事件
+
+```js
+handleSaveImg = () => {
+    const { canvasWidth } = this.props;     //父组件传来的宽度
+    const canvas = document.createElement('canvas');
+    canvas.height = 500;
+    canvas.width = canvasWidth || innerWidth;
+    const ctx = canvas.getContext('2d');       //设置图表为 2D
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);    //设置填充画布的大小
+    ctx.drawImage(this.chartIns.get('canvas')._cfg.el, 0, 0);   //
+    var image = canvas.toDataURL('image/jpeg');     //图片路径
+    var $a = document.createElement('a');           
+    $a.setAttribute('href', image);
+    $a.setAttribute('download', this.props.title);
+    $a.click();
+  };
+```
+
+
+
+
+
+
+
+
+
+
 
 
 
