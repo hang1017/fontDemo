@@ -82,8 +82,8 @@ const { override, fixBabelImports } = require('customize-cra');
    fixBabelImports('import', {
      libraryName: 'antd',
      libraryDirectory: 'es',
-    //  style: 'css',
-      style:true,
+     style: 'css',
+      // style:true,
    }),
 ```
 
