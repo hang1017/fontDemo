@@ -4,12 +4,8 @@ import IndexPage from './routes/IndexPage';
 import Count from './routes/Count';
 import Index from './routes/Index';
 import Users from './routes/User';
+import Deletes from './routes/Deletes';
 
-let routes = [
-  {
-
-  }
-]
 
 function RouterConfig({ history }) {
   return (
@@ -19,6 +15,7 @@ function RouterConfig({ history }) {
         <Route path="/count" exact component={Count} />
         <Route path="/" exact component={Index}/>
         <Route path="/users" exact component={Users} />
+        <Route path="/deletes" exact component={Deletes} />
       </Switch>
     </Router>
   );

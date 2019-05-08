@@ -25,6 +25,11 @@ const Header1 = ({ location }) => {
                                 <Icon type='save'/> 计数器
                             </Link>
                         </Menu.Item>
+                        <Menu.Item key='4'>
+                            <Link to='/deletes'>
+                                <Icon type='delete'/> 延迟删除
+                            </Link>
+                        </Menu.Item>
                     </Menu>
                 </Header>
             </Layout>

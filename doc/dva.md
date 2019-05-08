@@ -191,7 +191,21 @@ dispatch: 是一个函数方法，用来将 Action 发送给 State
 
 #### 1、model 对象的属性
 
+- `namespace`:当前 Model 的名称。整个应用的 state,由多个小的 Model 的 State 以 namespace 为 key 合成的。
+- `state`:该 Model 当前的状态。数据保存在这里，直接决定了视图层的输出。
+- `reducers`:Action 处理器，处理同步动作，用来算出最新的 State
+- `effects`:Action 处理器，处理异步动作
 
+#### 2、Generator 函数
+
+Effect 是一个 Generator 函数，内部使用 yield 关键字，标识每一步的操作(不管是同步还是异步的)。
+
+#### 3、call 和 put
+
+dva 提供多个 effect 函数内部的处理函数，比较常用的 `call` 和 `put`.
+
+- `call`:执行异步函数
+- `put`:发出一个 action ,类似于 dispatch
 
 
 

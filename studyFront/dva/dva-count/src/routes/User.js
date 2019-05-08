@@ -11,7 +11,7 @@ const User = ({ dispatch,users }) => {
             payload:id,
         })
     }
-
+    console.log(users);
     return (
         <div>
             <h2>List of User</h2>

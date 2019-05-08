@@ -7,10 +7,17 @@ import './index.css';
 // 1. Initialize
 const app = dva({
     initialState: {
+        deletes: [
+            { name:'react',id:1 },
+            { name:'antd',id:2 },
+            { name:'redux',id:3 },
+            { name:'dva',id:4 },
+        ],
         count:1,
         users: [
             { name: 'hang1',age:15,id:1 },{ name: 'hang2',age:17,id:2 },{ name: 'hang3',age:18,id:3 }
-        ]
+        ],
+        
     }
 });
 
@@ -19,8 +26,10 @@ const app = dva({
 
 // 3. Model
 // app.model(require('./models/example').default);
+app.model(require('./models/deletes').default);
 app.model(require('./models/count').default);
 app.model(require('./models/users').default);
+
 
 
 
