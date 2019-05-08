@@ -7,9 +7,23 @@ import Users from './routes/User';
 import Deletes from './routes/Deletes';
 
 
-function RouterConfig({ history }) {
+
+
+function RouterConfig({ history, app }) {
+  const routes = [
+    {
+      path:'/count',
+      name:'count',
+      getComponent(nextState, cb) {
+        require.ensure([], (require) => {
+          // registerModel(app, require('./models/count'));
+          cb(null, require('./routes/Count'));
+        })
+      }
+    },
+  ]
   return (
-    <Router history={history}>
+    <Router history={history} routes={routes}>
       <Switch>
         <Route path="/home" exact component={IndexPage} />
         <Route path="/count" exact component={Count} />

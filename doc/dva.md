@@ -207,6 +207,10 @@ dva 提供多个 effect 函数内部的处理函数，比较常用的 `call` 和
 - `call`:执行异步函数
 - `put`:发出一个 action ,类似于 dispatch
 
+## 使用 dva 开发复杂 SPA
+
+### 一、动态加载 model
+
 
 
 

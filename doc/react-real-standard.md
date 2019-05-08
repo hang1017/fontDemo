@@ -143,7 +143,54 @@ handleSaveImg = () => {
   };
 ```
 
+## 四川全球通俱乐部
 
+### 一、样式设置
+
+#### 1、设置边框不同弧度
+
+```css
+border-radius:左上，右上，右下，左下
+```
+
+#### 2、颜色渐变
+
+```css
+background:linear-gradient(
+    to right,
+    #D3AF72 0%,
+    #ECD2A0 100%,
+)
+```
+
+#### 3、背景不居中、大小不合适
+
+```css
+background:url('') no-repeat center center;
+background-size:100% 100%;
+```
+
+### 二、格式设置
+
+#### 1、图片显示
+
+```html
+<img src={require('路径')} />
+```
+
+### 三、增加文字样式包
+
+在全局样式 `global.less` 中,添加下面的代码：
+
+```js
+@font-face 
+{
+    font-family:'Happy-Font',
+    src:url('./assets/font/third-happy.ttf'),
+}
+```
+
+之后即可在 `css` 中使用它。
 
 
 

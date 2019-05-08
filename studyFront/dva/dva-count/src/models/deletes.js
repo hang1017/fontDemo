@@ -1,9 +1,23 @@
 export default {
     namespace:'deletes',
-    state:{},
-    effects:{},
+    state:{
+        deletes: [],
+    },
+    effects:{
+        *delayDel({ payload: id,state },{ call, put }) {
+            console.log(id);
+            setTimeout(() => {
+                
+            }, 2000);
+            // yield call('~',id);
+            yield put({
+                type:'deleteItem',
+                payload:id
+            })
+        }
+    },
     reducers:{
-        delete(state,{ payload: id }) {
+        deleteItem(state,{ payload: id }) {
             return state.filter(item => item.id !== id);
         }
     },
