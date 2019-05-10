@@ -211,7 +211,113 @@ dva 提供多个 effect 函数内部的处理函数，比较常用的 `call` 和
 
 ### 一、动态加载 model
 
+应用启动时不需要全部启动 model,如果每个页面的功能是通过路由来切换的话。互相之间没有关系，通常会使用 `webpack` 下的 `require.ensure` 来做代码模块的懒加载。具体代码如下：
 
+```js
+function RounterConfig({ history, app }) {
+  const routes = [
+    {
+      path:'/users',
+      name:'Users',
+      getComponent(nextState,cb) {
+        require.ensure([],(require) => {
+          registerModel(app,require('./models/users'));
+          cb(null,require('./routes/Users'));
+        })
+      }
+    }
+  ]
+  return <Router history={history} routes={routes} />;
+}
+```
+
+### 二、使用 model 共享全局信息
+
+有些场景是可以做到全局 model 的。
+
+如：路由进退，model 可以用于路由间的数据共享。例子：列表页和详情页
+
+如果当前应用需要加载不止一个 model,`effects` 里的 `select` 操作可以获取别的 model 里的 `state`.如：
+
+```js
+*foo(action,payload) {
+  const { a, b } = yield select();
+}
+```
+
+作用：将数据存在对应的 model 中，分别通过不同的 `effect` 去更新，在获取的地方组合，提高 model 的复用性。
+
+### 三、动态扩展 model
+
+共享需求存在这样一种情况：业务视图差不多，但存在少量的差别。所以需要进行 model 扩展
+
+- 新增一些东西
+- 覆盖一些原有东西
+- 根据条件动态创建一些东西
+
+借助 dva 社区 `dva-model-extend` 库来做这件事
+
+或者通过函数工厂来生成 model,如：
+
+```js
+function createModel(options) {
+  const { namespace, param } = options;
+  return (
+    namespace:'',
+    states:{},
+    reducers:{},
+    effects:{
+      *foo(){
+        yield call()
+      }
+    },
+  )
+}
+
+const modelA = createModel({ namespace:'A', param:{ type: 'A' } });
+const modelB = createModel({ namespace:'A', param:{ type: 'B' } });
+```
+
+### 四、多次调用
+
+在一个 `effect` 中，可以使用多个 `put` 来分别调用 `reducer` 来更新状态。
+
+在一个 `effect` 中，可以存在多个 `call` 操作。
+
+### 五、多任务调度
+
+- 并行。若干任务之间不存在依赖关系，并且后续操作对他们的结果无依赖
+- 竞争。只有一个完成，就进入下一个环节
+- 子任务。若干任务，并行执行，全部做完之后，才能执行下一个环节。
+
+#### 并行
+
+```js
+const [ result1,result2 ] = yield [
+  call(service1,param1),
+  call(service2,param2),
+]
+```
+
+#### 竞争
+
+```js
+const { result1, result2 } = yield race({
+  result1: call(service, 'aa'),
+  result2: call(delay, 1000),
+});
+
+if(result1) {
+  put({ type:'~',result1 });
+}else if(result2){
+  put({ type:'~s' })
+}
+```
+
+
+#### 子任务
+
+可以参照上面 `四、多任务调度` 的方法
 
 
 
