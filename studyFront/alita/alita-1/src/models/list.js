@@ -46,6 +46,7 @@ const ListModel = {
         type:'save',
         payload:{
           name:homeName.name
+          // name:data.text
         }
       })
     }
@@ -69,6 +70,8 @@ const ListModel = {
      * 其他的保留原样
      */
     save(state, action) {
+      console.log(action);
+
       return {
         ...state,
         ...action.payload,

@@ -5,7 +5,10 @@ const IndexModel = {
   namespace: 'index',
 
   state: {
-    name: 'index->name'
+    name: 'index->name',
+    items:[
+      {},{}
+    ]
   },
 
   effects: {
