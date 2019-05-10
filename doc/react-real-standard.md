@@ -170,6 +170,16 @@ background:url('') no-repeat center center;
 background-size:100% 100%;
 ```
 
+#### 4、修改底层的样式
+
+```css
+global: {
+    选中className: {
+        min-width: 316px!important;     //设置优先级或者替换底层代码
+    }
+}
+```
+
 ### 二、格式设置
 
 #### 1、图片显示
@@ -191,6 +201,63 @@ background-size:100% 100%;
 ```
 
 之后即可在 `css` 中使用它。
+
+### 四、React 组件间触发方法操作
+
+#### 1、第一种方法
+
+使用 `refs`.
+
+在父组件上编写如下代码：
+
+```js
+onRef = (ref) => {  
+    this.child=ref;
+}
+```
+
+将这个方法传递给子组件，如下代码：
+
+```js
+<Collapse onRef={this.onRef}></Collapse>
+```
+
+父组件中的事件代码编写：
+
+```js
+this.child.emptyAll();  //emptyAll() 为子组件的方法，这样调用就可以直接触发子组件的方法
+```
+
+子组件的编写方式如下：
+
+```js
+componentDidMount() {
+    this.props.onRef(this);
+}
+```
+
+#### 2、第二种方法
+
+子组件只需编写方法即可。
+
+父组件：
+
+`ref`:传递的参数代码如下：
+
+```js
+ref={(child2) => {this.child2 = child2}}>
+```
+
+在点击事件中，定义两个变量
+
+```js
+emptyAll = () => {
+    this.child2.emptyAll();
+    this.child1.emptyAll();
+}
+```
+
+
 
 
 
