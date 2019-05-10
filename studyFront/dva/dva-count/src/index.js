@@ -15,7 +15,9 @@ const app = dva({
         ],
         count:1,
         users: [
-            { name: 'hang1',age:15,id:1 },{ name: 'hang2',age:17,id:2 },{ name: 'hang3',age:18,id:3 }
+            { name: 'hang1',age:15,id:1 },
+            { name: 'hang2',age:17,id:2 },
+            { name: 'hang3',age:18,id:3 }
         ],
         
     }

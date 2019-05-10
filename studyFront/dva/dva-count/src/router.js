@@ -9,18 +9,29 @@ import Deletes from './routes/Deletes';
 
 
 
-function RouterConfig({ history, app }) {
+function RouterConfig({ history, app, registerModel }) {
   const routes = [
     {
-      path:'/count',
-      name:'count',
+      path: '/',
+      name: 'IndexPage',
       getComponent(nextState, cb) {
         require.ensure([], (require) => {
-          // registerModel(app, require('./models/count'));
-          cb(null, require('./routes/Count'));
-        })
-      }
+          registerModel(app, require('./models/example'));
+          cb(null, require('./routes/IndexPage'));
+        });
+      },
     },
+    {
+      path: '/users',
+      name: 'UsersPage',
+      getComponent(nextState, cb) {
+        require.ensure([], (require) => {
+          registerModel(app, require('./models/users'));
+          cb(null, require('./routes/User'));
+        });
+      },
+    },
+ 
   ]
   return (
     <Router history={history} routes={routes}>
