@@ -5,9 +5,11 @@
 - 一、介绍
 - 二、环境搭建和使用
 - 三、全局架构
-- 四、models 包下文件架构
-- 五、初始化数据 和 models 数据比对
-- 六、稍复杂概念
+- 四、Model 包下文件架构
+- 五、connect 连接 Model 和 Route 页面下的数据
+- 六、数据显示和操作的流程
+- 七、初始化数据 和 Model 数据比对
+- 八、稍复杂概念
 
 ## 一、介绍
 
@@ -238,19 +240,144 @@ export defalut {
 
 好了。马上进入我们的 `Model` 文件结构专题。
 
-## 四、models 包下文件架构(重点)
+## 四、Model 包下文件架构(重点)
 
 ### 1、namespace
 
+官网解释：当前 Model 的名称。整个应用的 State,由多个 Model 的 State 以 `namespace` 为 key 合成的。
+
+官网解释很绕，通俗的说：就是给每个 Model 一个命名用作 key 的标识。一般命名方式等于 Model `js` 的 文件名，举个例子：
+
+Model 文件 `home.js` 里 `namespace` 值可以设为：`home`
+
 ### 2、state
 
-### 3、effects
+该 Model 当前的状态。每个 Model 的数据都保存在这里，这里的数据通过 Route 视图层的 `this.props`,直接显示在页面上。
 
-### 4、reducers
+这里的数据一改变，页面上的数据也将自动改变。
+
+### 3、reducers
+
+用来处理同步操作。如果不需要调接口时候，我们前台传递的 `action`(不懂的小伙伴不着急，下面有微讲解) 可以直接调用 `reducers` 里的方法。
+
+上面说的同步是同步什么呢？同步该 Model 里面的 `state` 的数据。
+
+打开项目中 models `example.js`。找到 `reducers`,我将他复制在下方，来讲解一下怎么创建 reducers 下的方法。
+
+```js
+reducers: {
+    save1(state, action) {
+        return { ...state, ...action.payload };
+    },
+    save2(state, action) {
+        return { ...state, ...action.payload };
+    },
+},
+```
+#### 1、save
+
+`save`:为一个普通方法的命名，可自行取名
+
+#### 2、state
+
+`state`:为当前 Model 下的所有 `state` 值，可以 `console.log(state)` 看一下输出就知道了。
+
+#### 3、action
+
+`action`:当前台页面需要进行数据操作时，就会创建一个 `action`,`action` 存放了传递过来需要对当前 `state` 进行改变的数据。
+
+#### 4、payload
+
+`payload`:就是 `action` 里传递过来的数据。可以 `console.log(action.payload)` 看一下输出就知道了。
+
+#### 5、return
+
+`return`：返回的是新的 `state`。等于舍弃了旧的 `state`,重新 `return` 一个新的 `state` 作为当前 Model 的 `state`。
+
+一般情况下，我们要解开旧的 `state`,将它重新赋值给新的 `state`。`...state` 为 [ES6](http://es6.ruanyifeng.com/) 语法。
+
+将操作完成得数据累加到 `return` 中。
+
+同名的数据会覆盖，所以不用担心旧的 `state` 值会影响到新设置的值。
+
+不同名的数据会追加。
+
+### 4、effects
+
+用来处理异步操作。如果需要调取接口的话，前台页面就需要调用 `effects` 里的方法。
+
+将数据取出来，在传递给 `reducers` 里的方法进行数据操作和同步 `state`。
+
+来看看例子：
+
+```js
+import { querySomething } from '@/services/api';
+
+*query({ payload }, { call, put, select }) {
+    const data = yield call(querySomething, payload);
+    console.log(data)
+    yield put({
+    type: 'save1',
+    payload: { name: data.text },
+    });
+},
+```
+
+#### 1、*
+
+`*`:这个 `*` 符号，可能小伙伴们不熟悉，简单点，不管它，只要记住每个 `effects` 里方法前面都加上 `*` 即可。
+
+稍微解释一下：
+
+这表明它是一个异步函数，里面可以使用 `yield` 等待其他异步函数执行结果。
+
+#### 2、query
+
+`query`:方法名，自定义命名。不多解释。
+
+#### 3、payload
+
+`payload`:当前台页面需要进行数据操作时，就会创建一个 `action`,`action` 存放了传递过来需要对当前 `state` 进行改变的数据。
+
+`payload` 就是存放在 `action` 里面的数据。可以 `console.log(payload)` 看输出的效果。
+
+#### 4、call
+
+`call`:与后台服务端接口进行交互。
+
+第一个传参：后台服务器接口对应的名称。第二个参数：入参。
+
+同行的 `data` 为出参。可以 `console.log(data)` 看输出的效果。
+
+#### 5、put
+
+`put`:用来发出事件，即 `action`。一般调用 `reducers` 下的方法进行同步数据。
+
+`type`:该 Model 层里 `reducers` 下的方法名。
+
+`payload`:参数的传递。
+
+如此一来。我们就将服务端查出来的数据，传递给 `reducers` 进行同步数据的操作了。
+
+#### 6、select
+
+`select`:如果我们需要调用到其他 Model 层里面的 state值。那么我们就需要用 `select` 来进行操作。
+
+```js
+const homeName = yield select(state => state.home);
+```
+
+这样我们就可以取到名为 `home` 的 Model 层里面的 `state` 数据了。
 
 ### 5、subscription
 
-## 五、初始化数据 和 models 数据比对
+这是订阅。我也不懂。
 
-## 六、稍复杂概念
+## 五、connect 连接 Model 和 Route 页面下的数据
+
+## 六、数据显示和操作的流程
+
+## 七、初始化数据 和 Model 数据比对
+
+## 八、稍复杂概念
 
