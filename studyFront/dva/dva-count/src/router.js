@@ -36,11 +36,11 @@ function RouterConfig({ history, app, registerModel }) {
     <Router history={history}>
       <Switch>
         <Route path="/"  component={Index}>
-          <IndexRoute component={IndexPage} />
-          <Route path="/home"  component={IndexPage} />
-          <Route path="/count"  component={Count} />
-          <Route path="/users"  component={Users} />
-          <Route path="/deletes"  component={Deletes} />
+          {/* <IndexRoute component={IndexPage} /> */}
+          <Route path="home"  component={IndexPage} />
+          <Route path="count"  component={Count} />
+          <Route path="users"  component={Users} />
+          <Route path="deletes"  component={Deletes} />
         </Route>
       </Switch>
     </Router>
