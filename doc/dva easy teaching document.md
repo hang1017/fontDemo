@@ -274,11 +274,11 @@ reducers: {
     },
 },
 ```
-#### 1、save
+#### (1)、save
 
 `save`:为一个普通方法的命名，可自行取名
 
-#### 2、state
+#### (2)、state
 
 `state`:为当前 Model 下的所有 `state` 值，可以 `console.log(state)` 看一下输出就知道了。
 
@@ -286,11 +286,11 @@ reducers: {
 
 `action`:当前台页面需要进行数据操作时，就会创建一个 `action`,`action` 存放了传递过来需要对当前 `state` 进行改变的数据。
 
-#### 4、payload
+#### (4)、payload
 
 `payload`:就是 `action` 里传递过来的数据。可以 `console.log(action.payload)` 看一下输出就知道了。
 
-#### 5、return
+#### (5)、return
 
 `return`：返回的是新的 `state`。等于舍弃了旧的 `state`,重新 `return` 一个新的 `state` 作为当前 Model 的 `state`。
 
@@ -323,7 +323,7 @@ import { querySomething } from '@/services/api';
 },
 ```
 
-#### 1、*
+#### (1)、*
 
 `*`:这个 `*` 符号，可能小伙伴们不熟悉，简单点，不管它，只要记住每个 `effects` 里方法前面都加上 `*` 即可。
 
@@ -331,17 +331,17 @@ import { querySomething } from '@/services/api';
 
 这表明它是一个异步函数，里面可以使用 `yield` 等待其他异步函数执行结果。
 
-#### 2、query
+#### (2)、query
 
 `query`:方法名，自定义命名。不多解释。
 
-#### 3、payload
+#### (3)、payload
 
 `payload`:当前台页面需要进行数据操作时，就会创建一个 `action`,`action` 存放了传递过来需要对当前 `state` 进行改变的数据。
 
 `payload` 就是存放在 `action` 里面的数据。可以 `console.log(payload)` 看输出的效果。
 
-#### 4、call
+#### (4)、call
 
 `call`:与后台服务端接口进行交互。
 
@@ -349,7 +349,7 @@ import { querySomething } from '@/services/api';
 
 同行的 `data` 为出参。可以 `console.log(data)` 看输出的效果。
 
-#### 5、put
+#### (5)、put
 
 `put`:用来发出事件，即 `action`。一般调用 `reducers` 下的方法进行同步数据。
 
@@ -359,7 +359,7 @@ import { querySomething } from '@/services/api';
 
 如此一来。我们就将服务端查出来的数据，传递给 `reducers` 进行同步数据的操作了。
 
-#### 6、select
+#### (6)、select
 
 `select`:如果我们需要调用到其他 Model 层里面的 state值。那么我们就需要用 `select` 来进行操作。
 
@@ -369,7 +369,7 @@ const homeName = yield select(state => state.home);
 
 这样我们就可以取到名为 `home` 的 Model 层里面的 `state` 数据了。
 
-### 5、subscription
+### (5)、subscription
 
 这是订阅。我也不懂。
 
