@@ -7,6 +7,9 @@ import './index.css';
 // 1. Initialize
 const app = dva({
     initialState: {
+        example:{
+            name:'hang',
+        },
         deletes: [
             { name:'react',id:1 },
             { name:'antd',id:2 },
@@ -27,7 +30,7 @@ const app = dva({
 // app.use({});
 
 // 3. Model
-// app.model(require('./models/example').default);
+app.model(require('./models/example').default);
 app.model(require('./models/deletes').default);
 app.model(require('./models/count').default);
 app.model(require('./models/users').default);

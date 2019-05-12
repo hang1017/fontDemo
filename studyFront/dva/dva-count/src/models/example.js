@@ -3,7 +3,9 @@ export default {
 
   namespace: 'example',
 
-  state: {},
+  state: {
+    name:'hanghangshuaishuai'
+  },
 
   subscriptions: {
     setup({ dispatch, history }) {  // eslint-disable-line
@@ -18,7 +20,8 @@ export default {
 
   reducers: {
     save(state, action) {
-      return { ...state, ...action.payload };
+      console.log(state);
+      return { ...state, ...action.payload,name:'hanghang' };
     },
   },
 

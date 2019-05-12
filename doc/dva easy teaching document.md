@@ -7,8 +7,8 @@
 - 三、全局架构
 - 四、Model 包下文件架构
 - 五、connect 连接 Model 和 Route 页面下的数据
-- 六、数据显示和操作的流程
-- 七、初始化数据 和 Model 数据比对
+- 六、初始化数据 和 Model 数据比对
+- 七、数据显示和操作的流程
 - 八、稍复杂概念
 
 ## 一、介绍
@@ -375,9 +375,210 @@ const homeName = yield select(state => state.home);
 
 ## 五、connect 连接 Model 和 Route 页面下的数据
 
-## 六、数据显示和操作的流程
+`dva` 有提供 `connect` 方法。只要在每个 Routes 页面导入下面的代码即可。
 
-## 七、初始化数据 和 Model 数据比对
+```js
+import { connect } from 'dva';
+```
+
+如果细心的小伙伴已经发现了，Routes 下的页面定义的都是状态组件，而不是用 `class ~ extends React.Components`,这样的好处是：组件不被实例化，整体渲染性得到了提升。
+
+对于组件：
+
+我们在最后导出时使用 `connect` 进行与 Models 的连接。
+
+```js
+export default connect(({index}) => ({index}))(IndexPage);
+```
+
+解释一下 `index`:
+
+`index` 为 Model 层里面的 `namespace`。只要补上上面的代码就可以了。是不是很快~
+
+## 六、初始化数据 和 Model 数据比对
+
+### 1、初始化数据
+
+这里指的是全局 `index.js` 里的 `initialState`,大家可以参考 第三大点->第1小点下:创建 dva 实例
+
+这里存放的是一个个以 `model` 下的 `namespace` 命名的对象；如果你随意命名的化页面是找不到你存放在这里的数据的。
+
+### 2、Model -> state 
+
+这里也是用来存放数据对象的。
+
+两者的对比是：`initialState` 的优先级会高于 `model` => `state`,默认是 `{}`,所以页面初始化时，读取到的数据是 `initialState`。
+ 
+## 七、数据显示和操作的流程
+
+接下来我将用最简单的步骤从无到有的演示一遍 dva 的写法和数据传输的流向。
+
+不要看有那么多的步骤，其实每一步都很简短，很简单。
+
+### 1、编写 Route 页面
+
+`class` 的写法就是 `class ~ extends React.Component{}` 
+
+这里我将用组件的形式演示一遍。
+
+```js
+import React from 'react';
+
+const Example = ({dispatch,全局 `index.js` 里你需要的参数对象名称}) => {
+    return (<div></div>)
+}
+
+export default Example;
+```
+
+这就是一个最简单的页面。
+
+### 2、编写 Model 层代码
+
+```js
+
+export default {
+
+  namespace: 'example',
+
+  state: {},
+
+  effects: {
+    *fetch({ payload }, { call, put }) {  // eslint-disable-line
+      yield put({ type: 'save',payload:data });
+    },
+  },
+
+  reducers: {
+    save(state, action) {
+      return { ...state, ...action.payload };
+    },
+  },
+};
+```
+
+也是最简单的 `Model` 的格式，有任何不懂得地方请直接参考**第四大点**。
+
+### 3、编写 初始化数据
+
+在全局 `index.js` 里 修改下面这段代码：
+
+```js
+const app = dva({
+    initialState: {
+        example: {
+            name:'nameText'
+        }
+    }
+})
+
+app.model(require('./models/example').default);     //还要记得补上这句话。在 index.js 里载入它。
+```
+
+### 4、修改路由配置
+
+```js
+import Count from './routes/Example';
+
+<Route path="/example" exact component={Example} />
+```
+
+### 5、使用 connect 连接
+
+在 `Route` -> `example.js` 页面上使用 `connect`。
+
+修改代码：
+
+```js
+import { connect } from 'dva';
+
+export default connect(({ example }) => ({ example }))(Example);
+```
+
+如此一来，在页面上通过 `this.props` 即可获取到 `example` 里得数据。
+
+### 6、前台调用 Model 层方法
+
+如果需要于后台交互，那么就需要将入参传递到后台的 Model 层进行服务器的交互。
+
+这里距需要讲解一下 `dispatch`了。
+
+`dispatch`：是一个用于触发 `action`(这里可以直接理解为：调用后台的 model 里的方法) 的函数。只是触发 `Model` 里的函数而已，并没有对数据进行操作。
+
+可以类比为一个引路人。
+
+来看一下前台怎么使用 `dispatch` 的。
+
+```js
+const { dispatch } = this.props;    //在 dva 中，可以通过 `this.props` 直接取得 `dispatch`
+
+dispatch ({
+    type:'example/fetch',           //指定哪个 model 层里面的哪个 方法
+    payload:{name:'exampleNew'},    //需要传递到 model 层里面的参数。dayload 为固定用法(我自己的理解)。
+})
+```
+
+至此，我们就已经在页面上触发了 model 层里面的某个方法，并且把参数一起传递过去了。
+
+`type`:如果你不需要调用异步的话可以直接 `example/save` 调用 `reducer` 下的方法。
+
+### 7、数据在 Model 中的流向
+
+下面这些文字若有任何不懂的地方请直接参考上面的内容。
+
+如果你上一步是调用 异步(Effects) 里的方法的话
+
+那么你可以 `console.log(dayload)` 下,看看数据是否有传递过来。
+
+如果需要调用 服务端接口就使用 `const data = yield call(接口名,参数名);`,然后 `console.log(data)` 看看数据有没有查询出来。
+
+接着调用 `yield put({ type:'save',payload:data })` 调用 将参数传递到 `reducer` 下的方法进行同步。
+
+来到 `reducers` 的方法下，进行数据操作，操作完成后用 `return` 将数据返回给 `state`。
 
 ## 八、稍复杂概念
+
+### 1、多次调用
+
+在一个 `effect` 中，可以使用多个 `put` 来分别调用 `reducer` 更新状态(state)。
+
+在一个 `effect` 中，可以存在多个 `call` 操作。
+
+### 2、多任务调度
+
+- 并行。若干任务之间不存在依赖关系，并且后续操作对他们的结果无依赖。
+- 竞争。只有一个完成，就进入下一个环节。
+- 子任务。若干任务，并行执行，全部做完之后，才能进入下一个环节。
+
+#### 并行
+
+```js
+const [ result1,result2 ] = yield [
+    call(service1,param1),
+    call(service2,param2),
+]
+```
+
+#### 竞争
+
+```js
+const { result1,result2 } = yield race({
+    result1:call(service1,param1),
+    result2:call(service2,param2),
+})
+```
+
+#### 子任务
+
+可以直接参照 上一点 `多次调用` 的方法。
+
+
+
+
+
+
+
+
+
+
 
