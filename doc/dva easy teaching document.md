@@ -116,7 +116,7 @@ app.start('#root');
 
 如果还不清楚，没关系，下面我一一讲解：
 
-#### 1、创建 dva 实例
+#### (1)、创建 dva 实例
 
 用于创建应用，返回 dva 实例，**dva 支持多实例**，如：
 
@@ -143,7 +143,7 @@ const app = dva({
 
 如果命名不规范，数据是初始化不到页面上的。
 
-#### 2、装载插件
+#### (2)、装载插件
 
 需要任何样式的插件以上面的形式编写代码即可。
 
@@ -151,17 +151,17 @@ const app = dva({
 
 上面引用的插件是：页面还未加载完毕时显示的 `loading` 图标，加上了上面那行插件代码，你就不要每个页面都写 `showloading` 和 `hideloading` 了。
 
-#### 3、注册 Model
+#### (3)、注册 Model
 
 你每创建出来的一个 `model` **都需要来全局 `index.js` 来注册一下**，这样 `model` 层才能用。
 
 Model 层的代码是重点，会放到下面的**第四大点**重点讲解。这里只是告诉大家要注册一下。
 
-#### 4、配置路由
+#### (4)、配置路由
 
 细心的小伙伴会发现在 `index.js` 同级目录下有一个 `router.js`,这里的配置路由就是配置这个页面的东西。下面**第2小点马上就讲解**，这里只是告诉大家，如何引用配置好的路由。
 
-#### 5、启动应用
+#### (5)、启动应用
 
 启动应用不解释。
 
@@ -282,7 +282,7 @@ reducers: {
 
 `state`:为当前 Model 下的所有 `state` 值，可以 `console.log(state)` 看一下输出就知道了。
 
-#### 3、action
+#### (3)、action
 
 `action`:当前台页面需要进行数据操作时，就会创建一个 `action`,`action` 存放了传递过来需要对当前 `state` 进行改变的数据。
 
@@ -371,7 +371,25 @@ const homeName = yield select(state => state.home);
 
 ### (5)、subscription
 
-这是订阅。我也不懂。
+Model 中的 `subscription` 相当于一个监听器，可以监听路由的变化、鼠标、键盘、服务器连接变化等。
+
+这样再其中可以根据不同的变化作出相应的处理。
+
+如果你只是入门级别的选手，其实不需要用到这个东西，我自己也没用过，放个例子你们看看。
+
+```js
+subscriptions: {
+    setup:({ dispatch, history }) {
+        window.onresize = () => {   //这里表示的当浏览器的页面的大小变化时就会触发里面的dispatch方法，这里的save就是reducers中的方法名
+        dispatch (type:"save")  
+      }
+    },
+    onClick ({dispatch}) {
+      document.addEventListener('click',() => {   //这里表示当鼠标点击时就会触发里面的dispatch命令，这里的save就是reducers中的方法名
+        dispatch (type:"save")
+    })
+}
+```
 
 ## 五、connect 连接 Model 和 Route 页面下的数据
 

@@ -6,8 +6,7 @@ import Index from './routes/Index';
 import Users from './routes/User';
 import Deletes from './routes/Deletes';
 
-
-
+import { IndexRoute } from 'react-router';
 
 function RouterConfig({ history, app, registerModel }) {
   const routes = [
@@ -34,13 +33,15 @@ function RouterConfig({ history, app, registerModel }) {
  
   ]
   return (
-    <Router history={history} routes={routes}>
+    <Router history={history}>
       <Switch>
-        <Route path="/home" exact component={IndexPage} />
-        <Route path="/count" exact component={Count} />
-        <Route path="/" exact component={Index}/>
-        <Route path="/users" exact component={Users} />
-        <Route path="/deletes" exact component={Deletes} />
+        <Route path="/"  component={Index}>
+          <IndexRoute component={IndexPage} />
+          <Route path="/home"  component={IndexPage} />
+          <Route path="/count"  component={Count} />
+          <Route path="/users"  component={Users} />
+          <Route path="/deletes"  component={Deletes} />
+        </Route>
       </Switch>
     </Router>
   );
