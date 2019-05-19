@@ -14,6 +14,6 @@ app.use(createLoading());
   app.use(plugin);
 });
 
-app.model({ namespace: 'home', ...(require('E:/installFile/vsCode/workspace/studyFront/alita/alita-1/src/models/home.js').default) });
-app.model({ namespace: 'index', ...(require('E:/installFile/vsCode/workspace/studyFront/alita/alita-1/src/models/index.js').default) });
-app.model({ namespace: 'list', ...(require('E:/installFile/vsCode/workspace/studyFront/alita/alita-1/src/models/list.js').default) });
+app.model({ namespace: 'home', ...(require('D:/git-fontDemo/studyFront/alita/alita-1/src/models/home.js').default) });
+app.model({ namespace: 'index', ...(require('D:/git-fontDemo/studyFront/alita/alita-1/src/models/index.js').default) });
+app.model({ namespace: 'list', ...(require('D:/git-fontDemo/studyFront/alita/alita-1/src/models/list.js').default) });

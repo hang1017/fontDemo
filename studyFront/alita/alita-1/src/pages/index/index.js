@@ -10,11 +10,17 @@ import styles from './index.less';
 class Page extends Component{
   state = {};
 
+  componentDidMount() {
+    this.props.dispatch({
+      type: 'index/query'
+    })
+  }
+
   render() {
     const {
       index: { name,items },
     } = this.props;
-    console.log(items);
+    console.log(name);
 
     const gotoList = () => {
       router.push('/list');

@@ -23,17 +23,17 @@ const IndexModel = {
     },
 
   },
-  subscriptions: {
-    setup({ dispatch, history }) {
-      return history.listen(({ pathname }) => {
-        if (pathname === '/') {
-          dispatch({
-            type: 'query'
-          })
-        }
-      });
-    }
-  },
+  // subscriptions: {
+  //   setup({ dispatch, history }) {
+  //     return history.listen(({ pathname }) => {
+  //       if (pathname === '/') {
+  //         dispatch({
+  //           type: 'query'
+  //         })
+  //       }
+  //     });
+  //   }
+  // },
   reducers: {
     save(state, action) {
       return {

@@ -23,7 +23,7 @@ let routes = [
     "component": require('../list/index.js').default
   },
   {
-    "component": () => React.createElement(require('E:/installFile/vsCode/workspace/studyFront/alita/alita-1/node_modules/umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: false })
+    "component": () => React.createElement(require('D:/git-fontDemo/studyFront/alita/alita-1/node_modules/umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: false })
   }
 ];
 window.g_routes = routes;
