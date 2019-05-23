@@ -188,6 +188,36 @@ global: {
 <img src={require('路径')} />
 ```
 
+#### 2、多种 className 做判断
+
+```bash
+npm install classnames
+```
+
+```js
+titleStylesClassNames = (divOpen) => 
+    classNames(styles.titleDiv, {
+        [styles.titleBorder]:divOpen === true,
+    })
+
+const titleStyles = this.titleStylesClassNames(this.state.divOpen);
+```
+
+#### 3、判断做不同的样式
+
+```js
+let upAndDownIcon;
+    if(this.state.divOpen) {
+        upAndDownIcon = (
+            <img src={require('../../assets/img/icon/arrow_top_gray.png')} />
+        )
+    }else{
+        upAndDownIcon = (
+            <img src={require('../../assets/img/icon/arrow_bottom_gray.png')} />
+        )
+    }
+```
+
 ### 三、增加文字样式包
 
 在全局样式 `global.less` 中,添加下面的代码：
@@ -257,8 +287,66 @@ emptyAll = () => {
 }
 ```
 
+#### 3、父组件的方法中触发子组件的方法
 
+只需在子组件中传递 `ref={r => {this.child = r}}` 即可。
 
+父亲只需 `this.child.~()`。便可调用到孩子的方法。
+
+上面的操作是没问题的。但是一旦需要读取到 `redux` 的数据，那么就需要 `connect` 一下了。
+
+报错了。
+
+解决方法：
+
+`dva`:
+
+```js
+export default connect(mapStateToProps, mapDispatchToProps, null, {withRef: true})(Addition)
+```
+
+`alita`:
+
+```js
+@connect(({ screen }) => ({ screen }),mapDispatchToProps, null, {withRef:true})
+```
+
+调用子组件的方法：`this.refs.addition.getWrappedInstance().addHandler()` 
+
+或 `this.child.getWrappedInstance().~()`
+
+### 五、router 传递的值
+
+传递：
+
+```js
+router.push({
+    pathname:'',
+    query: {
+        '':'',
+    }
+})
+```
+
+接收：
+
+```js
+aa = this.props.location.query.~
+```
+
+### 六、获取浏览器类型
+
+```js
+/**
+ * 获取浏览器的类型，判断是否是微信的浏览器，如果是的话，不需要导航栏，
+ * 如果不是，则在页面需要加上导航栏
+ */
+(function () {
+    ua = window.navigator.userAgent.toLowerCase();
+    //通过正则表达式匹配ua中是否含有MicroMessenger字符串
+    window.isWexin = ua.match(/MicroMessenger/i) == 'micromessenger';
+})();
+```
 
 
 
