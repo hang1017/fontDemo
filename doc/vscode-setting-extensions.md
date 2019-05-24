@@ -90,4 +90,4 @@
 - Version Lens / 可以及时看到package.json内部版本的变动，很实用
 - Visual Studio IntelliCode - Preview
 - vscode-icons / 侧栏的图标 
-- vscode-styled-jsx
+- vscode-styled-jsx 
