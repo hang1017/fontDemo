@@ -222,7 +222,9 @@ class FindDog extends React.Component {
 }
 ```
 
-好的。那么现在，静态页面就算完成拉~
+好的。那么现在，整理的静态页面就算完成拉~
+
+
 
 
 

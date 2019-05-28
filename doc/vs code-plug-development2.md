@@ -217,9 +217,97 @@ npm i --save-dev webpack webpack-cli
 npm i --save-dev ts-loader
 ```
 
-#### 2、配置 webpack
+还有其他的捆绑和持续集成的内容请直接移步[官网](https://code.visualstudio.com/api/working-with-extensions/continuous-integration)
 
 
+## 扩展指南
+
+### 一、命令
+
+`executeCommand`:执行命令
+
+`editor.action.addCommentLine`:活动文本编辑器中注释当前选定的行
+
+来看一个 **执行命令URI** 的操作：
+
+```js
+import * as vscode from 'vscode';
+
+export function activate(context: vscode.ExtensionContext) {
+  vscode.languages.registerHoverProvider(
+    'javascript',
+    new class implements vscode.HoverProvider {
+      provideHover(
+        _document: vscode.TextDocument,
+        _position: vscode.Position,
+        _token: vscode.CancellationToken
+      ): vscode.ProviderResult<vscode.Hover> {
+        const commentCommandUri = vscode.Uri.parse(`command:editor.action.addCommentLine`);
+        const contents = new vscode.MarkdownString(`[Add comment](${commentCommandUri})`);
+
+        // 若要在 md 内容中启用命令uri，必须设置“istrusted”标志。
+        // 创建受信任的 md 字符串时，请确保正确清理所有
+        // 输入内容，以便只能执行预期的命令uri
+        contents.isTrusted = true;
+
+        return new vscode.Hover(contents);
+      }
+    }()
+  );
+}
+```
+
+#### 1、创建命令三步骤
+
+第一步 写下注册命令
+
+`registerCommand`:将命令ID绑定到扩展中的处理函数
+
+```js
+import * as vscode from 'vscode';
+
+export function activate(context: vscode.ExtensionContext) {
+  const command = 'myExtension.sayHello';
+
+  const commandHandler = (name?: string = 'world') => {
+    console.log(`Hello ${name}!!!`);
+  };
+
+  context.subscriptions.push(vscode.commands.registerCommand(command, commandHandler));
+}
+```
+
+第二步：创建面向用户的命令
+
+```js
+{
+  "contributes": {
+    "commands": [
+      {
+        "command": "myExtension.sayHello",
+        "title": "Say Hello"
+      }
+    ],
+    //控制何时再命令选项版中显示命令
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "myExtension.sayHello",
+          "when": "editorLangId == markdown"
+        }
+      ]
+    }
+  }
+}
+```
+
+第三步： 激活命令
+
+```js
+{
+  "activationEvents": ["onCommand:myExtension.sayHello"]
+}
+```
 
 
 
