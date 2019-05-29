@@ -338,6 +338,16 @@ export function activate(context: vscode.ExtensionContext) {
 
 创建状态栏，`command`：为点击按钮，执行什么命令
 
+`onDidChangeTextEditorSelection`: 当光标位置改变时触发这个函数
+
+`onDidChangeActiveTextEditor`: 当被激活的编辑器发生改变时触发这个事件
+
+`window.activeTextEditor`: 获得当前文本的编辑器
+
+
+
+
+
 
 
 
