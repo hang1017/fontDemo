@@ -309,6 +309,36 @@ export function activate(context: vscode.ExtensionContext) {
 }
 ```
 
+#### 2、一些常用命令
+
+`vscode.window.createOutputChannel`: vscode通过创建OutputChannel来输出自己的日志信息
+
+- `vscode.window.createTerminal({name: "xmake"});`
+- `terminal.show(true);`
+- `terminal.sendText("xmake");`
+
+三个一起为创建一个label名为xmake的独立终端，然后发送命令：`xmake`。
+
+- `vscode.workspace.getConfiguration('xmake');`
+- `config.get("buildDirectory");`
+
+读取 `package.json` 文件
+
+`document: vscode.TextDocument`:文本内容
+
+`position: vscode.Position`: 文本位置
+
+`class ~ implements vscode.CompletionItemProvider`: 输入文件的提示内容
+
+- vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 4.5)
+- debugButton.command = 'xmake.onDebug';
+- debugButton.text = `$(bug)`;
+- debugButton.tooltip = "Debug the given target";
+- debugButton.show();
+
+创建状态栏，`command`：为点击按钮，执行什么命令
+
+
 
 
 

@@ -165,6 +165,34 @@ ReactDOM.render(
 )
 ```
 
+### 二、手册
+
+#### 1、基本类型
+
+```ts
+let isDone: boolean = false;            //boolean 值
+
+let decimal: number = 6;                //数值
+
+let color: string = "blue";             //字符串
+
+let list: number[] = [1, 2, 3];         //队列
+
+enum Color {Red = 1, Green, Blue}       //枚举
+let c: Color = Color.Green;
+
+let notSure: any = 4;                   //任何
+
+function warnUser(): void {}            //无需返回
+
+let u: undefined = undefined;
+let n: null = null;
+```
+
+#### 2、变量声明
+
+
+
 
 
 
