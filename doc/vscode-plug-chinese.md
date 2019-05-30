@@ -172,6 +172,40 @@ context.subscriptions.push(wordCounterController);
 
 好的~ 可以秀一波了。
 
+## 一、来一个小 tip(弹框显示选中的文字)：
+
+如果想选中几个文字，然后执行插件时，弹出 `message` 显示文字 该怎么做呢？(这个不一定是 `md` 文档，所有的类型文件都可以)
+
+```ts
+// 获取当前文本编辑器
+const editor = vscode.window.activeTextEditor;
+// 获取文本编辑器选中项
+const selection = editor.selection;
+// 获取选中项中的内容   
+const text = editor.document.getText(selection);
+vscode.window.showInformationMessage(text);
+```
+
+## 二、再来一个小 tip (状态栏显示选中多少行文本)
+
+只展示核心的代码
+
+流程：将激活的文本编辑器传入到下面的函数中，函数返回多少行。
+
+状态栏的显示上面的代码已经有了。忘记的小伙伴们请往上翻。
+
+```ts
+function updateStatusBarItem(editor: vscode.TextEditor | undefined): number {
+	let lines = 0;
+	if(editor) {
+		lines = editor.selections.reduce((prev,curr) => prev + (curr.end.line - curr.start.line),0);
+	}
+	return lines;
+}
+```
+
+
+
 
 
 
