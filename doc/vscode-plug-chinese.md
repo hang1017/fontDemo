@@ -114,8 +114,67 @@ export class WordCounterController {
     // 定义两个变量，并给他们规定一下变量的类型
     private _wordCount : WordCount;
     private _disposable : Disposable;
+    // 初始化
+    constructor(wordCount : WordCount) {
+        this._wordCount = wordCount;
+        this._wordCount.updateWordCount();
+        // 订阅的一种记录吧，我这样理解的，可有可无
+        let subscriptions:Disposable[] = [];
+        // 当光标位置发生改变时触发这个函数
+        window.onDidChangeTextEditorSelection(this._onEvent,this,subscriptions);
+        // 当被激活的编辑器发生改变时触发这个函数
+        window.onDidChangeActiveTextEditor(this._onEvent,this,subscriptions);
+        // 执行方法，可注释
+        this._wordCount.updateWordCount();
+        // 将两个订阅事件创建成可释放的组合
+        this._disposable = Disposable.from(...subscriptions);
+    }
+    private _onEvent() {
+        this._wordCount.updateWordCount();
+    }
+    dispose() {
+        this._disposable.dispose();
+    }
 }
 ```
+
+那么至此，我们的订阅监听类就已经写完了。
+
+快到 `extension.ts` 文件去引用吧。
+
+下面的代码为伪代码：
+
+```ts
+import { WordCounterController } from './WordCounterController';
+
+let wordCount = new WordCount();
+let wordCounterController = new WordCounterController(wordCount);
+
+context.subscriptions.push(wordCount);
+context.subscriptions.push(wordCounterController);
+```
+
+完成了这些代码，满心欢喜的运行插件，测试发现。。。。。并不行！！
+
+为什么？
+
+因为我们是在 `onCommand` 去激活插件：通过特定的命令去执行该插件。所以无法一打开 `md` 文档就马上默认执行该插件。
+
+到 `package.json` 文件中，找到 `activationEvents`,修改里面的代码：
+
+```json
+"activationEvents": [
+	"onLanguage:markdown"
+],
+```
+
+这个代码的含义：如果文件类型 `markdown` 就执行插件。
+
+好的~ 可以秀一波了。
+
+
+
+
 
 
 
