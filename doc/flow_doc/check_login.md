@@ -146,4 +146,44 @@ render(){
 }
 ```
 
+### 五、小 tip
+
+如果你有使用到 `antd-moblie` 的弹框进行：输入手机号获取验证码的操作，那么可能你会出现这种情况：弹框上显示的 `state` 文字不会发生改变。
+
+我们可以使用 `ref={this.myRef}` 来操作，将这个属性添加到弹框的按钮 `button` 上。
+
+按钮的 `disable` 属性好像也不太行。
+
+所以我们将 `state` 里的判断放到点击事件中。 
+
+```js
+let timer = null;       //这个可以写在全局中
+if(!verificationBtn) {
+    if((/^1[3|4|5|8][0-9]\d{4,8}$/.test(phoneNumInput))) {
+        this.setState({
+          verificationBtn: true,
+        })
+    }
+    let maxTime = 10;
+    timer = setInterval(() => {
+        let timeTip = '';
+        if(maxTime > 0) {
+            maxTime--;
+            timeTip = '等待('+maxTime+'s)';
+        }else {
+            timeTip = '获取验证码';
+            this.setState({
+              verificationBtn:false,
+            })
+            clearInterval(timer);       //这个很重要，记得要清掉
+        }
+        if(this.myRef && this.myRef.current && this.myRef.current.innerText) {
+            // if()中的属性都可以通过 console 看一下数据
+            this.myRef.current.innerText = timeTip;
+        }
+    },1000)
+}
+```
+
+
 

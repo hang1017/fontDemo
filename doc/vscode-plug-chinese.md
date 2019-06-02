@@ -1,5 +1,12 @@
 # VS code 插件开发中文文档教程
 
+这里我会演示几个实例给大家看：
+
+- 状态栏显示 `md` 文件的总字数、状态栏显示全文件选中行数
+- 显示网页视图 Cat Coding
+
+## 状态栏 demo
+
 用 `yo code` 创建一个 `Hello World` 插件。
 
 我们使用的是 `typescript` 的项目
@@ -172,7 +179,7 @@ context.subscriptions.push(wordCounterController);
 
 好的~ 可以秀一波了。
 
-## 一、来一个小 tip(弹框显示选中的文字)：
+### 一、来一个小 tip(弹框显示选中的文字)：
 
 如果想选中几个文字，然后执行插件时，弹出 `message` 显示文字 该怎么做呢？(这个不一定是 `md` 文档，所有的类型文件都可以)
 
@@ -186,7 +193,7 @@ const text = editor.document.getText(selection);
 vscode.window.showInformationMessage(text);
 ```
 
-## 二、再来一个小 tip (状态栏显示选中多少行文本)
+### 二、再来一个小 tip (状态栏显示选中多少行文本)
 
 只展示核心的代码
 
@@ -204,7 +211,187 @@ function updateStatusBarItem(editor: vscode.TextEditor | undefined): number {
 }
 ```
 
+## 网页视图 Cat Coding
 
+### 一、在面板中显示图片
+
+导入需要的头文件和全局变量
+
+```ts
+import * as vscode from 'vscode';
+
+const cats = {
+	'Coding Cat': 'https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif',
+  	'Compiling Cat': 'https://media.giphy.com/media/mlvseq9yvZhba/giphy.gif',
+  	'Testing Cat': 'https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif'
+};
+```
+
+来看实现的代码：
+
+```ts
+export function activate(context: vscode.ExtensionContext) {
+    // 我修改了 commnd命令，小伙伴要修改的话去 package.json 记得要改 激活和 commands 两个地方
+    let disposable = vscode.commands.registerCommand('catCoding.start' => {
+        currentPanel = vscode.window.createWebviewPanel(
+            'cat Coding',           // 标识webview的类型。在内部使用
+            'Cat Coding-hangshuaishuai',    // 面板的标题显示给用户
+            vscode.viewColumn.One,  //面板一共可以查分成3个，让此面板显示在第几个
+            {}  // Webview选项。这个我也不太懂。可以自行查资料
+        )
+    })
+
+    context.subscriptions.push(disposable);
+}
+```
+
+好的，如果你现在运行插件的话，就会看到一个空的面板出来了。
+
+接下来我们来补充一下面板的内容，把面板内容写在一个方法中.
+
+在函数传参这块你可以先传，先写个固定的 `src` 测试一下效果。
+
+```ts
+function getWebviewContent(cat: keyof typeof cats){
+	return (`
+		<!DOCTYPE html>
+		<html lang="en">
+		<head>
+			<meta chatset="UTF-8">
+			<meta name="viewport" content="width=device-width,initial-scale=1.0">
+			<title>Cat Coding</title>
+		</head>
+		<body>
+			<img src="${cats[cat]}" width="300" />
+		</body>
+		</html>
+	`)
+}
+```
+
+接下来我们继续修补 `activate` 方法，将面板的内容导入到面板中。
+
+这里调用 `getWebviewContent` 可以先不传值去测试效果。
+
+```ts
+const cat = 'Coding Cat';
+currentPanel.webview.html = getWebviewContent(cat);
+```
+
+好了。现在运行一下插件，你就会发现面板上多了一种图片。
+
+### 二、定时修改面板图片内容
+
+继续在 `activate` 方法中补充代码
+
+```ts
+let time = 0;
+const updateImg = () => {
+    const cat = time++ % 2 ? 'Compiling Cat' : 'Coding Cat';
+    currentPanel.title = cat;
+    // 这里的方法就要通过动态的传递了，不能在写死了
+    // 写死的话你只能看到 title 的改变，没办法看到图片的改变
+    currentPanel.webview.html = getWebviewContent(cat);
+}
+// 一秒钟调用一次
+const changePanel = setInterval(updateImg,1000);
+
+```
+
+ 现在运行一下插件。是不是一秒钟变化一次面板的内容和标题了呢？
+
+ ### 三、只展示一个面板
+
+ 这里我们先把前面写的关于**定时器的代码注释掉！！！！！**
+
+ 好了，如果小伙伴们多次运行命令会不会发现，面板一个接着一个的出现。
+
+ 这个样子可不好。我希望的效果是：如果面板选中，则不再新增新的面板。
+
+ 如果面板未被选中，则跳转到该面板上来。
+
+ 如果面板已经被销毁，才再次新增一个面板。
+
+ 总之。我只要一个面板再即可。
+
+首先全局定义一个变量：`let currentPanel: vscode.WebviewPanel | undefined = undefined`
+
+接下来我们来修改 `activate` 方法的内容。
+
+```ts
+export function activate(context: vscode.ExtensionContext) {
+    let disposable = vscode.commands.registerCommand('catCoding.start', () => {
+        // 判断是否存在当前的面板
+        const columnToShowIn = vscode.window.activeTextEditor
+                            ?vscode.window.activeTextEditor.viewColumn
+                            :undefind;
+
+        if(currentPanel){
+            // reveal() 将面板置于前台
+            currentPanel.reveal(columnToShowIn);
+        }else {
+            // 之前的代码不变
+            currentPanel = vscode.window.createWebviewPanel(
+				'cat Coding', // 标识webview的类型。在内部使用
+				'Cat Coding-hangshuaishuai', // 面板的标题显示给用户
+				vscode.ViewColumn.One, // 编辑列显示新的webview面板。
+				{} // Webview选项。稍后将详细介绍这些。
+			)
+			const cat = 'Coding Cat';
+			currentPanel.webview.html = getWebviewContent(cat);
+        }
+    }
+
+    // 这段代码很重要！！！！！
+    // 这段代码很重要！！！！！
+    // 这段代码很重要！！！！！
+    // 当你面板关闭时，如果不销毁 currentPanel，你就无法重新打开新面板。
+    currentPanel.onDidPispose(() => {
+        currentPanel = undefind;
+    })
+    context.subscriptions.push(disposable);
+}
+```
+
+好了。那么现在在测试一下效果。是不是发现永远都只显示一个面板。
+
+### 四、同一个面板在不同的窗口中显示不同的图片
+
+我们可以在 vscode 上创建三个窗口，将唯一的面板在三个窗口中拖动。并且每个窗口都是显示不同的图片
+
+在写一个方法用作改变图片
+
+```ts
+function updateWebviewForCat(panel:vscode.WebViewPanel,catName: keyof typeof cats){
+    panel.title = catName;
+    panel.webwebview.html = getWebviewContent(catName);
+}
+```
+
+`onDidChangeViewState`: 面板的视图状态发生变化时触发。
+
+接下来我们就要用到上面的这个函数：
+
+```ts
+currentPanel.onDidChangeViewState(e => {
+    // Webview面板的视图状态已更改
+    const panel = e.webviewPanel;
+
+    switch(panel: panel.viewColumn) {
+        case vscode.viewCloumn.One:
+            updateWebviewForCat(panel, 'Coding Cat');
+            return ;
+        case vscode.viewCloumn.Two:
+            updateWebviewForCat(panel, 'Compiling Cat');
+            return ;
+        case vscode.viewCloumn.Three:
+            updateWebviewForCat(panel, 'Testing Cat');
+            return ;
+    }
+})
+```
+
+好的。请开始你的表演。
 
 
 

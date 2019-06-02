@@ -344,7 +344,21 @@ export function activate(context: vscode.ExtensionContext) {
 
 `window.activeTextEditor`: 获得当前文本的编辑器
 
+`vscode.window.createTextEditorDecorationType`: 用于向文本编辑器添加修饰
 
+`overviewRulerColor`: 描述标尺中装饰的颜色，配合上面的代码一起使用。
+
+`overviewRulerLane`: 描述标尺中应该呈现的位置，配合上面的代码一起使用。
+
+`vscode.window.activeTextEditor.setDecorations(DecorationType,Numbers)`: 向文本中添加修饰: 修饰的样式，所有的字段数组
+
+`Numbers.push(decoration)`: 向上面的数组添加数据，符合条件的数据
+
+`decoration:{range: new Range(start,end),hoverMessage: '覆盖的文字'}`: 向上面的修饰添加修饰的内容
+
+`vscode.workspace.onDidChangeTextDocument`: 当文本改变时发出的事件。通常发生在内容发生变化时，也发生在脏状态的情况。
+
+`onDidChangeViewState`: 面板的视图状态发生变化时触发。
 
 
 
