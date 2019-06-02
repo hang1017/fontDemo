@@ -360,6 +360,8 @@ export function activate(context: vscode.ExtensionContext) {
 
 `onDidChangeViewState`: 面板的视图状态发生变化时触发。
 
+`.webview.onDidReceiveMessage(message =>{})` 当 web 内容发布消息时触发
+
 
 
 

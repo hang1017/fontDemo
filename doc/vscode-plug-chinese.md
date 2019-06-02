@@ -237,7 +237,9 @@ export function activate(context: vscode.ExtensionContext) {
             'cat Coding',           // 标识webview的类型。在内部使用
             'Cat Coding-hangshuaishuai',    // 面板的标题显示给用户
             vscode.viewColumn.One,  //面板一共可以查分成3个，让此面板显示在第几个
-            {}  // Webview选项。这个我也不太懂。可以自行查资料
+            {
+                enableScripts: true //用于运行脚本，如果不需要，请放空即可
+            }  // Webview选项。
         )
     })
 
@@ -392,6 +394,103 @@ currentPanel.onDidChangeViewState(e => {
 ```
 
 好的。请开始你的表演。
+
+### 五、将消息从 插件 传递到 web 视图
+
+我们在图片的下方设置一个每秒加1的数字，并新增一个命令，每当调用这个命令时，让数字减半。
+
+`package.json` 的代码我就不写了，就照着 `catCoding` 的代码去照着写就行了。注意要激活新命令这样才能用。
+
+新介绍一个命令：
+
+`webview.postMessage()`: 发送数据到 web 视图。该方法可以将任何 `JSON` 可序列化数据发送到 `webview` 中。
+
+在 web 视图中 通过 `window.addEventListener('message', event => { ... })` 收集数据。
+
+在 `activate` 方法中增加一下的代码：
+
+```ts
+context.subscriptions.push({
+    vscode.commands.registerCommand('catCoding.doRefactor',() => {
+        if(!currentPanel){
+            return ;
+        }
+        currentPanel.webview.postMessage({command: 'refactor'})
+    })
+})
+```
+
+在 `html` 的 `body` 代码中，新增以下代码：
+
+```ts
+<img src="${cats[cat]}" width="300" />
+<h2 id='counter'>0</h2>
+<script>
+    const counter = document.getElementById('counter');
+    let count  = 0;
+    setInterval(() => {
+        counter.textContent = count++;
+    },1000);
+
+    window.addEventListener('message',event =>{
+        switch(event.data){
+            case 'refactor': 
+            count = Math.ceil(count * 0.5);
+            counter.textContent = count;
+            break;
+        }
+    })
+</script>
+```
+
+### 六、将数据从 web 视图传递到 插件
+
+现在我们将 定时增加的数据传递到插件中去，
+
+在数字减半的方法中新增下面这段代码：
+
+```ts
+const vscode = acquireVsCodeApi();
+
+window.addEventListener('message',event =>{
+    switch(event.data){
+        case 'refactor': 
+        count = Math.ceil(count * 0.5);
+        counter.textContent = count;
+        vscode.postMessage({
+            command: 'alert',
+            text: ''+count,     // 这里请注意！一定要传递字符串，否则会报错！！！ 
+        })
+        break;
+    }
+})
+```
+
+现在我们去插件中接收我们的数据：
+
+新介绍一个命令：
+
+`.webview.onDidReceiveMessage(message =>{})` 当 web 内容发布消息时触发
+
+在 `activate` 方法中，补上以下的代码：
+
+```ts
+currentPanel.webview.onDidReceiveMessage(message => {
+    switch(message.command){
+        case 'alert': 
+            vscode.window.showErrorMessage(message.text);
+    }
+})
+```
+
+大功告成！
+
+### 七、注意事项
+
+`enableScripts: true`: 可以运行 `script` 脚本，如果不需要请不要将这行代码加进去。
+
+`retainContextWhenHidden: true,` 放在跟上一行一起的位置。作用：当面板被隐藏式，不会销毁，而是在隐藏时继续执行(可以看计数器)。**但请记住，这具有很高的内存开销，并且只应在其他持久性技术不起作用时使用。**
+
 
 
 
