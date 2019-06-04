@@ -362,6 +362,39 @@ export function activate(context: vscode.ExtensionContext) {
 
 `.webview.onDidReceiveMessage(message =>{})` 当 web 内容发布消息时触发
 
+`registerCompletionItemProvider('plaintext', {})`: 和下面的代码连用，键入时的提示语言。
+
+`provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken, context: vscode.CompletionContext)`:
+
+- document: TextDocument      调用命令的文档
+- position: Position          调用命令的位置。
+- token: CancellationToken    取消令牌。
+- context: CompletionContext  如何触发完成。
+
+上面二者连用的格式:
+
+```ts
+context.subscriptions.push(vscode.languages.registerCompletionItemProvider('plaintext'), {
+  provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken, context: vscode.CompletionContext) {
+    return [];
+  }
+})
+```
+
+`new vscode.CompletionItem('Hello World!')`:键入时能够自动提示
+
+`vscode.SnippetString(${1|1,2,3|},${1})`: 键入时自动显示文字并补全片段
+
+`.commitCharacters = ['.']`: 当键入 `.` 补全
+
+`commandCompletion.kind = vscode.CompletionItemKind.Keyword;`: 键绑定
+
+`.command={command:'',title:''}`: 和上一行的代码连用，当键入什么时可以执行 命令。
+
+`document.lineAt(position).text.substr(0, position.character);`: 获取当前文字
+
+`new vscode.CompletionItem('log', vscode.CompletionItemKind.Method),`: 键入后的提示文字。
+
 
 
 

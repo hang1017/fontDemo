@@ -2,10 +2,12 @@
 
 这里我会演示几个实例给大家看：
 
-- 状态栏显示 `md` 文件的总字数、状态栏显示全文件选中行数
-- 显示网页视图 Cat Coding
+- 一、状态栏显示 `md` 文件的总字数、状态栏显示全文件选中行数
+- 二、显示网页视图 Cat Coding
+- 三、完成正在键入的文本片段
+- 四、不同的样式修饰不同类型的数字
 
-## 状态栏 demo
+## 一、状态栏 demo
 
 用 `yo code` 创建一个 `Hello World` 插件。
 
@@ -179,7 +181,7 @@ context.subscriptions.push(wordCounterController);
 
 好的~ 可以秀一波了。
 
-### 一、来一个小 tip(弹框显示选中的文字)：
+### 1、来一个小 tip(弹框显示选中的文字)：
 
 如果想选中几个文字，然后执行插件时，弹出 `message` 显示文字 该怎么做呢？(这个不一定是 `md` 文档，所有的类型文件都可以)
 
@@ -193,7 +195,7 @@ const text = editor.document.getText(selection);
 vscode.window.showInformationMessage(text);
 ```
 
-### 二、再来一个小 tip (状态栏显示选中多少行文本)
+### 2、再来一个小 tip (状态栏显示选中多少行文本)
 
 只展示核心的代码
 
@@ -211,9 +213,9 @@ function updateStatusBarItem(editor: vscode.TextEditor | undefined): number {
 }
 ```
 
-## 网页视图 Cat Coding
+## 二、网页视图 Cat Coding
 
-### 一、在面板中显示图片
+### 1、在面板中显示图片
 
 导入需要的头文件和全局变量
 
@@ -282,7 +284,7 @@ currentPanel.webview.html = getWebviewContent(cat);
 
 好了。现在运行一下插件，你就会发现面板上多了一种图片。
 
-### 二、定时修改面板图片内容
+### 2、定时修改面板图片内容
 
 继续在 `activate` 方法中补充代码
 
@@ -302,7 +304,7 @@ const changePanel = setInterval(updateImg,1000);
 
  现在运行一下插件。是不是一秒钟变化一次面板的内容和标题了呢？
 
- ### 三、只展示一个面板
+ ### 3、只展示一个面板
 
  这里我们先把前面写的关于**定时器的代码注释掉！！！！！**
 
@@ -357,7 +359,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 好了。那么现在在测试一下效果。是不是发现永远都只显示一个面板。
 
-### 四、同一个面板在不同的窗口中显示不同的图片
+### 4、同一个面板在不同的窗口中显示不同的图片
 
 我们可以在 vscode 上创建三个窗口，将唯一的面板在三个窗口中拖动。并且每个窗口都是显示不同的图片
 
@@ -395,7 +397,7 @@ currentPanel.onDidChangeViewState(e => {
 
 好的。请开始你的表演。
 
-### 五、将消息从 插件 传递到 web 视图
+### 5、将消息从 插件 传递到 web 视图
 
 我们在图片的下方设置一个每秒加1的数字，并新增一个命令，每当调用这个命令时，让数字减半。
 
@@ -443,7 +445,7 @@ context.subscriptions.push({
 </script>
 ```
 
-### 六、将数据从 web 视图传递到 插件
+### 6、将数据从 web 视图传递到 插件
 
 现在我们将 定时增加的数据传递到插件中去，
 
@@ -485,14 +487,255 @@ currentPanel.webview.onDidReceiveMessage(message => {
 
 大功告成！
 
-### 七、注意事项
+### 7、注意事项
 
 `enableScripts: true`: 可以运行 `script` 脚本，如果不需要请不要将这行代码加进去。
 
 `retainContextWhenHidden: true,` 放在跟上一行一起的位置。作用：当面板被隐藏式，不会销毁，而是在隐藏时继续执行(可以看计数器)。**但请记住，这具有很高的内存开销，并且只应在其他持久性技术不起作用时使用。**
 
+## 三、完成正在键入的文本片段
 
+联想功能能够再在我们编写代码时给予我们便捷。接下来，我们新建一个插件，尝试编写此项功能。
 
+在 `registerCommand` 方法下编写函数，编写前，先要分享几个函数和方法：
+
+`vscode.languages.registerCompletionItemProvider('',{...})`: 注册完成的 Provider。可以为一种语言注册多个提供者
+
+`provideCompletionItems()`:完成项表示用于完成正在键入的文本的文本片段。括号中，还有参数，请直接参考 API。
+
+具体格式如下：
+
+```ts
+const provider1 = vscode.languages.registerCompletionItemProvider('plaintext',{
+    provideCompletionItems(document:vscode.TextDocument,position:vscode.Position,token:vscode.CancellationToken,context:vscode.CompletionContext){
+        return [];
+    }
+})
+
+context.subscriptions.push(provider1);
+```
+
+### 1、基本操作
+
+上面的代码是个人认为的一个可以套用的格式，现在我们来补全代码：
+
+```ts
+// plaintext：txt文件。
+const provider1 = vscode.languages.registerCompletionItemProvider('plaintext',{
+    // 讲解一下这里的参数
+    // 1、document:vscode.TextDocument          调用命令的文档
+    // 2、position:vscode.Position              调用命令的位置
+    // 3、token:vscode.CancellationToken        取消令牌
+    // 4、context:vscode.CompletionContext      如何触发完成
+    provideCompletionItems(document:vscode.TextDocument,position:vscode.Position,token:vscode.CancellationToken,context:vscode.CompletionContext){
+
+        // 1、先输出一个简单的文字
+        // 将属性写到 return 中，那么现在你就可以去启动插件，检测以下这个最简单的效果了。
+        const simpleCompletion = new vscode.CompletionItem('this is a simple completion');
+
+        // 2、选择插入文本片段
+        // 当你输入`my name` 系统就会显示联想，并且能够在${}地方让你选择，你想要的文字
+        const snipetCompletion = new vscode.CompletionItem("my name is ~");
+        snipetCompletion.insertText = new vscode.SnippetString('my name is ${1|hang1,hang2,hang3|},hi ${1},mice to meet you !');
+
+        // 3、当我们键入某键时，编辑器能够完成 command 命令的操作
+        // 当我键入 `new` 时，补全 `new~` 并且执行一条命令，弹出信息
+        const commandCompletion = new vscode.CompletionItem('new');
+        commandCompletion.insertText = 'new~';
+        // 这个完成项目的种类。根据类型，编辑器选择一个图标
+        commandCompletion.kind = vscode.CompletionItemKind.Keyword;
+        // 执行这条命令，命令请小伙伴们自己编写，记得激活就行。
+        commandCompletion.command = {command: 'extension.sayHello',title: 'sayHello'};
+
+        return [
+            simpleCompletion,
+            snipetCompletion,
+            commandCompletion,
+        ];
+    }
+})
+
+context.subscriptions.push(provider1);
+```
+
+好了那么现在启动插件，创建一个 `.txt` 的文件，去尝试一下联想的功能吧。
+
+### 2、弹出联想，助于快速编写代码
+
+举个最简单的例子，当我们在 js 文件中，输入 `console.`时，是不是会弹出 `log()` 的联想提示。
+
+现在我们就在 `.txt` 文件中来实现这个功能。
+
+我们可以继续在上面的代码中编写一下的代码：
+
+```ts
+const provider1 = vscode.languages.registerCompletionItemProvider('plaintext',{
+    provideCompletionItems(document:vscode.TextDocument,position:vscode.Position,token:vscode.CancellationToken,context:vscode.CompletionContext){
+        // 4、键入  `cons..` 时，直接输入 `.` 会自动帮我们补全代码为 `console.` 
+        const commitCharacterCompletion = new vscode.CompletionItem('console');
+        commitCharacterCompletion.commitCharacters = ['.'];
+        return [
+            commitCharacterCompletion,
+        ];
+    })
+})
+context.subscriptions.push(provider1);
+```
+
+完成了以上的代码，还不能够使我们 `.` 出 `log`、`error` 等文字。
+
+我们还需要继续补全代码(再创建一个 `provider`)：
+
+```ts
+const provider2 = vscode.languages.registerCompletionItemProvider('plaintext',{
+    provideCompletionItems(document:vscode.TextDocument,position:vscode.Position) {
+        // 获取你当前输入的文字内容
+        const linePrefix = document.lineAt(position).text.substring(0,postion.character);
+        if(!linePrefix.endWith('console.')){
+            return undefined;
+        }
+        return [
+            new vscode.CompletionItem('log()',vscode.CompletionItemKind.Method),
+            new vscode.CompletionItem('error()',vscode.CompletionItemKind.Method),
+            new vscode.CompletionItem('111',vscode.CompletionItemKind.Method),
+        ];
+    }
+    // 这里请一定要补充这个代码，否则执行 `.` 时，将不会显示出来。
+},'.')
+
+context.subscriptions.push(provider2);
+```
+
+好的。那么现在去测试一下效果吧。
+
+## 四、不同的样式修饰不同类型的数字
+
+来编写一个插件：当数字 `<1000` 时，给数字加上边框，当数字 `>1000` 时，给数字加上背景颜色。
+
+新创建一个插件项目，在 `activate` 方法中，编写下面的代码：
+
+### 1、编写两中数字样式
+
+`vscode.window.createTextEditorDecorationType`: 用于向文本编辑器添加修饰
+
+```ts
+const smallNumberDecorationType = vscode.window.createTextEditorDecorationType({
+    borderWidth: '1px',
+    borderStyle: 'solid',
+    // vscode 最右边会显示颜色，代码你当前的文字位置，不是必填项
+    overviewRulerColor: 'red',
+})
+
+const bigNumberDecorationType = vdcode.window.createTextDecorationType({
+    // 背景颜色
+    backgroundColor: `blue`,
+    // 覆盖时光标样式 crosshair：十字架。这个可以自行百度选择自己要的样式
+	cursor: 'crosshair',
+})
+```
+
+### 2、基本操作
+
+```ts
+export function activate(context: vscode.ExtensionContext) {
+    let editor = vscode.window.activateTextEditor;
+
+    context.subscriptions.push(
+        vscode.commands.registerCommand('extension.decorationNumber',() => {
+            // 写在下面的方法
+            updateDecoration();
+        })
+    )
+
+    function updateDecoration() {
+        vscode.window.showInformationMessage('显示文字样式');
+        if(!editor) { return ; }
+
+        const regEx = /\d+/g;
+        const doc = editor.document.getText();
+
+        // 定义两个 vscode.DecorationOptions 类型的数组，来存放需要加样式的数字的位置
+        const smallNumbers: vscode.DecorationOptions[] = [];
+		const largeNumbers: vscode.DecorationOptions[] = [];
+
+        let match;
+        while(match = regEx.exec(doc)) {
+            // 下面的两行代码：获取开始和结束的位置
+            const startPos = editor.document.positionAt(match.index);
+            const endPos = editor.document.positionAt(match.index+match[0].length); 
+
+            const decoration = {
+                range: new vscode.Range(startPos,endPos),
+                // 覆盖数字时，弹出气泡显示
+                hoverMessage: 'Number **'+match[0]+'**';
+            };
+            if(match[0].length<3) {
+                smallNumbers.push(decoration);
+            }else{
+                largeNumbers.push(decoration);
+            }
+        }
+        editor.setDecorations(smallNumberDecorationType,smallNumbers);
+        editor.setDecorations(bigNumberDecorationType,largeNumbers);
+    }
+}
+```
+
+好了。那么现在只要执行插件，就能马上看到数字添加样式的效果。
+
+### 3、订阅监听
+
+但是每次写一个数字都要执行一次插件，效果非常的不好。
+
+这里我们就需要用到订阅的知识。
+
+回顾一下，我们之前用到的几个函数方法：
+
+`vscode.window.onDidChangeActiveTextEditor`: 当被激活的编辑器发生改变时触发这个事件
+
+`vscode.workspace.onDidChangeTextDocument`: 当文本改变时发出的事件，通常发生在内容发生变化时，也发生在脏状态情况下
+
+```ts
+vsocede.window.onDidChangeActiveTextEditor(editor => {
+    if(editor) { updateDecoration(); }
+})
+
+vscode.workspace.onDidChangeTextDocument(event => {
+    if (activeEditor && event.document === activeEditor.document) {
+        updateDecoration();
+    }
+})
+```
+
+好的。那么现在你就可以愉快的测试了。
+
+### 4、做个定时器
+
+如果你不想判断那么频繁，可以做个 `setTimeout`.
+
+自行补充一下代码，如果看不懂、不知道补哪里，可以直接忽略。
+
+```ts
+let timeout = NodeJS.Timer | undefined = undefined;
+
+function triggerUpdateDecorations() {
+    if(timeout) {
+        clearTimeout(timeout);
+        timeout = undefined;
+    }
+    timeout = setTimeout(updateDecorations, 500);
+}
+
+vsocede.window.onDidChangeActiveTextEditor(editor => {
+    if(editor) { triggerUpdateDecorations(); }
+})
+
+vscode.workspace.onDidChangeTextDocument(event => {
+    if (activeEditor && event.document === activeEditor.document) {
+        triggerUpdateDecorations();
+    }
+})
+```
 
 
 
