@@ -6,6 +6,7 @@
 - 二、显示网页视图 Cat Coding
 - 三、完成正在键入的文本片段
 - 四、不同的样式修饰不同类型的数字
+- 五、进度条显示样式
 
 ## 一、状态栏 demo
 
@@ -737,6 +738,52 @@ vscode.workspace.onDidChangeTextDocument(event => {
 })
 ```
 
+## 五、进度条显示样式
+
+先展示一下新的命令：
+
+`window.withProgress({location,title,cancellable},(progress, token) => {需要返回一个Promise})`: 在编辑器中显示进度(我将一些参数都放了进去)。
+
+- location: 进度条展示的位置。一般为：`vscode.ProgressLocation.Notification`
+- title: 标题栏
+- cancellable:是否可以取消，`ture` or `false`
+- progress：进度条
+- token: 令牌
+
+因为比较简单，所以直接展示代码：
+
+```ts
+window.withProgress({
+    location: vscode.ProgressLocation.Notification,
+    title: 'this is a progress',
+    cancellable: true,
+},(progress,token) => {
+    token.onCancellationRequested(() => {
+        console.log('用户取消了长时间运行的操作');
+    })
+    progress.report({ increment: 0 });
+
+    // increment：进度
+    // message：消息
+    setTimeout(() => {
+        progress.report({ increment: 10, message: "I am long running! - still going..." });
+    }, 1000);
+
+    setTimeout(() => {
+        progress.report({ increment: 40, message: "I am long running! - still going even more..." });
+    }, 2000);
+
+    // 这里用来返回，我把它理解成固定写法
+    var p = new Promise(resolve => {
+        setTimeout(() => {
+            resolve();
+        }, 5000);
+    })
+    return p;
+})
+```
+
+测试效果即可。
 
 
 

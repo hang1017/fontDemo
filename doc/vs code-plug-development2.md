@@ -395,6 +395,12 @@ context.subscriptions.push(vscode.languages.registerCompletionItemProvider('plai
 
 `new vscode.CompletionItem('log', vscode.CompletionItemKind.Method),`: 键入后的提示文字。
 
+`window.withProgress({location,title,cancellable},(progress, token) => {})`:在编辑器中显示进度 
+
+`location: vscode.ProgressLocation.Notification,`: 进度应显示的位置,于上面的代码同用
+
+
+
 
 
 
