@@ -7,6 +7,7 @@
 - 三、完成正在键入的文本片段
 - 四、不同的样式修饰不同类型的数字
 - 五、进度条显示样式
+- 六、创建工作区并添加、删除文件和文件夹
 
 ## 一、状态栏 demo
 
@@ -785,6 +786,126 @@ window.withProgress({
 
 测试效果即可。
 
+## 六、创建工作区并添加、删除文件和文件夹
+
+### 1、重识 `package.json`
+
+这个 `demo` 有用到一些新的 `point`。所以以这个例子再补充几个 `package。json` 会用到的属性。
+
+```json
+"activationEvents": [
+    // 这行代码：访问文件或文件夹时会触发激活事件。当然你可以不用
+    "onFileSystem:hang",            
+    "onCommand:hang.workspaceInit",     //创建工作区
+    "onCommand:hang.fileInit",          //在工作区下创建文件或文件夹
+    "onCommand:hang.fileDelete"         //删除在次工作区下的文件或文件夹
+],
+"contributes":{
+    "commands":[                        //这里我把所有的命令都加进去了。小伙伴可以一个一个添加，一个一个尝试
+        {
+            "command": "hang.workspaceInit",
+            "title": "set up workspace",
+            "category": "Hang"
+        },{
+            "command": "hang.fileInit",
+            "title": "create file",
+            "category": "Hang"
+        },{
+            "command": "hang.fileDelete",
+            "title": "delete file",
+            "category": "Hang"
+        }
+    ],
+    "menus": {
+        "commandPalette": [                         //这个就是我们平时平时输入命令时，使用到的命令面板
+            {
+                "command": "hang.workspaceInit",
+                "when": "workbenchState != workspace"   //这里指当不是工作区时，会存在这条命令
+            },
+            {
+                "command": "hang.fileInit",
+                "when": "workbenchState == workspace"   //这里指当是工作区时，会存在这条命令
+            },
+            {
+                "command": "hang.fileDelete",
+                "when": "workbenchState == workspace"
+            }
+        ]
+    }
+}                       
+```
+
+### 2、学习所需的属性和方法
+
+开始编写项目之前，我们需要先导入一份 `fileSystemProvider.ts` 文件，这份文件在官网 `fsprovider-sample` demo 下有。
+
+`vscode.workspace.updateWorkspaceFolders(0,0,{uri: vscode.Uri.parse('hang:/') ,name: ''});`: 增、删、改 工作区的文件夹
+
+- 0  start: number 开始更新的工作空间的文件夹
+- 0  deleteCount: number | undefined | null 要删除的可选工作空间文件夹数。
+- `uri`: 路径
+- `name`: 自行命名即可
+
+`vscode.workspace.registerFileSystemProvider('',memFs,{isCaseSensitive: true,isReadonly:false})`: 
+
+- 为给定方案注册文件系统提供程序. 我的理解使工作区能够创建文件和文件夹
+- `isCaseSensitive`: 不敏感，可以置为 `true`,目前不懂要干嘛
+- `isReadonly`: 设置为是否是只读文件
+
+```ts
+import * as vscode from 'vscode';
+import { MemFS } from './fileSystemProvider';   //导入的那份文件
+
+export function activate(context: vscode.ExtensionContext) {
+    const memFs = new MemFS();
+    let isWorkspaceExist = false;
+    
+    // 创建工作区
+    context.subscriptions.push(vscode.commands.registerCommand('hang.workspaceInit',() => {
+        vscode.workspace.updateWorkspaceFolders(0, 0, {uri: vscode.Uri.parse('hang:/'), name: 'fs-example'});
+    }));
+
+    // 文件和文件夹的创建
+    context.subscriptions.push(vscode.commands.registerCommand('hang.fileInit',() => {
+        if(isWorkspaceExist) { return; }
+        // 创建文件夹前先做个判断。不能重复创建了吧
+        isWorkspaceExist = true;
+        // 这里的传参可以参考直接看我们导入的文件。
+        // Buffer.from('这里的为文件的内容')
+        memFs.writeFile(vscode.Uri.parse('hang:/test.md'), Buffer.from('this is aa'), {create: true, overwrite: true});
+        // 创建文件夹
+        memFs.createDirectory(vscode.Uri.parse('hang:/file/'));
+        memFs.writeFile(vscode.Uri.parse('hang:/file/aa.txt'), Buffer.from('this is aa'), {create: true, overwrite: true});
+    }));
+}
+```
+
+好了。那么现在完成了50%，可以去测试一下效果了。
+
+成功的创建了工作空间，但是发现文件和文件夹一直没办法创建是不是？
+
+不着急，因为这里我们需要用到 `registerFileSystemProvider` 提供文件和文件夹的创建
+
+补全上面的代码：
+
+```ts
+context.subscriptions.push(vscode.workspace.registerFileSystemProvider('memFs',memFs,{isCaseSensitive: true,isReadonly:false}))
+
+```
+
+好了。那么现在就可以创建文件和文件夹了。
+
+来操作最后一步：删除该工作空间的文件和文件夹
+
+```ts
+context.subscriptions.push(vscode.commands.registerCommand('hang.fileDelete',() => {
+    for(const [name] of memFs.readDirectory(vscode.Uri.parse('hang:/'))){
+        memFs.delete(vscode.Uri.parse(`hang:/${name}`));
+    }
+}))
+```
+
+完成！
 
 
 

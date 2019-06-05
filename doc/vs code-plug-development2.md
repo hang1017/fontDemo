@@ -399,6 +399,30 @@ context.subscriptions.push(vscode.languages.registerCompletionItemProvider('plai
 
 `location: vscode.ProgressLocation.Notification,`: 进度应显示的位置,于上面的代码同用
 
+`window.createQuickPick();`: 创建一个 `QuickPick`
+
+`window.showQuickPick(['',''],{onDidSelectItem: item => {}});`: 显示选择列表
+
+`"activationEvents":["onFileSystem:memfs",]`: 访问文件或文件夹时会触发激活事件。
+
+`"menu":{"commandPalette":[{"command": "memfs.init","when": "workbenchState == workspace"}]}`: 
+
+- 全局命令调色板 就是控制面板 `workbenchState == workspace` 判断所在是否为工作区
+
+`vscode.workspace.updateWorkspaceFolders(0,0,{uri:vscode.uri.parse('hang:/',name:'')})`: 
+
+- 增、删、改 工作区的文件夹
+
+`vscode.workspace.registerFileSystemProvider('',memFs,{isCaseSensitive: true,isReadonly:false})`: 
+
+- 为给定方案注册文件系统提供程序. 我的理解使工作区能够创建文件和文件夹
+- `isCaseSensitive`: 不敏感，可以置为 `true`,目前不懂要干嘛
+- `isReadonly`: 设置为是否是只读文件
+
+
+
+
+
 
 
 
