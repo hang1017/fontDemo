@@ -1183,7 +1183,113 @@ vscode.commands.registerCommand('hang-json.renameNode',(offset) => jsonOutlinePr
 ```
 
 好了。那么现在去尝试一下效果吧~
-1
+
+### 5、创建文件和文件夹的视图
+
+现在我们来创建一个显示当前文件和文件夹的视图，就类似于我们的资源管理器里存放的文件。点击文件能够打开。
+
+创建视图命令
+
+```json
+"activationEvents": [
+    "onView:fileExplorer",
+],
+"contributes": {
+    "views": {
+        "hang-explorer": [
+            {
+                "id": "fileExplorer",               //这里我建议你，先用这个ID。后面我会告诉你为什么。
+				"name": "Hang-fileExplorer"
+            }
+        ]
+    },
+    "commands": [
+        {
+            "command": "hang-file.refresh",
+            "title": "Refresh-file",
+            "category": "Hang",
+            "icon": {
+                "light": "resources/light/refresh.svg",
+                "dark": "resources/dark/refresh.svg"
+            }
+        },
+        {
+            "command": "fileExplorer.openFile",     // 这里我也建议你使用该 ID,这可以省下你很多事情
+            "title": "Open-file",
+            "category": "Hang"
+        }
+    ],
+    "menus": {
+        "view/title": [
+            {
+                "command": "hang-file.refresh",
+				"when": "view == fileExplorer"
+            }
+        ],
+        "view/item/context": [
+            {
+                "command": "hang-file.refresh",
+                "when": "view == fileExplorer && viewItem == file",     // 当选中项问文件时
+                "group": "inline"
+            }
+        ]
+    }
+}
+```
+
+在官网 demo 中 `src` 下，你能找到 `fileExplorer.ts` 文件，将此文件导入到你的 `src` 下：
+
+现在编辑 `extension.ts` 文件：
+
+```ts
+import { FileExplorer, FileSystemProvider } from './fileExplorer';
+
+// 导入了上面的文件，你只要写下下面这行代码，那么你的 file 视图就能使用了。
+new FileExplorer(context);
+```
+
+至于为什么呢，我们现在就打开 `fileExplorer.ts` 来一看究竟。
+
+将文件拉到最下方，你就能看到这段代码： 
+
+```ts
+export class FileExplorer {
+
+	private fileExplorer: vscode.TreeView<Entry>;
+	constructor(context: vscode.ExtensionContext) {
+		const treeDataProvider = new FileSystemProvider();
+		this.fileExplorer = vscode.window.createTreeView('fileExplorer', { treeDataProvider });
+		vscode.commands.registerCommand('fileExplorer.openFile', (resource) => this.openResource(resource));
+	}
+	private openResource(resource: vscode.Uri): void {
+		vscode.window.showTextDocument(resource);
+	}
+}
+```
+
+细心的小伙伴就会明白为什么刚才在 `package.json` 文件中叫你不要修改 ID。因为 `constructor()` 初始化函数都帮你写好了。
+
+那么现在我们注释掉 `new FileExplorer(context);` 这段代码，我们来重新写一个。
+
+这里就需要用到我们刚刚从 `fileExplorer.ts` 文件中导入的 `FileSystemProvider` 了。
+
+```ts
+const treeDataProvider = new FileSystemProvider();
+// 'fileExplorer' 为你创建的视图 ID
+vscode.window.createTreeView('fileExplorer',{ treeDataProvider });
+// 'fileExplorer.openFile' 这里的命令名称不要改，改了就不能用了，打不开文件了
+// 我也不知道为什么，研究了半天，你可以尝试一下
+vscode.commands.registerCommand('fileExplorer.openFile', (resource) => {
+    vscode.window.showInformationMessage('open file');
+	vscode.window.showTextDocument(resource);
+})
+vscode.commands.registerCommand('hang-file.refresh', () => {
+    // 这里我没有找到 refresh 函数，所以就只是弹个框，你们可以自己去找找。
+    vscode.window.showInformationMessage('refresh file');
+});
+```
+
+
 
 
 
