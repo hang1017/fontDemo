@@ -1183,6 +1183,7 @@ vscode.commands.registerCommand('hang-json.renameNode',(offset) => jsonOutlinePr
 ```
 
 好了。那么现在去尝试一下效果吧~
+1
 
 
 
