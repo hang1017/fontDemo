@@ -8,6 +8,7 @@
 - 四、不同的样式修饰不同类型的数字
 - 五、进度条显示样式
 - 六、创建工作区并添加、删除文件和文件夹
+- 七、树视图
 
 ## 一、状态栏 demo
 
@@ -906,6 +907,287 @@ context.subscriptions.push(vscode.commands.registerCommand('hang.fileDelete',() 
 ```
 
 完成！
+
+## 七、树视图
+
+`demo` 的案例比较复杂，所以我们可以先跟着官网教程一步一步走。
+
+首先，我们先创建出一个视图容器，并将该视图显示出来。
+
+开始之前。我们先将视图的图片导入进项目中。再官网 `demo` 中，有一个 `media` 和 `resources` 的包。
+
+里面放着的就是官网显示的视图图片，我们可以直接先用它的，放的位置不变即可。
+
+### 1、重识 `package.json`
+
+这个 `demo` 有用到一些新的 `point`。所以以这个例子再补充几个 `package。json` 会用到的属性。
+
+`contributes.viewsContainers`: 为自定义视图提供视图容器。并且只能把它提供给活动栏 `activitybar`
+
+`contributes.views`: 可以向内置或提供的视图容器添加新视图
+
+```json
+"contributes": {
+    "viewsContainers": {
+        "activitybar": [
+            {
+                "id": "hang-explorer",          //视图容器的ID
+                "title": "Hang-Explorer",       //视图容器的标题
+                "icon": "media/dep.svg"         //图标
+            }
+        ]
+    },
+    "views": {
+        "hang-explorer": [                      //上面创建的视图容器的 ID
+            {
+                "id": "hang-node",              //这才是视图的 ID
+				"name": "Hang-Node"             //视图的名称，会显示在最上方
+            }
+        ]
+    },
+    "commands": [                               //这个我没有修改。
+        {
+            "command": "extension.helloWorld",
+            "title": "Hello World"
+        }
+    ]
+}
+```
+
+好的，如果你现在运行插件，你是看不到新的视图的。因为我们需要激活它。
+
+`onView`: 只要展开指定的 ID 视图，就会激活感兴趣的插件。
+
+```json
+"activationEvents": [
+    "onView:hang-node",                     // 激活创建的视图名称
+]
+```
+
+### 2、基本操作
+
+那么现在树视图的图标就会显示在视图容器上了。因为现在树视图还没有被注册，所以并没有内容。
+
+现在我们还需要导入一份官网提供的文件 `nodeDependencies.ts` 将这份文件放在 `src` 下。官网树视图有提供代码，或者可以直接 copy demo 上的代码。
+
+介绍一个命令
+
+`registerTreeDataProvider()`: 为插件 `contributes` 注册的视图创建 `view`。将允许向 `treeView` 提供数据，并在数据更改时进行更新。
+
+编辑 `extension.ts`  文件
+
+```ts
+import * as vscode  from 'vscode';
+import { DepNodeProvider, Dependency } from './nodeDependencies';   //导入那份文件所需要的类
+
+export function activate(context: vscode.ExtensionContext) {
+    // vscode.workspace.rootPath: 在编辑器中打开的文件夹    如果出现报错，没关系。运行就可以了。
+    const nodeDependenciesProvider = new DepNodeProvider(vscode.workspace.rootPath);
+    // '' 里面的内容为 你 创建的 树视图的ID
+    vscode.window.registerTreeDataProvider('hang-node',nodeDependenciesProvider);
+}
+```
+
+好的。那么现在运行插件，随意打开之前创建过的插件文件，点击树视图。你会看到一些新的东西。
+
+### 3、创建树视图的增、删、改、刷新图标和操作
+
+#### 第一步：重识 `package.json`
+
+`package.json` 有新的知识需要认识和讲解。
+
+添加增、删、改、刷新四条命令，小伙伴们页可以一条一条的添加这样效果会更加清楚。
+
+```json
+"commands"： [
+    {
+        "command": "hang-node.refreshEntry",
+        "title": "Refresh-node",
+        "category": "Hang",
+        "icon": {
+            "light": "resources/light/refresh.svg",
+            "dark": "resources/dark/refresh.svg"
+        }
+    },
+    {
+        "command": "hang-node.addEntry",
+        "title": "Add-node",
+        "category": "Hang"
+    },
+    {
+        "command": "hang-node.editEntry",
+        "title": "Edit-node",
+        "category": "Hang",
+        "icon": {
+            "light": "resources/light/edit.svg",
+            "dark": "resources/dark/edit.svg"
+        }
+    },
+    {
+        "command": "hang-node.deleteEntry",
+        "title": "Delete-node",
+        "category": "Hang"
+    }
+],
+// 上面只是创建了四个命令，接下来我们要在树视图菜单中将此显示出来。
+"menus": {
+    // 在视图标题中显示操作的位置
+    "view/title":[
+        {
+            "command": "hang-node.refreshEntry",
+            "when": "view == hang-node",
+            "group": "navigation"                   //显示在第一条上
+        },
+        {
+            "command": "hang-node.addEntry",
+            "when": "view == hang-node"             //视图为 `hang-node` 的视图
+        }
+    ],
+    // 显示树项的操作的位置。
+    "view/item/context": [
+        {
+            "command": "resources/light/edit.svg",
+            "when": "view == hang-node && viewItem == dependency",  //我的理解是当该项为节点的时候
+            "group": "inline"                       //出现在每一项的边上
+        },
+        {
+            "command": "hang-node.deleteEntry",
+            "when": "view == hang-node && viewItem == dependency"
+        }
+    ]
+}
+```
+
+好的。那么现在重新运行一下插件，你就会在树视图看到 增、删、改、刷新这四个图标。但是还并不能用，接下来我们来注册一下。
+
+#### 第二步：注册图标命令
+
+打开 `extension.ts` 文件，新增下面的代码：
+
+```ts
+vscode.commands.registerCommand('hang-node.refreshEntry', () => nodeDependenciesProvider.refresh());
+	vscode.commands.registerCommand('hang-node.addEntry',() => vscode.window.showInformationMessage(`hang-node___add~`));
+	vscode.commands.registerCommand('hang-node.editEntry',(node: Dependency) => vscode.window.showInformationMessage(`hang-node___edit:${node.label}~`));
+	vscode.commands.registerCommand('hang-node.deleteEntry',(node: Dependency) => vscode.window.showInformationMessage(`hang-node___delete:${node.label}~`));
+```
+
+如果有心的小伙伴会打开看看 `nodeDependencies.ts` 文件是里面的内容有什么。你可能就会发现：不止有 `refresh()` 方法。
+
+还有 `getTreeItem(node)`、`getChildren(node)` 的方法，小伙伴都可以尝试一下。
+
+好了。现在去展示一下效果吧~
+
+### 4、创建一个可以修改 `json` 文件的视图
+
+首先先导入 demo 中的 `jsonOutline.ts` 文件。
+
+这里一样需要两步来完成，第一步：重识 `package.json`、第二步：完成注册命令。
+
+下面的代码为：补充代码，忽略了之前已经完成的代码，所以之前写完的代码别删了。
+
+```json
+"activationEvents":[
+    "onView:hang-node",
+    "onView:hang-jsonOutLine",              // 激活创建视图的名称
+    "onLanguage:json",                      // 当文件为 json 时就激活插件，当然你不写也可以
+    "onLanguage:jsonc"                      // 同上
+],
+"contributes": {
+    "views": {
+        "hang-explorer": [
+            {
+                "id": "hang-jsonOutLine",
+                "name": "Hang-jsonOL",
+                "when": "jsonOutlineEnabled"        // 当文件为 json 时才显示
+            }
+        ]
+    }
+}
+```
+
+编辑 `extension.ts` 文件：
+
+```ts
+// 导入文件
+import { JsonOutlineProvider } from './jsonOutline';
+
+const jsonOutlineProvider = new JsonOutlineProvider(context);
+vscode.window.registerTreeDataProvider('hang-jsonOutLine',jsonOutlineProvider);
+```
+
+如果你现在去测试插件效果，你可能会**遇到 `缺少 modules 组件 jsonc-parser` 而报错**。
+
+如果遇到这种情况，不要着急。**打开终端：键入 `npm install jsonc-parser`。** 安装完成后。执行插件。
+
+当你打开 `json` 文件，你就能看到你新创建的视图。但是现在这个视图还没办法进行任何操作。所以我们继续完成我们的代码。
+
+接下来我们要继续编写 `package.json` 文件，完成 全局刷新、单个元素刷新、元素重命名 的命令
+
+```json
+"contributes": {
+    "commands": [
+        {
+            "command": "hang-json.refresh",             // 全局刷新
+            "title": "Refresh-json",
+            "category": "Hang",
+            "icon": {
+                "light": "resources/light/refresh.svg",
+                "dark": "resources/dark/refresh.svg"
+            }
+        },
+        {
+            "command": "hang-json.refreshNode",         // 刷新单个节点
+            "title": "RefreshNode-json",
+            "category": "Hang",
+            "icon": {
+                "light": "resources/light/refresh.svg",
+                "dark": "resources/dark/refresh.svg"
+            }
+        },
+        {
+            "command": "hang-json.renameNode",          // 重命名节点
+            "title": "RenameNode-json",
+            "category": "Hang"
+        }
+    ],
+    "menus": {                                          // 这里的内容应该上面已经说过了。忘记了请参考 1033 行
+        "view/title": [
+            {
+                "command": "hang-json.refresh",
+                "when": "view == hang-jsonOutLine",
+                "group": "navigation"
+            }
+        ],
+        "view/item/context": [
+            {
+                "command": "hang-json.refreshNode",
+				"when": "view == hang-jsonOutLine",
+				"group": "inline"
+            },
+            {
+                "command": "hang-json.renameNode",
+				"when": "view == hang-jsonOutLine",
+				"group": "inline"
+            }
+        ]
+    }
+}
+```
+
+接下来注册一下这些命令：
+
+```ts
+vscode.commands.registerCommand('hang-json.refresh',() => jsonOutlineProvider.refresh());
+vscode.commands.registerCommand('hang-json.refreshNode',(offset) => jsonOutlineProvider.refresh(offset));
+vscode.commands.registerCommand('hang-json.renameNode',(offset) => jsonOutlineProvider.rename(offset));
+```
+
+好了。那么现在去尝试一下效果吧~
+
+
+
+
+
 
 
 
