@@ -166,8 +166,10 @@ background:linear-gradient(
 #### 3、背景不居中、大小不合适
 
 ```css
-background:url('') no-repeat center center;
-background-size:100% 100%;
+background-image: url('../../assets/img/club_home_bg.png');
+background-repeat: no-repeat;
+background-size: 100% 100%;
+background-position: center center;
 ```
 
 #### 4、修改底层的样式

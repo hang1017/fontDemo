@@ -9,6 +9,7 @@
 - 五、进度条显示样式
 - 六、创建工作区并添加、删除文件和文件夹
 - 七、树视图
+- 八、树视图-2(创建自己想要的 item)
 
 ## 一、状态栏 demo
 
@@ -1288,6 +1289,153 @@ vscode.commands.registerCommand('hang-file.refresh', () => {
     vscode.window.showInformationMessage('refresh file');
 });
 ```
+
+## 八、树视图-2(创建自己想要的 item)
+
+要想创建自己想要的项，就要用到 `TreeItem`。自己构造函数。
+
+打开[官网 API](https://code.visualstudio.com/api/references/vscode-api),全局搜索 `TreeItem`。
+
+找到 `CONSTRUCTORS` 翻译成中文就是 `构造函数`。
+
+有两个方法，我们用第一个来构造一个函数。
+
+在 `src` 下创建一个 `.ts` 文件。如：`HangItemProvider.ts`. 最好(建议)以 `Provider` 作为后缀。
+
+我们先来完成构造函数：
+
+```ts
+import * as vscode from 'vscode';
+import * as path from 'path';
+
+export class MenuItemNode extends vscode.TreeItem {
+    // 这里就是写初始化参数传递的地方
+    constructor (
+        // 这是官网上需要传递的两个函数
+        public readonly label: string,
+        // TreeItemCollapsibleState: 树项的可折叠状态
+        // 有 Collapsed、Expanded、None 这三种属性，官网里可以找到
+        public readonly collapsibleState: vscode.TreeItemCollapsibleState,
+        // 这里是因为我们需要给每个 Item 加 命令
+        public readonly command?: vscode.Command
+    ){
+        // 这里我不懂为什么照抄就行了
+        super(label, collapsibleState);
+    }
+}
+```
+
+官网上 `PROPERTIES` 属性，小伙伴们有需要都可以往构造函数里加。
+
+那么构造函数就被我们完成了。是不是很简单。
+
+接下来。我们就来创建刚刚构造的树视图的 `TreeDataProvider`.
+
+开始编写代码前，先熟悉一下详细熟悉一下几个文字：
+
+`TreeDataProvider`: 为程序提供树视图的数据。
+
+`onDidChangeTreeData`: 用于表示元素或根已更改的可选事件
+
+下面是方法：
+
+`getChildren (element ：T)`: 获取孩子节点
+
+`getTreeItem (element ：T)`: 获取下面的项，和上面的差不多。但是有所不同
+
+
+
+将下面的代码补充在 `HangItemProvider.ts` 下
+
+```ts
+// 当你输入下面的代码， className 会报错。点击快速修复会自动帮你补全 onDidChangeTreeData、getChildren、getTreeItem
+export class HangItemProvider implements vscode.TreeDataProvider<MenuItemNode> {
+    onDidChangeTreeData?: vscode.Event<MenuItemNode | null | undefined> | undefined;  
+
+    // 修改这里的代码，将树视图下的所有项显示出来(我是这样理解的)
+    getTreeItem(element: MenuItemNode): vscode.TreeItem | Thenable<vscode.TreeItem> {
+        // throw new Error("Method not implemented.");
+        return element;
+    }
+
+    // 在这里你就可以添加你想要的子项。
+    getChildren(element?: MenuItemNode | undefined): vscode.ProviderResult<MenuItemNode[]> {
+        let trees = [];
+        let menuItemList = [
+            {"command":"hang-item.Projects","icon": "","label": "Projects"},
+            {"command":"hang-item.Settings","icon": "","label": "Settings"},
+        ]
+        // 如果不存在，才创建项
+        if(element === null || element === undefined) {
+            for(let i = 0; i<menuItemList.length; i++) {
+                // 构造函数，传递命令，标题
+                let treeItem = new MenuItemNode(menuItemList[i].label, vscode.TreeItemCollapsibleState.None, {
+                    command: menuItemList[i].command,
+                    title: menuItemList[i].command
+                })
+                trees.push(treeItem);
+            }
+            return trees;
+        }
+        return null;
+    }
+}
+```
+
+好了。那么至此，我们就创建了一个我们自己想要的视图和项
+
+如果小伙伴有详细看我 `七、树视图` 的话，那么应该知道接下来我们就要去创建、激活和注册这些项了。
+
+首先补充 `package.json` :
+
+```json
+"activationEvents": [
+    "onView:hang-item",
+],
+"contributes": {
+    "views": {
+        "hang-explorer": [
+            {
+                "id": "hang-item",
+                "name": "Hang-TreeItem"
+            }
+        ]
+    },
+    "commands": [                           // 给两个项都补充上命令
+        {
+            "command": "hang-item.Projects",
+            "title": "Projects",
+            "category": "Hang"
+        },
+        {
+            "command": "hang-item.Settings",
+            "title": "Settings",
+            "category": "Hang"
+        }
+    ]
+}
+```
+
+最后一步：去 `extension.ts` 注册：
+
+```ts
+import { HangItemProvider,MenuItemNode } from './HangItemProvider';
+
+const hangItemProvider = new HangItemProvider();
+// ''里放的是 package.json 里的 id
+vscode.window.registerTreeDataProvider('hang-item',hangItemProvider);
+// 完善一下两个点击事件呗~
+vscode.commands.registerCommand('hang-item.Projects', () => {
+    vscode.window.showInformationMessage('show Projects Item');
+});
+vscode.commands.registerCommand('hang-item.Settings', () => {
+    vscode.window.showInformationMessage('show Settings Item');
+});
+```
+
+好了。可以展示一波骚操作了~
+
+
 
 
 
