@@ -1292,6 +1292,8 @@ vscode.commands.registerCommand('hang-file.refresh', () => {
 
 ## 八、树视图-2(创建自己想要的 item)
 
+### 1、创建自己想要的子项
+
 要想创建自己想要的项，就要用到 `TreeItem`。自己构造函数。
 
 打开[官网 API](https://code.visualstudio.com/api/references/vscode-api),全局搜索 `TreeItem`。
@@ -1435,7 +1437,122 @@ vscode.commands.registerCommand('hang-item.Settings', () => {
 
 好了。可以展示一波骚操作了~
 
+### 2、创建自己想要的文件夹
 
+其实思路和上面的差不多，就是多加了一些类型的判断。写了那么多 `package.json` 注册命令，这里我就不再重复了。忘记的小伙伴们自行翻找上面的文章就行。
+
+现在在 `src` 的目录下创建一个 `.ts` 文件，命名随意，如： `HangFileProvider.ts` 
+
+```ts
+import * as vscode from 'vscode';
+
+// 这里创建一个枚举，用来做判断节点的类型
+export enum myTreeKind {
+    MR,                 // 这里可以理解为 目录
+    file,               // 这里可以理解为 文件夹
+    comment,            // 这里可以理解为 节点和命令
+    catatory,           // 目前没有用到，可删除
+    issue,              // 目前没有用到，可删除
+}
+
+// 这里创建一个用来存放改节点下的文件或文件夹的接口
+export interface myTreeFilesNode {
+    fileName: string;
+}
+
+// 接下来就是熟悉的： 创建构造函数
+export class myTreeNode extends vscode.TreeItem {
+    constructor(
+        // 创建一个命名，标识
+        public readonly label: string,
+        // 创建一个 面板折叠的状态判断 
+        public readonly collapsibleState: vscode.TreeItemCollapsibleState,
+        // 用来存放文件和文件夹的，如果无，传参可传 []
+        public readonly myFiles: myTreeFilesNode[],
+        // 判断节点类型 
+        public readonly kind: myTreeKind,
+        // 节点的命令，可不传，因为带？ 所以是非必传项
+        public readonly command?: vscode.Command,
+    ){
+        super(label, collapsibleState);
+    }
+}
+
+// 剩下最后一步了不是嘛？
+export class HangFileProvider implements vscode.TreeDataProvider<myTreeNode> {
+    // 这是一个图标参数，我页不知道路径，这行代码复制了就可以用了。一个文件夹总需要打开和关闭的图标吧
+    public static iconName = "C:\\Users\\Desktop\\code-1227\\WeCodeForVSCode\\code\\media\\image\\unHandle.png";
+
+    // 创建一个树，这里不知道怎么解释，就是理解成一个属性就行了，看看下面 `getChildren()` 里的代码应该就知道了。
+    public static tree: myTreeNode[] = [];
+
+    constructor(){}
+
+    onDidChangeTreeData?: vscode.Event<myTreeNode | null | undefined> | undefined;
+    getTreeItem(element: myTreeNode): vscode.TreeItem | Thenable<vscode.TreeItem> {
+        return element;
+    }
+    getChildren(element?: myTreeNode | undefined): vscode.ProviderResult<myTreeNode[]> {
+        let trees: myTreeNode[] = [];
+
+        if(element === undefined || element === null) {
+            // 如果存在就添加进去，在初始化是，将 tree 创建和传递进来
+            if(HangFileProvider.tree !== undefined) {
+                // 循环遍历 tree,将他们都添加到 视图中
+                for(let i = 0; i<HangFileProvider.tree.length; i++) {
+                    let currentElement = HangFileProvider.tree[i];
+                    if(currentElement.label === 'hangFile1') {
+                        // 创建一个节点 节点里添加两个节点
+                        // 这里详细讲解一下传递参数的内容
+                        // label : 节点的名称，标识
+                        // TreeItemCollapsibleState： 开关
+                        // {} ： 在该节点下创建两个节点
+                        // myTreeKind.MR： 设置节点类型的判断
+                        let myTree = new myTreeNode(currentElement.label, vscode.TreeItemCollapsibleState.Expanded, [{ fileName: "test1.cpp" }, { fileName: "test2.cpp" }], myTreeKind.MR,{
+                            // 命令可有可无
+                            command: "hangFile1",
+                            title: "hangFile1"
+                        });
+                        myTree.contextValue = 'hangFile1';  //没啥，命名相同即可
+                        myTree.tooltip = 'hangFile1';       // 覆盖节点时的一个小气泡
+                        myTree.iconPath = currentElement.iconPath;  //图标的路径
+                        trees.push(myTree);
+                    }
+                }
+            }
+        }
+    }
+    // 有了上面的代码，我们现在至少能展示到一层
+    // 现在来初始化一下数据看看效果吧
+    // 下面的代码应该不难理解了。
+    public static initHangFileTreeList() {
+        const hangFileProvider = new HangFileProvider();
+        vscode.window.registerTreeDataProvider('hang-file', hangFileProvider);
+        // label : 节点的名称，标识
+        // TreeItemCollapsibleState： 开关
+        // {} ： 在该节点下创建两个节点
+        // myTreeKind.MR： 设置节点类型的判断
+        HangFileProvider.tree.push(new myTreeNode(
+            "hangFile1", 
+            vscode.TreeItemCollapsibleState.Collapsed, 
+            [],
+            myTreeKind.MR
+        ));
+    }
+}
+```
+
+接下来我们打开 `extension.ts` 文件来使用一下插件吧
+
+```ts
+import { HangFileProvider } from './HangFileProvider';
+HangFileProvider.initHangFileTreeList();
+```
+
+就是这么简单。小伙伴们打开插件不能用不要着急，请检查两个地方：
+
+- `package.json` 都注册了嘛？`activationEvents` 和 `views` 都添加了嘛？
+- 运行插件的时候有没有报错了，比如：提示 `no found` 可能是你代码写快啦，拼错啦。仔细检查哈。
 
 
 

@@ -419,8 +419,15 @@ context.subscriptions.push(vscode.languages.registerCompletionItemProvider('plai
 - `isCaseSensitive`: 不敏感，可以置为 `true`,目前不懂要干嘛
 - `isReadonly`: 设置为是否是只读文件
 
+`TreeDataProvider`: 为程序提供树视图的数据。
 
+`onDidChangeTreeData`: 用于表示元素或根已更改的可选事件
 
+下面是方法：
+
+`getChildren (element ：T)`: 获取孩子节点
+
+`getTreeItem (element ：T)`: 获取下面的项，和上面的差不多。但是有所不同
 
 
 
