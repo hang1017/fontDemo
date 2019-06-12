@@ -1554,6 +1554,36 @@ HangFileProvider.initHangFileTreeList();
 - `package.json` 都注册了嘛？`activationEvents` 和 `views` 都添加了嘛？
 - 运行插件的时候有没有报错了，比如：提示 `no found` 可能是你代码写快啦，拼错啦。仔细检查哈。
 
+但是现在只是创建了一个文件夹，文件夹下的内容并没有显示出来。我们来补充完整，继续补充 `HangFileProvider.ts`
+
+```ts
+getChildren(element?: myTreeNode | undefined): vscode.ProviderResult<myTreeNode[]> {
+    let trees: myTreeNode[] = [];
+    if(element === undefined || element === null) {
+        // 这里的代码上面有，已忽略
+    } else {
+        if(element.kind === myTreeKind.MR) {
+            // 遍历你存放进来的文件夹
+            for(let i = 0; i<element.myFiles.length; i++) {
+                // 获取每一个文件对象
+                let currentElement = element.myFiles[i];
+                // 第一个参数其实就是 label
+                // 2、面板状态
+                // 3、内容的数组，你可以为空，在下面那么判断条件里加也可以
+                // 4、节点类型
+                // 5、命令。非必填
+                let currentNode = new myTreeNode(currentElement.fileName, vscode.TreeItemCollapsibleState.Collapsed, [],  myTreeKind.file);
+                trees.push(currentNode);
+            }
+        } else if(element.kind == myTreeKind.file) {
+            let mrissue_node = new myTreeNode('comment', vscode.TreeItemCollapsibleState.None, [], myTreeKind.comment);
+            trees.push(mrissue_node);
+        }
+    }
+}
+```
+
+好了。去尝试一下效果吧~
 
 
 
