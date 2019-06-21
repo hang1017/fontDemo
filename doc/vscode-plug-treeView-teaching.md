@@ -377,11 +377,354 @@ export function deactivate() {}
 
 好了完成到这里如果小伙伴们启动插件的话，会出现报错。为什么呢？
 
-因为 命令：`itemClick` 没有激活
+因为 命令：`itemClick` 没有激活。
 
 打开 `package.json` 找到 `activationEvents` 补上： `"onCommand:itemClick"` 即可。
 
 去验证一下吧。
 
 ![img](gitImg/treeView/4-4.jpg)
+
+因为这里量比较大：给小伙伴们分个步骤好一步一步测试和检查：
+
+1、创建 `TreeItem` 的类，并带上构造函数，命令，图标
+
+2、创建 `TreeDataProvider` 的类，并写好 `getTreeItem`、`getChildren`、`initTreeViewItem`
+
+3、完善 `extension.js` 给树视图初始化，并加上每项的点击事件
+
+4、**重要的一步**: `package.json` -> `activationEvents`
+
+## 五、创建 webView 并嵌入百度页面
+
+在 `src` 目录下创建 `WebView.ts` 文件，那么现在在 `src` 下的 `.ts` 文件就有三个,
+
+分别是: `extension.ts`、`TreeViewProvider.ts`、`WebView.ts`。接下来我们来看 `WebView.ts`。
+
+```ts
+import { ExtensionContext, ViewColumn, WebviewPanel, window, commands } from 'vscode';
+```
+
+上面这行代码不难理解，从 `vscode` 中导入我们需要的 API。
+
+`ExtensionContext`: 插件上下文是扩展的私有实用程序的集合。这个类型小伙伴们可以看 `extension.ts` 下的 `activate` 方法，就是这个传递过来的。目前没有什么用，只是为了以防万一就存下来。
+
+`ViewColumn`: 表示窗口中编辑器的位置,就是如下图的位置
+
+![img](gitImg/treeView/5-1.jpg)
+
+`WebviewPanel`: 包含webview的面板,就是接下来要创建的网页视图面板。
+
+**这里重点 window 下的 createWebviewPanel() 方法**
+
+**这里重点 window 下的 createWebviewPanel() 方法**
+
+`window.createWebviewPanel`: 
+
+![img](gitImg/treeView/5-2.jpg)
+
+传递的参数有四：
+
+`viewType`: 标识Webview面板的类型(可随意命名)。
+
+`title`: 面板展示在 `ViewColumn` 上的标题。
+
+`showOptions`: 类型为 `ViewColumn`, 即我们要展示在哪个面板上
+
+`options`: 设置项，下面会说，如果为空就传 `{}` 即可
+
+好了，我们来看代码吧~
+
+```ts
+import { ExtensionContext, ViewColumn, WebviewPanel, window, commands } from 'vscode';
+// 创建一个全局变量，类型为：WebviewPanel 或者 undefined
+let webviewPanel : WebviewPanel | undefined;
+
+// 创建一个可导出的方法,并且带上参数
+export function createWebView(
+    context: ExtensionContext,      // 上面的代码刚介绍过，可忽略
+    viewColumn: ViewColumn,         // 窗口编辑器
+    label: string                   // 传递进来的一个 label 值，就是点击树视图项 showInformationMessage 的值
+) {
+    if(webviewPanel === undefined) {
+        // 上面重点讲解了 createWebviewPanel 传递4个参数
+        webviewPanel = window.createWebviewPanel(
+            'webView',                          // 标识，随意命名
+            label,                              // 面板标题
+            viewColumn,                         // 展示在哪个面板上
+            {
+                retainContextWhenHidden: true,  // 控制是否保持webview面板的内容（iframe），即使面板不再可见。
+                enableScripts: true             // 下面的 html 页可以使用 Scripts
+            }
+        )
+        // 面板嵌入 html getIframeHtml() 方法在下面
+        webviewPanel.webview.html = getIframeHtml(label);
+    } else {
+        // 如果面板已经存在，重新设置标题
+        webviewPanel.title = label;
+        webviewPanel.reveal();  // Webview面板一次只能显示在一列中。如果它已经显示，则此方法将其移动到新列。
+    }
+
+    // onDidDispose: 如果关闭该面板，将 webviewPanel 置 undefined
+    webviewPanel.onDidDispose(() => {
+        webviewPanel = undefined;
+    });
+
+    return webviewPanel;
+}
+
+// 这个方法没什么了，就是一个 最简单的嵌入 iframe 的 html 页面
+export function getIframeHtml(label: string) {
+    return `
+    <!DOCTYPE html>
+    <html lang="en">
+        <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <style>
+            html,
+            body {
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100%;
+                height: 100%;
+            }
+            .iframeDiv {
+                width: 100%;
+                height: 100%;
+            }
+        </style>
+        </head>
+
+        <body>
+        <iframe id='iframe1' class="iframeDiv" src="http://www.baidu.com/" scrolling="auto"></iframe>
+        </body>
+    </html>
+    `;
+}
+```
+
+那么至此，我们的 `WebView.ts` 就完成了，现在我们来 `extension.ts` 页面注册激活它。
+
+```ts
+import * as vscode from 'vscode';
+import { TreeViewProvider } from './TreeViewProvider';
+// 导入 WebView.ts 下的 createWebView 方法
+import { createWebView } from './WebView';
+
+export function activate(context: vscode.ExtensionContext) {
+    ...
+    TreeViewProvider.initTreeViewItem();
+	context.subscriptions.push(vscode.commands.registerCommand('itemClick', (label) => {
+		vscode.window.showInformationMessage(label);
+        // 将 context, vscode.ViewColumn.Active, label 传递进去
+        // vscode.ViewColumn.Active: 表示当前选中的面板
+		const webView = createWebView(context, vscode.ViewColumn.Active, label);
+		context.subscriptions.push(webView);
+	}));
+}
+```
+
+那么注册完毕，运行插件看看效果吧~
+
+![img](gitImg/treeView/5-3.jpg)
+
+这里我也给小伙伴们补充上步骤：
+
+1、创建 `createWebView` 方法，面板存在与否的代码，面板销毁的代码，面板嵌入 html 的代码
+
+2、完善 `extension.ts` 文件，当点击项时创建面板
+
+## 六、不同 item 显示不同的页面(数据传递: VS code -> html)
+
+现在我们可以起一个 React 或者 Alita 项目
+
+创建好3个页面,命名分别为 `pig1`, `pig2`, `pig3`。当然你要随意命名也可以，只不过这样子会比较方便。
+
+![img](gitImg/treeView/6-1.jpg)
+
+那么接下来启动 React 或者 Alita 项目。
+
+修改 `WebView.ts` 文件下的内容
+
+```ts
+<iframe id='iframe1' class="iframeDiv" src="http://localhost:8000/#/${label}" scrolling="auto"></iframe>
+```
+
+把 `iframe` 路径改成项目路径。
+
+那么现在去启动一下插件吧。
+
+是不是发现了一个问题，webView 只展示第一次选中的项，当你切换其他项时，路径并没有改变。这是为什么呢？
+
+因为这里的参数 `${label}` 是从 `getIframeHtml(label)` 方法中传递进来的。
+
+这个方法只有在 `webViewPanel` 为 `undefined` 时才执行。所以 `${label}` 永远都是创建 webView 时传递进来的参数。
+
+那么现在有没有什么办法将点击事件的参数传递进 html 页面呢？有的。
+
+介绍一个**重要的方法**：
+
+`postMessage(message)`: 将消息发布到webview内容。仅当Webview可见时才会传递消息。
+
+接下来我们将继续修改 `WebView.ts` 文件
+
+```ts
+...//此处省略重复代码
+if(webviewPanel === undefined) {
+... //此处省略重复代码
+webviewPanel.webview.html = getIframeHtml(label);
+
+} else {
+    webviewPanel.title = label;
+    // 补上下面这句话
+    // 作用: 向 html 传递一个 标签为 label 的 Message
+    webviewPanel.webview.postMessage({label: label});   
+    webviewPanel.reveal();
+}
+
+... //此处省略重复代码
+
+export function getIframeHtml(label: string) {
+    return `
+    <head>
+        <style>
+            ... 此处省略重复代码
+        </style>
+        <script>
+            window.addEventListener('message', (e) => {
+                document.getElementById('iframe1').src = 'http://localhost:8000/#/'+e.data.label+'/';
+            })
+        </script>
+    </head>
+    `
+}
+```
+
+讲解一下上面 `getIframeHtml()` 方法中新增的代码：
+
+`window.addEventListener('message',(e) => {})`: 监听事件，可以通过 `e.data.~` 来读取数据。
+
+接着修改 `iframe` 的 `src` 值。
+
+很好了。接下来去测试下效果吧。
+
+来个步骤：
+
+1、修改 `iframe` 的`src`
+
+2、当 `webviewPanel` 存在时，添加 `postMessage` 事件
+
+3、html 增加 `addEventListener` 监听事件，修改 `iframe` 的`src`
+
+## 七、iframe 页面的数据传递指 VS code(iframe -> html -> vscode)
+
+还记得 iframe 页面中都有一个 `Button` 的按钮嘛？新增一个点击事件。
+
+```js
+... // 省略重复代码
+
+btnClick = () => {
+    // 向父页面传递 ifarmeLabel 标签的 Message 消息
+    // '*' 为任意的路径都可以 你也可以在 '' 中放入指定的 url
+    window.parent.postMessage({ifarmeLabel: 'pig1'},'*');
+}
+
+render() {
+    return (
+        <div>
+            <h2>this is pig1</h2>
+            <Button onClick={this.btnClick}>showMessage:pig1</Button>
+        </div>
+    );
+}
+
+... // 省略重复代码
+```
+
+接下来我们去 `WebView.ts` 页面的 html 里监听和接收 `ifarmeLabel` 的数据。
+
+```ts
+<script>
+    // 导入 vscode 我们需要通过 vscode 来向 vscode 发送消息
+    const vscode = acquireVsCodeApi();
+
+    // 稍微修改下监听事件的代码
+    window.addEventListener('message', (e) => {
+        // 当 label 存在时 切换 iframe 页面
+        if(e.data.label) {
+            document.getElementById('iframe1').src = 'http://localhost:8000/#/'+e.data.label+'/';
+        }
+        // 当监听到 ifarmeLabel 存在时，向 vscode 发送消息
+        if(e.data.ifarmeLabel) {
+            // 我们可以先看看数据有没有传递过来
+            console.log(e.data.ifarmeLabel);
+            // 这里就是向 vscode 发送信息 command:一个标识， text:参数的传递
+            vscode.postMessage({
+                command: 'ifarmeLabel',
+                text: e.data.ifarmeLabel+'',
+            })
+        }
+    })
+</script>
+```
+
+有需要看上面 `console.log(e.data.ifarmeLabel)` 的小伙伴可以看下面的操作打开 `切换开发人员工具`。
+
+点击 `Button` 按钮。看看是否有输出我们要的数据。
+
+![img](gitImg/treeView/7-1.jpg)
+
+通过上面的代码，我们也已经向 VS code 传递了 `command` 标识和 `text` 参数。
+
+接下来就是在 vscode 监听并接收数据。
+
+先来认识一下 `onDidReceiveMessage()` 方法：当 webview 内容发布消息时触发。
+
+还是继续编辑 `WebView.ts` 文件
+
+```ts
+export function createWebView(
+    context: ExtensionContext,
+    viewColumn: ViewColumn,
+    label: string
+) {
+    if(webviewPanel === undefined) {...} else {...}
+
+    webviewPanel.onDidDispose(() => {webviewPanel = undefined;});
+
+    // 当 html 传递参数时，onDidReceiveMessage 可以监听到消息
+    // message: 为传递过来的参数
+    webviewPanel.webview.onDidReceiveMessage(message => {
+        switch(message.command) {
+            case 'ifarmeLabel': 
+                window.showInformationMessage(message.text);
+        }
+    });
+
+    return webviewPanel;
+}
+```
+
+好了。测试下效果吧，是不是如下图所展示的呢？
+
+![img](gitImg/treeView/7-2.jpg)
+
+那么其他两个网页的的按钮点击事件，只要传递相同的标识 `ifarmeLabel` 带上不同的参数，就能够调用相同的监听事件了。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
