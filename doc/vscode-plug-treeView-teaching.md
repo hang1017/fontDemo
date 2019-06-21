@@ -712,7 +712,11 @@ export function createWebView(
 
 那么其他两个网页的的按钮点击事件，只要传递相同的标识 `ifarmeLabel` 带上不同的参数，就能够调用相同的监听事件了。
 
+## 八、代码
 
+[全部代码](https://github.com/hang1017/VS-code-extension-dev/tree/master/treeViewWebView) 都在这里拉。
+
+![img](gitImg/treeView/8-1.jpg)
 
 
 
