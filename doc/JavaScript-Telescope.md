@@ -672,6 +672,59 @@ var myDiv = document.querySelector("#myDiv");   //取得 ID 为 "myDiv" 的元�
 var ems = document.getElementById("myDiv").querySelectorAll("em");  //返回一个nodeList实例
 ```
 
+### 关于 `query系列` 和 `getElementBy系列` 的区别
+
+`query`：选出来的元素和元素数组是静态的，不能随着文档的操作的改变而改变，但是用起来比较简便
+
+`getElementBy`: 是动态选择元素和元素数组的。性能会比较好。
+
+两个可以和着用，像上面的例子那样
+
+### 二、焦点的判断
+
+```js
+botton.focus();     //给一个 按钮加上焦点
+alert(document.activeElement === botton);       // true 判断当前焦点是否是该按钮
+
+alert(document.hasFocus());     // 通过检测文档是否获得焦点，可以知道用户是不是正在与页面进行交互
+```
+
+### 三、HTML5 新增的今个变化
+
+getElementByClassName、classList、head属性、charset字符集属性
+
+自定义数据属性：
+
+`<div id='1' data-appId='aaa'></div>`
+
+```js
+var div = document.getElementById('myDiv');
+var appId = div.dataset.appId;
+div.dataset.appId = '';
+```
+
+### 四、专有扩展
+
+`compareDocumentPOsition()`: 能够确定节点间的关系
+
+|掩码|节点关系|
+|--|--|
+|1|无关|
+|2|居前|
+|4|居后|
+|8|包含|
+|16|被包含|
+
+### 五、滚动
+
+`scrollIntoView()`: 唯一一个所有浏览器都支持的方法。
+
+`scrollByLines(num)`: 根据行来滚动
+
+`scrollByPages(num)`: 根据页来滚动
+
+`scrollIntoViewIfNeeded`: 只在当前元素在视口不可见的的情况下才滚动浏览器窗口让它可见。否则什么都不做。
+
 ### 二、HTML 5
 
 #### classList 属性
@@ -713,7 +766,625 @@ if(document.readyState == 'complete'){
 
 `innerHTML`: 输出整个标签，包括标签的内容。
 
-## 第十二章 DOM2 和 DOM3 的变化
+## 第十三章 事件
+
+### 1、dom 级别：
+
+0级 dom： 标签内写点击事件 + onclick=function(){} 两个 0级 dom 会覆盖
+
+2级 dom: 只有一种监听方法，不覆盖依次调用，addEventListener() 有三个参数：事件名，处理函数， true/false: 捕获阶段或冒泡阶段调用。
+
+### 2、
+
+`e.eventPhase` 属性来确定事件当前正位于哪个流。1：捕获阶段  2: 事件处理程序处于目标对象上  3: 冒泡阶段。尽管目标在冒泡阶段，但是仍然是2
+
+`returnValue` 相当于是 `preventDefault()` 事件
+
+`eventUtil`: 保证处理事件能在大多数浏览器下一致的运行，以下是四种新方法：
+
+1、`getEvent()`: 返回 event 对象的引用
+
+2、`getTarget(event)`: 返回事件的目标,检测 target 的属性
+
+3、`preventDefault()`: 取消事件的默认行为
+
+4、`stopPropagation()`: 阻止事件流
+
+### 3、事件类型
+
+1、`load`
+
+当页面完全加载后就会触发 window 上面的 load 事件
+
+```js
+EventUtil.addHandler(window, "load", function(e) {});
+```
+
+或者在 body 中添加 `onload` 事件
+
+2、`unload`: 同上
+
+3、`resize`: 当浏览器窗口被调整高度或者宽度时触发事件。
+
+4、`scroll`: 可以通过 `scrollLeft` 和 `scrollTop` 来监控这一变化
+
+
+鼠标双击事件的触发顺序： mousedown、 mouseup、 click、 mousedown、 mouseup、click、 dblclick
+
+鼠标修改键：点击事件传递 event,  event.shiftKey 、 ctrlKey、 altKey、 metaKey
+
+## 十四章 表单脚本
+
+### 1、属性
+
+`enctype`: 请求的编码类型
+
+`method`: 发送的 HTTP 请求的类型
+
+### 2、提交表单
+
+有三种： input、button、input(type='image') 或者下面的代码页可以 
+
+```js
+var form  = document.getElementById('');
+EventUtil.addHandler(form, 'submit', function(event) {
+    event = EventUtil.getEvent(event);
+    EventUtil.preventDefault(event);
+});
+
+// 提交表单可以用如下的代码
+form.submit();
+
+// 获取表单中的字段，按顺序
+var field1 = form.elements[0];
+var field2 = form.elements['field2'];
+```
+
+### 3、选择文本
+
+```js
+// 选择文本
+EventUtil.addHandler(textbox, 'focus', function(event) {
+    event = EventUtil.getEvent(event);
+    var target = EventUtil.getTarget();
+    target.select();
+})
+
+// 选择部分文本
+textbox.value = '....';
+textbox.setSelectionRange(0, textbox.value.length);
+
+// 或者
+selectText(textbox, 0, textbox.value.length);
+```
+
+### 4、过滤输入
+
+```js
+// 跨浏览器获取字符编码
+var tar = EventUtil.getCharCode(event);
+// 将字符编码转化成字符串，然后用正则进行判断
+String.fromCharCode(tar)
+```
+
+### 5、约束验证 HTML API
+
+1、必填字段
+
+```js
+<input type="text" name="username" required />
+
+// 检测是否是必填字段
+var check = document.forms[0].elements['username'].required;
+```
+
+2、其他输入类型
+
+`email` 和 `url` 
+
+**注意** input 文本要设置 `required` 属性，否则空文本也会通过验证
+
+而且，并不能阻止用户输入无效的值。
+
+```js
+// 用于检测字段的有效性
+document.form[0].elements[0].checkValidity()
+
+// 用于检测表单是否有效，只要一个无效就返回 false
+document.form[0].checkValidity()
+```
+
+可以判断每个对象属性是否匹配，具体请参考书 430
+
+3、禁用验证
+
+```html
+<!-- 对一整个表单进行不验证的操作 -->
+<form method="post" novalidate ></form>
+
+<!-- 该提交按钮不进行验证 -->
+<input type='submit' formnovalidate />
+```
+
+```js
+document.forms[0].noValidate = true;
+
+document.forms[0].elements['btn'].formNoValidate = true;
+```
+
+### 6、选择框
+
+1、选择选项
+
+```js
+// 缺点是只能是单选的，多选会被替换，只会返回选中的第一项
+var selectedOption = selectbox.options[selectbox.selectedIndex];
+
+// 可多选
+selectbox.options[0].selected = true;
+```
+
+2、添加选项(3种方法)
+
+```js
+// 1
+var newOption = document.createElement('option');
+newOption.appendChild(document.createTextNode('Option text'));
+newOption.setAttribute('value', 'Option value');
+
+selectbox.appendChild(newOption);
+
+// 2 这种方法除 IE 以为都能使用
+var newOption = new Option("Option text", "Option value");
+selectbox.appendChild(newOption);
+
+// 3 
+var newOption = new Option("Option text", "Option value");
+selectbox.add(newOption, undefined);
+```
+
+3、移除选项(3种)
+
+```js
+// 1 
+selectbox.removeChild(selectbox.options[0]);
+
+// 2 
+selectbox.remove(0);
+
+// 3
+selectbox.options[0] = null;
+```
+
+4、移动选项
+
+```js
+var op = selectbox.options[1];
+selectbox.insertBefore(op, selectbox.options[op.index - 1]);
+```
+
+### 7、表单序列化
+
+照抄一段 ajax 的源码
+
+```js
+function serialize(form) {
+    var parts = [];
+    var field = null;
+    var option = null;
+    var optValue = null;
+    for(var i = 0; i < form.elements.length; i++) {
+        field = form.elements[i];
+        switch(field) {
+            case 'select-one':
+            case 'select-multiple':
+                if(field.name.length) {
+                    for(var j = 0; j < field.options.length; j++) {
+                        option = field.options[j];
+                        if(option.selected) {
+                            optValue = '';
+                            if(optValue.hasAttribute('value')) {
+                                optValue = (option.hasAttribute('value') ? option.value : option.text);
+                            } else {
+                                // 查明是否已规定这个属性 IE走这列
+                                optValue = (option.attributes['value'].specified ? option.value : option.text);
+                            }
+                            parts.push(encodeURIComponent(field.name) + '=' + encodeURIComponent(optValue));
+                        }
+                    }
+                }
+            case undefined: 
+            case "file": 
+            case 'submit': 
+            case 'reset':
+            case 'button':
+                break;
+            case 'radio':
+            case 'checkbox':
+                if(!filed.checked) { break; } 
+                // 执行默认操作
+            default: 
+            if(filed.name.length) {
+                parts.push(encodeURIComponent(field.name) + '=' + encodeURIComponent(optValue));
+            }
+        }
+    }
+    return parts.join('&');
+}
+```
+
+## 第十五章: canvas 绘图
+
+```js
+var drawing = document.getElementById('drawing');
+if(drawing.getContext) {
+    // y要用这块画布，需要取得绘图上下文
+    var context = drawing.getContext('2d');
+
+    // 取得图像数据的URI, 导出<canvas>元素上的绘制的图像
+    var imgURI = drawing.toDataURL('image/png');
+    // 展示图像
+    var image = document.createElement('img');
+    image.src = imgURI;
+    document.body.appendChild(image);
+}
+```
+
+`fillStyle`: 填充
+
+`strokeStyle`: 描边
+
+### 1、绘制矩形
+
+方法: `fillRect()`, `strokeRect()`, `clearRect()`
+
+所带参数： x坐标， y坐标， 矩形宽度，矩形高度
+
+（1）描边线条操作：
+
+宽度： `lineWidth` 来决定
+
+线条末端形状：`butt`, `round`, `square`
+
+相交方式: `round`, `bevel`, `miter`
+
+### 2、绘制路径
+
+`arc(x, y, radius, startAngle, endAngle, counterclockwise)`: 以 xy 为圆心绘制一条弧线，半径为 radius, 可设置起始角度和结束角度，最后可设置 方向
+
+`arcTo(x1, y1, x2, y2, radius)`: 从上一个节点出发，绘制一条弧线, 经过 x1y1，到达 x2y2,半径为 radius
+
+`bezierCurveTo(c1x, c1y, c2x, c2y, x, y)`: 从上一个节点出发，绘制一条曲线，到 xy 结束。并且以(c1x, c1y), (c2x, c2y) 为控制点
+
+`lineTo(x, y)`: 从上一点开始绘制一条直线，到 xy 结束
+
+`moveTo(x ,y)`: 将绘图游标移动到 xy, 不画线
+
+`rect(x, y, width, height)`: 从点 xy 开始绘制一条矩形。
+
+`closePath()`: 可绘制一条链接到路径起点的线条
+
+`clip()`: 可以在路径上创建一个裁剪区域。
+
+`isPointInPath()`: 接收 xy 参数，用于路径被关闭之前确认画布上的某一点是否位于路径上。
+
+### 3、绘制文本
+
+`fillText()` or `strokeText()`: (文本字符串，x, y, 最大像素宽度)
+
+属性有三: `font`, `textAlign`, `textBaseline`
+
+### 4、变换
+
+`rotate(angle)`: 围绕原点旋转图像 angle 弧度。 
+
+`scale(x, y)`: 缩放图像。 
+
+`translate(x, y)`: 将坐标原点移动到 xy.
+
+### 5、阴影+渐变+模式+合成
+
+`shadowColor`: 代表阴影颜色，默认黑色，如：`rgba(0, 0, 0, 0.5 )`
+
+`shadowOffsetX`: x轴方向上的偏移量，默认为 0 如：5
+
+`shadowOffsetY`: y轴方向上的偏移量，默认为 0 如：5
+
+`shadowBlur`: 模糊的像素度，默认为0 即不模糊 如：4
+
+```js
+// 渐变的代码
+var gradient = context.createLinearGradient(30, 30, 70, 70);
+gradient.addColorStop(0, 'white');
+gradient.addColorStop(1, 'black');
+
+context.fillStyle = gradient;
+context.fillRect(30, 30, 50, 50);
+```
+
+```js
+// 模式的代码
+var image = document.images[0];
+pattern = context.createPattern(image, 'repeat');
+
+context.fillStyle = pattern;
+context.fillRect(10, 10, 150, 150);
+```
+
+关于合成的内容请直接参考书中 462页
+
+## 第十六章 HTML5 脚本编程
+
+### 1、跨文档传递消息，即向 `iframe` 传递信息
+
+```js
+var iframe = document.getElementById('mf').contentWindow;
+// 第二个参数代表传递的地址必须为该 url，如果不是则什么都不做
+iframe.postMessage('aa', 'http://www.baidu.com');
+```
+
+接收数据
+
+```js
+EventUtil.addHandler(window, 'message', function(event) {
+    // 确保发送的消息是已知域
+    if(window.origin === 'http://www.badi.com') {
+        // 处理接收到的消息
+        processMessage(event.data);
+
+        // 可选: 向来源窗口发送回执
+        event.source,postMessage('received!', "http://localhost:8000/~~~");
+    }
+})
+```
+
+**通过 `postMessage` 传递的数据最好都是以字符串的形式，结构化的数据最好有用 ``JSON.stringify` 传递**
+
+### 2、原生拖放
+
+拖动元素会触发以下事件: `dragstart`, `drag`, `dragend`
+
+当元素被拖动到有效的放置目标上时会触发以下事件: `dragenter`, `dragover`, `dragleave或drag`, 类似下面的例子
+
+```js
+var dt = document.getelementById('dropTarget')
+EventUtil.addHandler(dt, 'drag', function(e) {
+    EventUtil.preventDefault(e);
+
+    // 设置和接收数据
+    e.dataTransfer.setData('text', 'some text');
+    var text = e.dataTransfet.getData('text');
+});
+```
+
+###  3、音频，视频请看书 486页
+
+## ajax 下面的一些呢绒内容来 freecodecamp
+
+1、异步获取外部的 API
+
+```js
+req = new XMLHttpRequest();
+req.open('GET', '/json/cats.json', true);
+req.send();
+req.onload = function() {
+  json = JSON.parse(req.responseText);
+  document.getElementsByClassName('message')[0].innerHTML = JOSN.stringify(json);
+}
+```
+
+2、使用 XMLHttpRequest 发布数据
+
+```js
+req = new XMLHttpRequest();
+req.open('POST', url, true);
+req.setRequestHeader('Content-Type', 'text-plain');
+req.onreadystatenge = function() {
+  if(req.readyState === 4 && req.status === 200) {
+    document.getElementsByClassName('message')[0].innerHTML=req.responseText;
+  }
+}
+req.send(userName);
+```
+
+`setRequestHeader`: 请求标头的值，包含相关发件人和请求信息 
+
+`onreadystatechange`: 事情侦听器请求状态的更改
+
+`readyState`: 值为4， 表示操作完成
+
+`status`: 值为 200 表示操作成功
+
+
+----------
+
+`responseText`: 作为相应主体被返回的文本
+
+`status`: 响应的 HTTP 状态
+
+`statusText`: HTTP状态说明
+
+关于 `readyState` 值的说明
+
+- `0`: 未初始化，尚未调用 open() 方法
+- `1`: 启动，但尚未调用 send() 方法
+- `2`: 发送，已经调用 send() 方法，未接收到响应
+- `3`: 接收，已接收部分数据
+- `4`: 完成，接收全部响应数据，而且已经可以在客户端使用了。
+
+### 1、GET 请求
+
+可以将字符串参数追加到 url 末尾，以便将信息发送给服务器
+
+但是字符串中的每个键和值都需要经过正确的编码：`encodeURIComponent()` 进行编码，如： 
+
+```js
+xhr.open('get', 'example.do?name1=value1&name2=value2', true);
+
+// 该函数辅助添加字符串参数
+function addURLParam(url, name, value) {
+    url += (url.indexOf('?') === -1 ? '?' : '&');
+    url += encodeURIComponent(name) + '=' + encodeURIComponent(name) + '=' + encodeURIComponent(value);
+    return url;
+}
+```
+
+### 2、FormData
+
+为序列化表单以及创建与表单格式相同的数据提供了便利，直接看代码
+
+```js
+xhr.open(···);
+var form = document.getElementById('form..')
+xhr.send(new FormData(form));
+```
+
+### 3、超时设定
+
+```js
+xhr.timeout = 1000;
+xhr.ontimeout = function() {
+    alert();
+}
+```
+
+## 第二十二章 高级技巧
+
+1、关于惰性函数
+
+第一种方法: 在 `if` 判断后给变量赋值函数，接下来将不再需要判断，直接执行
+
+第二种方法： 在声明函数时，就指定适当的函数，和第一种差不多。
+
+优点： 只在执行分支代码时牺牲一点儿性能
+
+2、防篡改对象
+
+```js
+var person = {};
+// 设置不再给对象添加属性和方法
+Object.preventExtensions();
+
+// 判断对象是否还能修改
+alert(Object.isExtensible(person)); // false
+```
+
+3、密封对象
+
+密封对象不可扩展，也不能删除属性和方法,但是可以修改属性s
+
+```js
+Object.seal(person);
+alert(Object.isSealed(person)); // true
+```
+
+4、冻结对象
+
+不可扩展。切密封，还不能修改
+
+```js
+Object.freeze(person);
+alert(isFrozen(person)); // true
+```
+
+5、定时器
+
+JavaScript 是运行于单线程的环境中，定时器仅仅是计划代码在未来的某个特定时间执行
+
+定时器不是线程
+
+JavaScript 中没有任何代码是立刻执行的，一旦进程空闲则立刻执行。
+
+定时器不代表时间一到就执行代码，而是时间一到，把代码添加到队列中，如果有空闲的进程则执行。
+
+6、拖放
+
+最简单的拖放界面的代码
+
+```js
+var dragDrop = function() {
+    var dragging = null;
+    function handleEvent(event) {
+        event = EventUtil.getEvent(event);
+        var target = Event.getTarget(event);
+        switch(target) {
+            case 'mousedown': 
+                if(target.className.indexOf('draggable') > -1) {
+                    dragging = target;
+                }
+                break;
+            case 'mousemove':
+                if(dragging !== null) {
+                    dragging.style.left = event.slientX + 'px';
+                    dragging.style.top = event.slientY + 'px';
+                } 
+                break;
+            case 'mouseup':
+                dragging = null;
+                break; 
+        }
+    }
+}
+```
+
+## 第二十三章
+
+
+### cookie: 
+
+限制： 长度小于 4096b，超过会被丢弃
+
+构成：
+
+1: 名称：不区分大小写，名称必须经过 URL 编码
+
+2: 值：存储在 cookie 中的字符串值，必须别 URL 编码
+
+3: 域： cookie 对于哪个域是有效的，所有向该域发送请求中都会包含这个 cookie 信息
+
+4: 路径：对于指定域中的路径，应该向服务器发送 cookie
+
+5: 失效时间：何时被删除的时间戳，会话结束时删除，也可以自己设定删除时间
+
+6: 安全标志：指定后，只有在使用 ssl 连接的时候才发送到服务器
+
+如： 
+
+```js
+Set-Cookie: name=value; domain=.wrox.com; path:/; secure; expiress...
+```
+
+对于 cookie 的思考
+
+所有的 cookie 都会由浏览器作为请求头发送，所以 cookie 中存储大量信息会影响到特定域的请求性能。
+
+cookie 信息越大， 完成对服务器请求的时间就越长。虽然浏览器对cookie设置了大小，但是还是少将数据存储在 cookie 中
+
+### web 存储机制
+
+提供了在 cookie 之外存储会话数据的途径
+
+储存大量可以跨会话存在的数据的机制
+
+#### storage 类型
+
+#### sessionStorage
+
+sessionStorage 对象存储特定于某个会话的数据，只保持到浏览器关闭，可跨页面刷新而存在
+
+如果浏览器支持的话，浏览器崩溃重启后还能使用，有些浏览器可以，有些不支持
+
+#### globalStorage
+
+可以指定哪些域名有权限访问该数据
+
+#### localStorage
+
+不能给 localStorage 指定任何访问规则，要访问同一个 localStorage localStorage对象，页面必须来自同一个域名上，使用同一种协议，在同一个端口上。
+
+
+
+
 
 
 

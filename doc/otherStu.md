@@ -105,3 +105,17 @@ git stash
 git pull
 git stash pop
 ```
+
+## 淘宝静态页面开发
+
+### ul li
+
+`list-style-type`: 列表项目前面的符号 如： `none`、实心圆、空心圆等等
+
+`list-style-image`: 定义使用图片来代替项目符号 `url()`
+
+`list-style-position`: 项目符号在列表中显示位置的属性 `outside \ inside`
+
+## border
+
+`border-sizing: border-box`: 边框在盒子内部呈现，不占用外部的 px;

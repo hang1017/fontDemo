@@ -889,13 +889,138 @@ console.log(result);
 `slice(开始的索引数(有包括),结束的索引数(不包括))`:提取、复制
 
 
+--------------------
 
+# REDUX
 
+## Provider: 
 
+```js
+const Provider = ReactRedux.Provider;
 
+<Provider store = {store}> 
+  <App /> 
+</Provider>
+```
 
+允许在整个组件树中访问 Redux 的 `store` 和 `dispatch`  函数
 
+## mapStateToProps()
 
+此函数应state作为参数，返回该状态映射到特定属性名称的对象。
+
+```js
+const mapStateToProps = (state) => {
+  return {messages: state}
+};
+```
+
+## mapDispatchToProps()
+
+传递 `dispatch` 进去。`return` 返回一个可传递参数进去的方法，然后 `dispatch`
+
+在函数中如何使用 `mapDispatchToProps` ?
+
+`this.props.方法` 即可 。
+
+```js
+const mapDispatchToProps = (dispatch) => {
+  return {
+    submitNewMessage: (message) => {
+      dispatch(addMessage(message))
+    }
+  }
+};
+```
+
+## connect
+
+```js
+const connect = ReactRedux.connect;  
+const ConnectedComponent = connect(mapStateToProps, mapDispatchToProps)(Presentational);
+```
+
+可以当成组件来饮用。
+
+使用全局对象中的connect方法将此组件连接到Redux ReactRedux
+
+# D3
+
+## data()
+
+用于选择DOM 元素，以将数据附加到这些元素上
+
+动态生成使用这些数据 `.text((d) => d)`
+
+## enter()
+
+常见的工作流模式，在文档中为集合中的每个元素创建一个新元素
+
+## Scales 和 scaleLinear()
+
+Scales: 告诉程序如何将一组原始数据点映射到 svg 画布的像素上的函数
+
+scaleLinear(): 更改线性关系
+
+```js
+const scales = d3.scalelinear();
+const output = cale(50);
+```
+
+```js
+// 代表你输入的数字如果在这个区间的话，会自动映射 range() 的数值出来
+// 如果数据不在这个区间的话，也会根据 range 进行映射
+scales.domain([0, 40]) 
+scales.range([100, 400])
+```
+
+# JOSN and ajax
+
+## 异步获取外部的 API
+
+```js
+req = new XMLHttpRequest();
+req.open('GET', '/json/cats.json', true);
+req.send();
+req.onload = function() {
+  json = JSON.parse(req.responseText);
+  document.getElementsByClassName('message')[0].innerHTML = JOSN.stringify(json);
+}
+```
+
+## 获取地理位置
+
+```js
+if(navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(function(position) {
+    console.log(position.coords.latitude);
+    console.log(position.coords.longitude);
+  })
+}
+
+```
+
+## 使用 XMLHttpRequest 发布数据
+
+```js
+req = new XMLHttpRequest();
+req.open('POST', url, true);
+req.setRequestHeader('Content-Type', 'text-plain');
+req.onreadystatenge = function() {
+  if(req.readyState === 4 && req.status === 200) {
+    document.getElementsByClassName('message')[0].innerHTML=req.responseText;
+  }
+}
+req.send(userName);
+```
+
+`setRequestHeader`: 请求标头的值，包含相关发件人和请求信息 
+
+`onreadystatechange`: 事情侦听器请求状态的更改
+
+`readyState`: 值为4， 表示操作完成
+
+`status`: 值为 200 表示操作成功
 
 
 
