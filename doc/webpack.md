@@ -470,7 +470,7 @@ const common = require('./webpack.common.js');
 
 module.exports = merge(common, {
   plugins: [
-    new UglifyJSPlugin()
+    new UglifyJSPlugin() // 对 js 文件进行压缩
   ]
 });
 ```
@@ -506,6 +506,244 @@ new webpack.optimize.CommonsChunkPlugin({
 ```
 
 会多打出一个 `common.bundle.js` 的包 
+
+## 缓存
+
+因为浏览器获取资源比较耗费时间，浏览器使用缓存技术，通过命中缓存降低网络流量，使，网站加载速度更快。
+
+缺点：部署新版本时，如果怒修改文件名，浏览器可能会认为此没有更新，使用旧版本的代码
+
+1、输出文件的文件名
+
+`output` 的 `filename` 修改为 `[name].[chunkhash].js`
+
+每次打包都会在文件上加上 hash 值保证文件名的不同。
+
+但是如果文件未发生修改，文件名可能会变，也可能不会变。
+
+2、提取模版
+
+`CommonsChunkPlugin`: 能够每次修改后的构建结果中，将 webpack 的样板和 manifest 提取出来。
+
+```js
+plugins: [
+  new webpack.optimize.CommonsChunkPlugin({
+    name: 'manifest'
+  })
+]
+```
+
+也可以将第三方库也提取出来：
+
+```js
+entry: {
+  main: './src/index.js',
+  vendor: ['lodash']
+},
+
+plugins: [
+  new webpack.optimize.CommonsChunkPlugin({
+    name: 'vendor'
+  }),
+  new webpack.optimize.CommonsChunkPlugin({
+    name: 'manifest'
+  })
+]
+```
+
+第三方库可以不用像本地的源代码那样频繁修改
+
+利用客户端的长效缓存机制，命中缓存来消除请求，减少向服务器获取资源。同时保证版本一致
+
+但是执行后还是发现 vendor 版本发生了变化。怎么办？可以使用下面两个其中一个插件
+
+- NamedModulesPlugin      使用模块的路径，而不是数字标识符执行时间会比较长
+- HashedModuleIdsPlugin   推荐用于生产环境
+
+## 创建 library
+
+外部引入一个小的库。正常操作： 导入数据
+
+```js
+import _ from 'lodash';
+import numRef from './ref.json';
+```
+
+library 的使用方式(两种方式)：我们需要做的是将 `webpack-numbers` 暴露出来
+
+```js
+// ES2015 模块引入
+import * as webpackNumbers from 'webpack-numbers';
+// CommonJS 模块引入
+var webpackNumbers = require('webpack-numbers');
+// ES2015 和 CommonJS 模块调用
+webpackNumbers.wordToNum('Two');
+// ...
+require(['webpackNumbers'], function ( webpackNumbers) {
+  webpackNumbers.wordToNum('Two');
+});
+```
+
+几个步骤(几个目标)：
+
+- 不打包 `lodash`，而是使用 `externals` 来 `require` 用户加载好的 lodash
+- 设置 library 名称为 `webpack-numbers`
+
+`webpack.config.js`
+
+```js
+var path = require('path');
+module.exports = {
+  entry: './src/index.js',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'webpack-numbers.js'
+  }
+}
+```
+
+外部化 `lodash`
+
+如果现在执行 `webpack` 会创建很大的文件，因为 lodash 也被打包进去了。可以不打包，让用户自己部署 `lodash`
+
+ 在 `webpack.config.js` 中修改 ：
+
+ ```js
+var path = require('path');
+module.exports = {
+  entry: './src/index.js',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'webpack-numbers.js'
+  }
+},
+externals: {
+  lodash: {
+    commonjs: 'lodash',
+    commonjs2: 'lodash',
+    amd: 'lodash',
+    root: '_'
+  }
+}
+ ```
+
+ 暴露 library: 能够兼容不通的环境
+
+在 `output`: 中添加 `library: 'webpckNumbers'`: 将 library bundle 暴露为全局环境
+
+为了让 library 和其他环境兼容，还需要 `libraryTarget: 'umd'`
+
+移除 `lodash` 的 `import`, 通过使用 `ProvidePlugin` ：
+
+告诉 webpack，如果你遇到至少一处用到 lodash 变量的模块事例，则将 lodash 包引入进来，并将其提供给需要用到它的模块。
+
+```js
+plugins: [
+  new webpack.ProvidePlugin({
+    _: 'lodash' //或者
+    join: ['lodash', 'join']
+  })
+]
+```
+
+## 渐进式网络应用程序
+
+在离线时，应用程序能够继续运行功能。通过使用 `Service Workers` 的网络技术来实现的
+
+1、搭建一个简易服务器
+
+`npm install http-server --save-dev`
+
+修改 `script`：`"start": "http-server dist"`
+
+2、添加 workbox
+
+`npm install workbox-webpack-plugin --save-dev`
+
+修改 `webpack.config.js`
+
+```js
+const WorkboxPlugin = require('workbox-webpack-plugin');
+
+plugins: [
+  new WorkboxPlugin.GenerateSW({
+    // 这些选项帮助 ServiceWorkers 快速启动
+    // 不允许遗留任何 “旧的” ServiceWorkers
+    clientsClaim: true,
+    skipWaitinf: true,
+  })
+]
+```
+
+`build` 后你就会发现两个新的文件：`sw.js`、`precache-manifest....js`
+
+一个是 sercice worker 文件，一个是 sw.js 的引用文件
+
+3、最后注册我们的 service worker 在`index.js` 文件中添加
+
+```js
+if('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').then(registration => {
+      console.log(`sw registered: `, registration);
+    }).catch(registrationError =. {})
+  })
+}
+```
+
+## typescript
+
+新增 `tsconfig.json`、`index.ts` 文件
+
+```json
+{
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "noImplicitAny": true,
+    "module": "es6",
+    "target": "es5",
+    "jsx": "react",
+    "allowJs": true
+  }
+}
+```
+
+```js
+module.exports = {
+  entry: './src/index.ts',
+  module: {
+    rules: [{
+      test: /\.tsx?$/,
+      use: 'ts-loader',
+      exclude: /node_modules/
+    }]
+  },
+  resolve: {
+    extensions: ['.tsx', '.ts', '.js']
+  }
+}
+```
+
+启动 source map 的配置
+
+在 `tsconfig.json` 中添加 `"sourceMap": true`, 在 `webpack.config.js ` 中启动它：`devtool: 'inline-source-map'` 
+
+安装 第三方库要使用 type类型，如：`npm install --save-dev @types/lodash`
+
+
+# webpack 面试题
+
+1、什么是webpack？
+
+
+
+
+
+
+
+
+
+
 
 
 
