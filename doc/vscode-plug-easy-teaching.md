@@ -662,7 +662,7 @@ export function activate(context: vscode.ExtensionContext) {
         const smallNumbers: vscode.DecorationOptions[] = [];
 		const largeNumbers: vscode.DecorationOptions[] = [];
 
-        let match;
+        s
         while(match = regEx.exec(doc)) {
             // 下面的两行代码：获取开始和结束的位置
             const startPos = editor.document.positionAt(match.index);

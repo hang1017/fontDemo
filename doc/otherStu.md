@@ -119,3 +119,20 @@ git stash pop
 ## border
 
 `border-sizing: border-box`: 边框在盒子内部呈现，不占用外部的 px;
+
+## Javascript之把网页加入收藏夹功能
+
+```js
+<script>
+function addFav(){
+      var title = document.title;
+      var URL = document.URL;
+  if(document.all){
+        window.external.addFavorite(URL,title );
+  }else if(window.sidebar){
+        window.sidebar.addPanel(title, URL,'');
+    }
+}
+ 
+<a href="#" rel="sidebar" onclick="addFav();">加入收藏</a></div>
+```

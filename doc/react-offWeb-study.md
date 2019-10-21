@@ -80,9 +80,57 @@ const [state, dispatch] = useReducer(myReducer, { count: 0 })
 ### 4、useEffect()
 
 用来引入
+### 5、useMemo()
+
+把 '创建' 函数和依赖项数组作为参数传入 `useMemo`, 仅会在某个依赖项改变时，才重新计算值，有助于避免每次渲染时都进行高开销的计算。
 
 
+## 四、关于 React.Component 和 React.PureComponent 对比
 
+- PureComponent 实现 `shouldComponentUpdate()`
+- PureComponent 以浅层对比 props 和 state 的方式来实现(提高性能)
+- 因为是浅层比较，所以比较复杂的数据结构可能会导致出错。
+- 或者你可以调用 `forceUpdate()` 来确保组件被正确的更新
+  
+
+## 五、API
+
+### 1、render()
+
+render() 应该为纯函数，当不改变 state 的情况下，每次调用都会返回相同的结果，不会直接与浏览器进行交互
+
+### 2、componentDidUpdate()
+
+**在该函数周期的使用中，去 `setState` 外层必须包裹一层条件判断，否则会导致死循环和不必要的性能损耗**
+
+
+## 六、Fragments
+
+Fragments 允许你将自列表分组，而无需向DOM 添加额外的节点
+
+```js
+return (
+  <React.Fragment></React.Fragment>
+)
+```
+
+key 是唯一可以传递给 Fragment 的属性
+
+缺点(我认为)：专注于功能的实现，解决了嵌套爆炸的问题。如果需要定义 `class` 或者增加点击事件的话，还是需要用到 `div`
+
+## 七、代码分割
+
+```js
+const SuspenseLazy = React.lazy(() => import('./SuspenseLazy'));
+
+return (
+  <React.Suspense fallback={<div>Loading</div>}>
+    <SuspenseLazy/>
+  </React.Suspense>
+)
+```
+
+React.lazy 目前只支持默认导出。
 
 
 
